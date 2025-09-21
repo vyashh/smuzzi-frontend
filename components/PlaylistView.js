@@ -1,5 +1,6 @@
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
+import { Colors } from "../constants/colors";
 
 const PlaylistView = ({ title, artist, cover, duration }) => {
   return (
@@ -7,7 +8,7 @@ const PlaylistView = ({ title, artist, cover, duration }) => {
       <View>
         <Image style={styles.cover} source={{ uri: cover }} />
       </View>
-      <View style={styles.details}>
+      <View style={[styles.details, { flex: 2 }]}>
         <AppText
           style={[styles.detailsTitle, { width: "200" }]}
           numberOfLines={1}
@@ -21,6 +22,14 @@ const PlaylistView = ({ title, artist, cover, duration }) => {
           </AppText>
         </View>
       </View>
+      <View
+        style={{
+          flex: 3,
+          alignItems: "flex-end",
+        }}
+      >
+        <AppText>:</AppText>
+      </View>
     </View>
   );
 };
@@ -29,8 +38,8 @@ export default PlaylistView;
 
 const styles = new StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: "row",
-    alignItems: "center",
   },
   cover: {
     width: 40,
@@ -38,7 +47,9 @@ const styles = new StyleSheet.create({
     marginRight: 10,
     borderRadius: 8,
   },
-  details: {},
+  details: {
+    justifyContent: "center",
+  },
   detailsTitle: {
     fontWeight: "bold",
     width: "100%",

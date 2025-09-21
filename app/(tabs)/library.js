@@ -13,6 +13,7 @@ import { useAuthStore } from "../../utils/authStore";
 import AppText from "../../components/AppText";
 import PlaylistView from "../../components/PlaylistView";
 import Player from "../../components/Player";
+import HeaderTitle from "../../components/HeaderTitle";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
@@ -24,7 +25,8 @@ function LibraryPage() {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={[styles.text, { fontWeight: "bold" }]}>Library </Text>
+      <HeaderTitle>Library </HeaderTitle>
+      <AppText>{songs.length} Songs</AppText>
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id}
