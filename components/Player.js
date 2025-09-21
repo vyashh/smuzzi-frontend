@@ -45,19 +45,27 @@ const Player = () => {
     >
       <BottomSheetView style={styles.playerContainer}>
         {/* {index === 0 && ( */}
-        <View styles={styles.miniPlayerContainer}>
+        <View style={styles.container}>
           <View>
             <Image
-              style={styles.miniPlayerCoverImage}
+              style={styles.cover}
               source={{ uri: "https://placehold.co/600x600.png" }}
             />
+          </View>
+          <View style={styles.details}>
+            <AppText
+              style={[styles.detailsTitle, { width: "200" }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              Title
+            </AppText>
             <View>
-              <AppText>Title</AppText>
               <AppText>Artist</AppText>
             </View>
-            <View>
-              <AppText>Play Button</AppText>
-            </View>
+          </View>
+          <View style={styles.controls}>
+            <AppText>Play</AppText>
           </View>
         </View>
         {/* // )} */}
@@ -83,14 +91,22 @@ const styles = new StyleSheet.create({
     height: "100%",
     borderTopColor: Colors.surface,
     borderWidth: 1,
-    // padding,
   },
-  miniPlayerContainer: {
+  container: {
     flexDirection: "row",
     alignItems: "center",
   },
-  miniPlayerCoverImage: {
+  cover: {
     width: 50,
     height: 50,
+    marginRight: 10,
+    borderRadius: 8,
   },
+  details: {},
+  detailsTitle: {
+    fontWeight: "bold",
+    width: "100%",
+    height: "auto",
+  },
+  controls: {},
 });
