@@ -1,18 +1,15 @@
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 
-const CarouselView = () => {
+const CarouselView = ({ title, artist, cover }) => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          style={styles.cover}
-          source={{ uri: "https://placehold.co/600x600.png" }}
-        />
+        <Image style={styles.cover} source={{ uri: cover }} />
       </View>
       <View style={styles.details}>
-        <AppText style={styles.detailsTitle}>Title</AppText>
-        <AppText>Artist</AppText>
+        <AppText style={styles.detailsTitle}>{title}</AppText>
+        <AppText>{artist}</AppText>
       </View>
     </View>
   );

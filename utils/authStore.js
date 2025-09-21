@@ -28,6 +28,7 @@ export const useAuthStore = create(
       // auth - handlers -- defaults
       logIn: async () => {
         const { serverUrl } = get();
+        console.log(serverUrl);
         try {
           return await axios
             .post(`${serverUrl}/api/login`, {
@@ -35,6 +36,7 @@ export const useAuthStore = create(
               password: "password",
             })
             .then((res) => {
+              console.log(res.data.access_token);
               set((state) => {
                 return {
                   ...state,
@@ -65,6 +67,13 @@ export const useAuthStore = create(
         getItem,
         removeItem: deleteItemAsync,
       })),
+      // local securestore
+      partialize: (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        accessToken: state.accessToken,
+        serverUrl: state.serverUrl,
+        serverSelected: state.serverSelected,
+      }),
     }
   )
 );

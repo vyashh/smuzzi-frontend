@@ -3,7 +3,7 @@ import { useAuthStore } from "../../utils/authStore";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const SignInPage = () => {
-  const { logIn } = useAuthStore();
+  const { logIn, logOut } = useAuthStore();
 
   return (
     <SafeAreaProvider>
@@ -11,6 +11,7 @@ const SignInPage = () => {
         <Text>Sign in</Text>
 
         <Button onPress={logIn} title="SignIn"></Button>
+        <Button onPress={logOut} title="SignOut"></Button>
       </SafeAreaView>
     </SafeAreaProvider>
   );

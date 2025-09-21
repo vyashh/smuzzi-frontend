@@ -1,11 +1,44 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/globalStyles";
+import CarouselView from "../../components/CarouselView";
+import { useSongsStore } from "../../utils/songsStore";
+import { useEffect } from "react";
+import { useAuthStore } from "../../utils/authStore";
+import AppText from "../../components/AppText";
 
 function LibraryPage() {
+  const { serverUrl, accessToken } = useAuthStore();
+  const { songs, isFetching } = useSongsStore();
+  const fetchSongs = useSongsStore((state) => state.fetchSongs);
+
+  useEffect(() => {
+    fetchSongs();
+  }, []);
+
   return (
     <View style={globalStyles.container}>
-      <Text style={[styles.text, { fontWeight: "bold" }]}>Hello Bitch </Text>
+      <Text style={[styles.text, { fontWeight: "bold" }]}>Library </Text>
+      <FlatList
+        data={songs}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={{ padding: 12 }}>
+            <CarouselView
+              artist={item.artist}
+              title={item.title}
+              cover={item.cover_url}
+            />
+          </View>
+        )}
+        ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
+      />
     </View>
   );
 }
