@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { getItem, setItem, deleteItemAsync } from "expo-secure-store";
+import axios from "axios";
 
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       // auth setup
       isLoggedIn: false,
       shouldCreateAccount: false,
-      authToken: "",
+      accessToken: "",
+      username: "",
+      password: "",
 
       // auth - handlers -- server selection
       serverSelected: false,
@@ -23,13 +26,26 @@ export const useAuthStore = create(
         });
       },
       // auth - handlers -- defaults
-      logIn: () => {
-        set((state) => {
-          return {
-            ...state,
-            isLoggedIn: true,
-          };
-        });
+      logIn: async () => {
+        const { serverUrl } = get();
+        try {
+          return await axios
+            .post(`${serverUrl}/api/login`, {
+              username: "vyash",
+              password: "password",
+            })
+            .then((res) => {
+              set((state) => {
+                return {
+                  ...state,
+                  isLoggedIn: true,
+                  accessToken: res.data.access_token,
+                };
+              });
+            });
+        } catch (error) {
+          console.log(error);
+        }
       },
       logOut: () => {
         set((state) => {
