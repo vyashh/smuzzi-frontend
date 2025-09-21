@@ -7,15 +7,14 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/globalStyles";
-import CarouselView from "../../components/CarouselView";
 import { useSongsStore } from "../../utils/songsStore";
 import { useEffect } from "react";
 import { useAuthStore } from "../../utils/authStore";
 import AppText from "../../components/AppText";
 import PlaylistView from "../../components/PlaylistView";
+import Player from "../../components/Player";
 
 function LibraryPage() {
-  const { serverUrl, accessToken } = useAuthStore();
   const { songs, isFetching } = useSongsStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
@@ -35,12 +34,13 @@ function LibraryPage() {
               artist={item.artist}
               title={item.title}
               cover={item.cover_url}
-              duration={item.duration}
+              // duration={item.duration}
             />
           </View>
         )}
         ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
       />
+      <Player />
     </View>
   );
 }

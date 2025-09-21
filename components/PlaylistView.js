@@ -2,7 +2,6 @@ import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 
 const PlaylistView = ({ title, artist, cover, duration }) => {
-  console.log(duration);
   return (
     <View style={styles.container}>
       <View>
@@ -32,7 +31,6 @@ const styles = new StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 100,
   },
   cover: {
     width: 40,
@@ -42,7 +40,6 @@ const styles = new StyleSheet.create({
   },
   details: {},
   detailsTitle: {
-    fontSize: 18,
     fontWeight: "bold",
     width: "100%",
     height: "auto",

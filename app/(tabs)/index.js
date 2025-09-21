@@ -8,13 +8,23 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/colors";
 import { Link } from "expo-router";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+
 import { globalStyles } from "../../constants/globalStyles";
 import AppText from "../../components/AppText";
 import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
+import { useCallback, useMemo, useRef } from "react";
+import Player from "../../components/Player";
 
 function Home() {
   const userName = "Vyash";
+
+  // callbacks
+  const handleSheetChanges = useCallback((index) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+
   return (
     <View style={globalStyles.container}>
       <StatusBar barStyle="auto" />
@@ -46,6 +56,7 @@ function Home() {
         </View>
       </View>
       <HeaderTitle style={{ marginTop: 40 }}>Recently added</HeaderTitle>
+      <Player />
     </View>
   );
 }
