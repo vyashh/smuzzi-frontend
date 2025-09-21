@@ -12,6 +12,7 @@ import { useSongsStore } from "../../utils/songsStore";
 import { useEffect } from "react";
 import { useAuthStore } from "../../utils/authStore";
 import AppText from "../../components/AppText";
+import PlaylistView from "../../components/PlaylistView";
 
 function LibraryPage() {
   const { serverUrl, accessToken } = useAuthStore();
@@ -30,10 +31,11 @@ function LibraryPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>
-            <CarouselView
+            <PlaylistView
               artist={item.artist}
               title={item.title}
               cover={item.cover_url}
+              duration={item.duration}
             />
           </View>
         )}
