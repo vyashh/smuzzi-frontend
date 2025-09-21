@@ -19,9 +19,9 @@ function Home() {
     <View style={globalStyles.container}>
       <StatusBar barStyle="auto" />
       <View>
-        <AppText style={{ fontSize: 50, marginBottom: 30 }}>
-          Hello {userName}!
-        </AppText>
+        <HeaderTitle style={{ fontSize: 50, marginBottom: 30 }}>
+          Hi {userName}!
+        </HeaderTitle>
       </View>
       <HeaderTitle>Quick Picks</HeaderTitle>
 

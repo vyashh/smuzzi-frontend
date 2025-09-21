@@ -14,5 +14,6 @@ export default HeaderTitle;
 const styles = new StyleSheet.create({
   text: {
     fontSize: 35,
+    fontWeight: "bold",
   },
 });

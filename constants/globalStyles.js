@@ -8,7 +8,6 @@ const globalStyles = new StyleSheet.create({
     paddingTop: 100,
     backgroundColor: Colors.bg,
     flex: 1,
-    color: "#fff",
   },
 });
 
