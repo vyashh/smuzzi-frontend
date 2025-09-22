@@ -1,7 +1,7 @@
 const Colors = {
   // Brand
-  primary: "#FFFB00",
-  primaryHover: "#d8d522ff",
+  primary: "#D4ADFC",
+  primaryHover: "#b163ffff",
   secondary: "#1E1E1E",
 
   // UI states

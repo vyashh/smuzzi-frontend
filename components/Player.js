@@ -35,6 +35,7 @@ const Player = () => {
     }
   };
 
+
   return (
     <BottomSheet
       snapPoints={snapPoints}
@@ -45,7 +46,7 @@ const Player = () => {
     >
       <BottomSheetView style={styles.playerContainer}>
         {/* {index === 0 && ( */}
-        <View style={styles.container}>
+        <View style={[styles.miniPlayerContainer,index === 1 && { flex: 1 } ]}>
           <View>
             <Image
               style={styles.cover}
@@ -92,9 +93,11 @@ const styles = new StyleSheet.create({
     borderTopColor: Colors.surface,
     borderWidth: 1,
   },
-  container: {
+  miniPlayerContainer: {
+    
     flexDirection: "row",
     alignItems: "center",
+    margin: 5
   },
   cover: {
     width: 50,
@@ -102,7 +105,9 @@ const styles = new StyleSheet.create({
     marginRight: 10,
     borderRadius: 8,
   },
-  details: {},
+  details: {
+    flex: 1,
+  },
   detailsTitle: {
     fontWeight: "bold",
     width: "100%",

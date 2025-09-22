@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -17,7 +18,20 @@ import HeaderTitle from "../../components/HeaderTitle";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
+  const { serverUrl } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
+
+  const loadQueue = async (song) => {
+    // await TrackPlayer.add({
+    //   id: song.id,
+    //   url: `${serverUrl}/api/stream/${song.id}`,
+    //   title: song.title,
+    //   artist: song.artist,
+    //   artwork: song.cover_url,
+    // });
+
+    console.log(song);
+  };
 
   useEffect(() => {
     fetchSongs();
@@ -32,12 +46,14 @@ function LibraryPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>
-            <PlaylistView
-              artist={item.artist}
-              title={item.title}
-              cover={item.cover_url}
-              // duration={item.duration}
-            />
+            <Pressable onPress={loadQueue(item)}>
+              <PlaylistView
+                artist={item.artist}
+                title={item.title}
+                cover={item.cover_url}
+                // duration={item.duration}
+              />
+            </Pressable>
           </View>
         )}
         ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
