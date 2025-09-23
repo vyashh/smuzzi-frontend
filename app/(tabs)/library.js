@@ -34,6 +34,9 @@ function LibraryPage() {
         title: song.title || "Unknown Title",
         artist: song.artist || "Unknown Artist",
         artwork: song.cover_url || undefined,
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
       });
 
       await TrackPlayer.play();
