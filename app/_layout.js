@@ -28,6 +28,9 @@ const RootLayout = () => {
         android: {
           appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
         },
+        iosCategory: "playback",
+        iosCategoryMode: "default",
+        iosCategoryOptions: ["mixWithOthers"],
       });
     }
 

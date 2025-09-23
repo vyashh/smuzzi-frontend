@@ -23,26 +23,34 @@ function LibraryPage() {
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
   const loadQueue = async (song) => {
-    try {
-      // clear any previous queue
-      await TrackPlayer.reset();
+    await TrackPlayer.reset();
 
-      // add selected song
+    try {
+      // 1) Progressive (instant, scrubbable, zero disk)
       await TrackPlayer.add({
         id: String(song.id),
-        url: `${serverUrl}/api/stream/${song.id}`,
+        url: `${serverUrl}/api/stream/${song.id}`, // progressive original
         title: song.title || "Unknown Title",
         artist: song.artist || "Unknown Artist",
         artwork: song.cover_url || undefined,
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-
       await TrackPlayer.play();
-      console.log("Playing:", song.title);
-    } catch (err) {
-      console.error("Playback error:", err);
+    } catch (e) {
+      console.log("Progressive failed, retrying with HLS fallback", e);
+      await TrackPlayer.reset();
+      // 2) HLS fallback (ephemeral)
+      await TrackPlayer.add({
+        id: String(song.id),
+        url: `${serverUrl}/api/stream/${song.id}/index.m3u8`, // master
+        type: "hls",
+        contentType: "application/x-mpegURL",
+        title: song.title || "Unknown Title",
+        artist: song.artist || "Unknown Artist",
+        artwork: song.cover_url || undefined,
+        headers: { Authorization: `Bearer ${accessToken}` }, // for master only; variants/segments use token
+      });
+      await TrackPlayer.play();
     }
   };
 
