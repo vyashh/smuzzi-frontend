@@ -2,7 +2,11 @@ import { Stack } from "expo-router";
 import { useAuthStore } from "../utils/authStore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
-import TrackPlayer from "react-native-track-player";
+import TrackPlayer, {
+  Capability,
+  Event,
+  AppKilledPlaybackBehavior,
+} from "react-native-track-player";
 
 const RootLayout = () => {
   const { serverSelected, isLoggedIn, shouldCreateAccount } = useAuthStore();
@@ -10,26 +14,45 @@ const RootLayout = () => {
   useEffect(() => {
     async function setup() {
       await TrackPlayer.setupPlayer();
+
       await TrackPlayer.updateOptions({
         stopWithApp: true,
         capabilities: [
-          TrackPlayer.Capability.Play,
-          TrackPlayer.Capability.Pause,
-          TrackPlayer.Capability.SkipToNext,
-          TrackPlayer.Capability.SkipToPrevious,
-          TrackPlayer.Capability.Stop,
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
         ],
-        compactCapabilities: [
-          TrackPlayer.Capability.Play,
-          TrackPlayer.Capability.Pause,
-        ],
+        compactCapabilities: [Capability.Play, Capability.Pause],
         android: {
-          // Kill audio when closing app
           appKilledPlaybackBehavior: AppKilledPlaybackBehavior.ContinuePlayback,
         },
       });
     }
+
     setup();
+
+    // 🔹 Add global event listeners (fixes WARN messages)
+    const onPlaybackError = TrackPlayer.addEventListener(
+      Event.PlaybackError,
+      (error) => {
+        console.warn("Playback error:", error);
+      }
+    );
+
+    const onPlaybackState = TrackPlayer.addEventListener(
+      Event.PlaybackState,
+      (state) => {
+        console.log("Playback state changed:", state.state);
+      }
+    );
+
+    return () => {
+      onPlaybackError.remove();
+      onPlaybackState.remove();
+      TrackPlayer.destroy();
+    };
   }, []);
 
   return (

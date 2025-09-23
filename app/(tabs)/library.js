@@ -15,22 +15,32 @@ import AppText from "../../components/AppText";
 import PlaylistView from "../../components/PlaylistView";
 import Player from "../../components/Player";
 import HeaderTitle from "../../components/HeaderTitle";
+import TrackPlayer from "react-native-track-player";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
-  const { serverUrl } = useAuthStore();
+  const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
   const loadQueue = async (song) => {
-    // await TrackPlayer.add({
-    //   id: song.id,
-    //   url: `${serverUrl}/api/stream/${song.id}`,
-    //   title: song.title,
-    //   artist: song.artist,
-    //   artwork: song.cover_url,
-    // });
+    try {
+      // clear any previous queue
+      await TrackPlayer.reset();
 
-    console.log(song);
+      // add selected song
+      await TrackPlayer.add({
+        id: String(song.id),
+        url: `${serverUrl}/api/stream/${song.id}`,
+        title: song.title || "Unknown Title",
+        artist: song.artist || "Unknown Artist",
+        artwork: song.cover_url || undefined,
+      });
+
+      await TrackPlayer.play();
+      console.log("Playing:", song.title);
+    } catch (err) {
+      console.error("Playback error:", err);
+    }
   };
 
   useEffect(() => {
@@ -46,7 +56,7 @@ function LibraryPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>
-            <Pressable onPress={loadQueue(item)}>
+            <Pressable onPress={() => loadQueue(item)}>
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
