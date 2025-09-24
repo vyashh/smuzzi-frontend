@@ -142,7 +142,7 @@ const Player = () => {
                   <Ionicons name="pause" size={32} color={Colors.primary} />
                 ) : (
                   <Ionicons name="play" size={32} color={Colors.primary} />
-                )}{" "}
+                )}
               </Pressable>
             </View>
           </Pressable>

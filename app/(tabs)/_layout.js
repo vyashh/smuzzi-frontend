@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import { Colors } from "../../constants/colors";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const TabsLayout = () => {
   const tabStyling = {
@@ -17,6 +18,9 @@ const TabsLayout = () => {
             backgroundColor: Colors.bg,
           },
           tabBarActiveTintColor: Colors.primary,
+          tabBarIcon: ({ focused, color, size }) => {
+            return <Ionicons name="home" size={size} color={color} />;
+          },
         }}
       />
       <Tabs.Screen
@@ -24,7 +28,14 @@ const TabsLayout = () => {
         options={{
           headerShown: false,
           title: "Search",
-          tabBarStyle: tabStyling,
+          tabBarStyle: {
+            backgroundColor: Colors.bg,
+          },
+          tabBarActiveTintColor: Colors.primary,
+          tabBarIcon: ({ focused, color, size }) => {
+            return <Ionicons name="search" size={size} color={color} />;
+          },
+          tabBarActiveTintColor: Colors.primary,
         }}
       />
       <Tabs.Screen
@@ -32,7 +43,14 @@ const TabsLayout = () => {
         options={{
           headerShown: false,
           title: "Library",
-          tabBarStyle: tabStyling,
+          tabBarStyle: {
+            backgroundColor: Colors.bg,
+          },
+          tabBarActiveTintColor: Colors.primary,
+          tabBarIcon: ({ focused, color, size }) => {
+            return <Ionicons name="albums" size={size} color={color} />;
+          },
+          tabBarActiveTintColor: Colors.primary,
         }}
       />
       <Tabs.Screen
@@ -40,7 +58,14 @@ const TabsLayout = () => {
         options={{
           headerShown: false,
           title: "Profile",
-          tabBarStyle: tabStyling,
+          tabBarStyle: {
+            backgroundColor: Colors.bg,
+          },
+          tabBarActiveTintColor: Colors.primary,
+          tabBarIcon: ({ focused, color, size }) => {
+            return <Ionicons name="person" size={size} color={color} />;
+          },
+          tabBarActiveTintColor: Colors.primary,
         }}
       />
     </Tabs>
