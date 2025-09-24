@@ -29,6 +29,8 @@ import TrackPlayer, {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PlayerProgressBar from "./PlayerProgressBar";
+import { LinearGradient } from "expo-linear-gradient";
+import LikeButton from "./LikeButton";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -169,6 +171,14 @@ const Player = () => {
           style={styles.backgroundImage}
           blurRadius={15}
         >
+          <LinearGradient
+            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0.2)", "rgba(0,0,0,0.8)"]}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFillObject}
+            pointerEvents="none"
+          />
           <Animated.View
             pointerEvents="none"
             style={[styles.backDrop, backdropStyle]}
@@ -177,18 +187,18 @@ const Player = () => {
             <SafeAreaView>
               <Animated.View style={[styles.fullPlayer, fullStyle]}>
                 <View style={styles.fullHeader}>
+                  <Ionicons
+                    name="ellipsis-horizontal"
+                    size={32}
+                    color={Colors.text}
+                  />
                   <Pressable onPress={close}>
                     <Ionicons
-                      name="ellipsis-horizontal"
+                      name="chevron-down-outline"
                       size={32}
                       color={Colors.text}
                     />
                   </Pressable>
-                  <Ionicons
-                    name="chevron-down-outline"
-                    size={32}
-                    color={Colors.text}
-                  />
                 </View>
 
                 <View style={styles.fullBody}>
@@ -196,11 +206,20 @@ const Player = () => {
                     style={styles.fullCover}
                     source={{ uri: meta.artworkUri }}
                   />
-                  <AppText style={styles.fullTitle}>{meta.title}</AppText>
-                  <AppText style={styles.fullArtist}>{meta.artist}</AppText>
-                  <View style={{ height: 24 }} />
-                  <PlayerProgressBar />
+                  <View style={styles.artistDetailsContainer}>
+                    <View style={styles.artistDetails}>
+                      <AppText style={styles.fullTitle}>{meta.title}</AppText>
+                      <AppText style={styles.fullArtist}>{meta.artist}</AppText>
+                    </View>
+                    <LikeButton />
+                  </View>
+                  <View style={styles.progressBar}>
+                    <PlayerProgressBar />
+                  </View>
                   <View style={styles.fullButtons}>
+                    <View>
+                      <Ionicons name="repeat" size={24} color={Colors.text} />
+                    </View>
                     <View>
                       <Ionicons
                         name="play-skip-back"
@@ -229,6 +248,13 @@ const Player = () => {
                     <View>
                       <Ionicons
                         name="play-skip-forward"
+                        size={24}
+                        color={Colors.text}
+                      />
+                    </View>
+                    <View>
+                      <Ionicons
+                        name="list-outline"
                         size={24}
                         color={Colors.text}
                       />
@@ -302,22 +328,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   fullCover: {
-    width: 260,
-    height: 260,
+    width: 300,
+    height: 300,
     borderRadius: 12,
     marginBottom: 16,
-    marginTop: 50,
+    marginTop: 30,
+  },
+  artistDetailsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 8,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  artistDetails: {
+    alignSelf: "stretch",
+    alignItems: "flex-start",
+    paddingHorizontal: 16,
   },
   fullTitle: {
+    marginBottom: 5,
     fontSize: 20,
     fontWeight: "700",
   },
   fullArtist: {
-    opacity: 0.7,
     marginTop: 2,
   },
   fullButtons: {
-    marginTop: 60,
     flexDirection: "row",
     alignItems: "center",
     width: "80%",
@@ -331,5 +369,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
 
     backgroundColor: "rgba(0, 0, 0, 1)",
+  },
+  progressBar: {
+    marginTop: 10,
   },
 });

@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    width: "100%",
   },
   row: {
     width: "100%",
@@ -48,5 +47,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 6,
   },
-  time: { color: "#bbb", fontSize: 12 },
 });
