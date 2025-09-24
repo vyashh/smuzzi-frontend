@@ -10,15 +10,19 @@ const PlaylistView = ({ title, artist, cover, duration }) => {
       </View>
       <View style={[styles.details, { flex: 2 }]}>
         <AppText
-          style={[styles.detailsTitle, { width: "200" }]}
-          numberOfLines={1}
+          style={[styles.detailsTitle, { width: "300" }]}
           ellipsizeMode="tail"
+          numberOfLines={1}
         >
           {title}
         </AppText>
         <View>
-          <AppText>
-            {artist} · {duration}
+          <AppText
+            style={{ width: "300" }}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
+            {artist}
           </AppText>
         </View>
       </View>

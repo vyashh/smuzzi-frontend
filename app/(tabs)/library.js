@@ -61,7 +61,7 @@ function LibraryPage() {
   return (
     <View style={globalStyles.container}>
       <HeaderTitle>Library </HeaderTitle>
-      <AppText>{songs.length} Songs</AppText>
+      <AppText>{songs.length} Tracks</AppText>
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id}
