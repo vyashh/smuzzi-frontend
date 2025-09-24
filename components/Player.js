@@ -12,24 +12,27 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
   Extrapolation,
+  useDerivedValue,
 } from "react-native-reanimated";
 import AppText from "./AppText";
 import { Colors } from "../constants/colors";
 import TrackPlayer, {
-  Event,
-  useTrackPlayerEvents,
   useActiveTrack,
+  usePlaybackState,
 } from "react-native-track-player";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
+  const playerState = usePlaybackState();
 
   const MINI_HEIGHT = 80;
   const snapPoints = useMemo(() => [MINI_HEIGHT, "100%"], []);
 
   const animatedIndex = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
+
+  const [sheetIndex, setSheetIndex] = useState(0);
 
   // get active track here
   const activeTrack = useActiveTrack();
@@ -40,38 +43,19 @@ const Player = () => {
     albumTitle: activeTrack?.album,
   });
 
-  const useTrackPlayerEvents =
-    ([Event.AudioCommonMetadataReceived, Event.AudioMetadataReceived],
-    async (e) => {
-      if (e.type === Event.AudioCommonMetadataReceived && e.metadata) {
-        const next = {
-          title: e.metadata.title ?? meta.title,
-          artist: e.metadata.artist ?? meta.artist,
-          albumTitle: e.metadata.albumTitle ?? meta.albumTitle,
-          artworkUri: e.metadata.artworkUri ?? meta.artworkUri,
-        };
-        setMeta(next);
-
-        // Update lock screen / notification *without* touching the queue
-        try {
-          await TrackPlayer.updateNowPlayingMetadata({
-            title: next.title,
-            artist: next.artist,
-            albumTitle: next.albumTitle,
-            artwork: next.artworkUri,
-          });
-        } catch {}
-      }
-    });
-
-  // MINI player fades out
-  const miniStyle = useAnimatedStyle(() => {
-    const p = interpolate(
+  const progress = useSharedValue(0);
+  useDerivedValue(() => {
+    progress.value = interpolate(
       animatedIndex.value,
       [0, 1],
       [0, 1],
       Extrapolation.CLAMP
     );
+  });
+
+  // MINI player fades out
+  const miniStyle = useAnimatedStyle(() => {
+    const p = progress.value;
     return {
       opacity: 1 - p,
       transform: [
@@ -84,27 +68,37 @@ const Player = () => {
           ),
         },
       ],
+      zIndex: interpolate(p, [0, 1], [2, 0], Extrapolation.CLAMP), // above when collapsed
     };
   });
 
   // fading dingen
   const fullStyle = useAnimatedStyle(() => {
-    const p = interpolate(
-      animatedIndex.value,
-      [0, 1],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const p = progress.value;
     return {
       opacity: p,
       transform: [
         { scale: interpolate(p, [0, 1], [0.96, 1], Extrapolation.CLAMP) },
       ],
+      zIndex: interpolate(p, [0, 1], [-1, 2], Extrapolation.CLAMP), // behind when collapsed
+      elevation: interpolate(p, [0, 1], [0, 8], Extrapolation.CLAMP), // Android: raise when open
     };
   });
 
   const open = () => bottomSheetRef.current?.snapToIndex(1);
   const close = () => bottomSheetRef.current?.snapToIndex(0);
+
+  const playTrack = () => TrackPlayer.play();
+
+  const handlePlayState = () => {
+    if (playerState.state === "playing") {
+      TrackPlayer.pause();
+    } else if (playerState.state === "paused") {
+      console.log("playing");
+
+      TrackPlayer.play();
+    }
+  };
 
   useEffect(() => {
     if (!activeTrack) return;
@@ -126,6 +120,7 @@ const Player = () => {
       animatedPosition={animatedPosition}
       enableDynamicSizing={false}
       enablePanDownToClose={false}
+      onChange={setSheetIndex}
     >
       <BottomSheetView style={styles.playerContainer}>
         {/* mini player view */}
@@ -142,8 +137,10 @@ const Player = () => {
               </AppText>
               <AppText numberOfLines={1}>{meta.artist}</AppText>
             </View>
-            <View style={styles.controls}>
-              <AppText>Play</AppText>
+            <View>
+              <Pressable style={styles.controls} onPress={handlePlayState}>
+                <AppText>Pause</AppText>
+              </Pressable>
             </View>
           </Pressable>
         </Animated.View>
@@ -183,9 +180,8 @@ const styles = StyleSheet.create({
   playerContainer: {
     backgroundColor: Colors.bg,
     height: "100%",
-    borderTopColor: Colors.surface,
-    borderTopWidth: 1,
-    paddingBottom: 8,
+
+    // paddingBottom: 8,
   },
   miniPlayerContainer: {
     position: "absolute",
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     paddingHorizontal: 8,
-    paddingVertical: 8,
+    paddingVertical: 16,
   },
   row: {
     flexDirection: "row",
