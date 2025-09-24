@@ -28,6 +28,7 @@ import TrackPlayer, {
 } from "react-native-track-player";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import PlayerProgressBar from "./PlayerProgressBar";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -198,6 +199,7 @@ const Player = () => {
                   <AppText style={styles.fullTitle}>{meta.title}</AppText>
                   <AppText style={styles.fullArtist}>{meta.artist}</AppText>
                   <View style={{ height: 24 }} />
+                  <PlayerProgressBar />
                   <View style={styles.fullButtons}>
                     <View>
                       <Ionicons

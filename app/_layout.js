@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { useAuthStore } from "../utils/authStore";
+import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import TrackPlayer, {
