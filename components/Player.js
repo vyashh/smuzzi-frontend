@@ -21,6 +21,7 @@ import TrackPlayer, {
   usePlaybackState,
 } from "react-native-track-player";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -88,14 +89,12 @@ const Player = () => {
   const open = () => bottomSheetRef.current?.snapToIndex(1);
   const close = () => bottomSheetRef.current?.snapToIndex(0);
 
-  const playTrack = () => TrackPlayer.play();
-
+  // play and pause feature
   const handlePlayState = () => {
     if (playerState.state === "playing") {
       TrackPlayer.pause();
     } else if (playerState.state === "paused") {
       console.log("playing");
-
       TrackPlayer.play();
     }
   };
@@ -139,7 +138,11 @@ const Player = () => {
             </View>
             <View>
               <Pressable style={styles.controls} onPress={handlePlayState}>
-                <AppText>Pause</AppText>
+                {playerState.state === "playing" ? (
+                  <Ionicons name="pause" size={32} color={Colors.primary} />
+                ) : (
+                  <Ionicons name="play" size={32} color={Colors.primary} />
+                )}{" "}
               </Pressable>
             </View>
           </Pressable>
