@@ -5,7 +5,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, Pressable, View, StyleSheet } from "react-native";
+import {
+  Image,
+  Pressable,
+  View,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Animated, {
   useSharedValue,
@@ -86,6 +92,14 @@ const Player = () => {
     };
   });
 
+  // darkening backgound cover background image with a backdrop
+  const backdropStyle = useAnimatedStyle(() => {
+    const p = progress.value; //
+    return {
+      opacity: interpolate(p, [0, 1], [0.6, 0.1], Extrapolation.CLAMP),
+    };
+  });
+
   const open = () => bottomSheetRef.current?.snapToIndex(1);
   const close = () => bottomSheetRef.current?.snapToIndex(0);
 
@@ -148,30 +162,81 @@ const Player = () => {
           </Pressable>
         </Animated.View>
         {/* full player view */}
-        <SafeAreaProvider>
-          <SafeAreaView>
-            <Animated.View style={[styles.fullPlayer, fullStyle]}>
-              <View style={styles.fullHeader}>
-                <Pressable onPress={close}>
-                  <AppText>Close</AppText>
-                </Pressable>
-              </View>
+        <ImageBackground
+          source={{ uri: meta.artworkUri }}
+          resizeMethod="cover"
+          style={styles.backgroundImage}
+          blurRadius={15}
+        >
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.backDrop, backdropStyle]}
+          />
+          <SafeAreaProvider>
+            <SafeAreaView>
+              <Animated.View style={[styles.fullPlayer, fullStyle]}>
+                <View style={styles.fullHeader}>
+                  <Pressable onPress={close}>
+                    <Ionicons
+                      name="ellipsis-horizontal"
+                      size={32}
+                      color={Colors.text}
+                    />
+                  </Pressable>
+                  <Ionicons
+                    name="chevron-down-outline"
+                    size={32}
+                    color={Colors.text}
+                  />
+                </View>
 
-              <View style={styles.fullBody}>
-                <Image
-                  style={styles.fullCover}
-                  source={{ uri: meta.artworkUri }}
-                />
-                <AppText style={styles.fullTitle}>{meta.title}</AppText>
-                <AppText style={styles.fullArtist}>{meta.artist}</AppText>
-
-                {/* timeline / controls here */}
-                <View style={{ height: 24 }} />
-                <AppText>⏮ ⏯ ⏭</AppText>
-              </View>
-            </Animated.View>
-          </SafeAreaView>
-        </SafeAreaProvider>
+                <View style={styles.fullBody}>
+                  <Image
+                    style={styles.fullCover}
+                    source={{ uri: meta.artworkUri }}
+                  />
+                  <AppText style={styles.fullTitle}>{meta.title}</AppText>
+                  <AppText style={styles.fullArtist}>{meta.artist}</AppText>
+                  <View style={{ height: 24 }} />
+                  <View style={styles.fullButtons}>
+                    <View>
+                      <Ionicons
+                        name="play-skip-back"
+                        size={24}
+                        color={Colors.text}
+                      />
+                    </View>
+                    <Pressable
+                      style={styles.controls}
+                      onPress={handlePlayState}
+                    >
+                      {playerState.state === "playing" ? (
+                        <Ionicons
+                          name="pause-circle"
+                          size={96}
+                          color={Colors.text}
+                        />
+                      ) : (
+                        <Ionicons
+                          name="play-circle"
+                          size={96}
+                          color={Colors.text}
+                        />
+                      )}
+                    </Pressable>
+                    <View>
+                      <Ionicons
+                        name="play-skip-forward"
+                        size={24}
+                        color={Colors.text}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </Animated.View>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </ImageBackground>
       </BottomSheetView>
     </BottomSheet>
   );
@@ -219,14 +284,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 88, // keeps space so mini doesn't overlap during drag
     alignItems: "center",
+    height: "100%",
   },
   fullHeader: {
     position: "absolute",
     top: 12,
     left: 12,
     right: 12,
+    bottom: 0,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
   },
   fullBody: {
     alignItems: "center",
@@ -237,6 +304,7 @@ const styles = StyleSheet.create({
     height: 260,
     borderRadius: 12,
     marginBottom: 16,
+    marginTop: 50,
   },
   fullTitle: {
     fontSize: 20,
@@ -245,5 +313,21 @@ const styles = StyleSheet.create({
   fullArtist: {
     opacity: 0.7,
     marginTop: 2,
+  },
+  fullButtons: {
+    marginTop: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+    justifyContent: "space-between",
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  backDrop: {
+    ...StyleSheet.absoluteFillObject,
+
+    backgroundColor: "rgba(0, 0, 0, 1)",
   },
 });

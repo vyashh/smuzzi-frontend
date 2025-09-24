@@ -1,6 +1,7 @@
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 import { Colors } from "../constants/colors";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const PlaylistView = ({ title, artist, cover, duration }) => {
   return (
@@ -10,7 +11,7 @@ const PlaylistView = ({ title, artist, cover, duration }) => {
       </View>
       <View style={[styles.details, { flex: 2 }]}>
         <AppText
-          style={[styles.detailsTitle, { width: "300" }]}
+          style={[styles.detailsTitle, { width: "250" }]}
           ellipsizeMode="tail"
           numberOfLines={1}
         >
@@ -32,7 +33,7 @@ const PlaylistView = ({ title, artist, cover, duration }) => {
           alignItems: "flex-end",
         }}
       >
-        <AppText>:</AppText>
+        <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
       </View>
     </View>
   );
