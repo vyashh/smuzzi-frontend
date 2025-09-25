@@ -39,7 +39,7 @@ const Player = () => {
 
   // queue handling
   const queueModalRef = useRef(null);
-  const queueSnapPoints = useMemo(() => ["50%", "85%"], []);
+  const queueSnapPoints = useMemo(() => ["85%", "85%"], []);
 
   const openQueue = () => queueModalRef.current?.present();
   const closeQueue = () => queueModalRef.current?.dismiss();
@@ -128,7 +128,6 @@ const Player = () => {
       albumTitle: activeTrack.album ?? "",
       artworkUri: activeTrack.artwork ?? DEFAULT_ARTWORK_URI,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTrack?.id]);
 
   return (
@@ -166,16 +165,19 @@ const Player = () => {
           ref={queueModalRef}
           snapPoints={queueSnapPoints}
           enablePanDownToClose
+          handleStyle={{ backgroundColor: Colors.bg }}
+          handleIndicatorStyle={{ backgroundColor: Colors.text }}
           backdropComponent={(props) => (
             <BottomSheetBackdrop
               {...props}
               appearsOnIndex={1}
               disappearsOnIndex={-1}
               pressBehavior="close"
+              style={[props.style, styles.queueModalContainer]}
             />
           )}
         >
-          <BottomSheetView style={{ flex: 1 }}>
+          <BottomSheetView style={{ flex: 1, height: "100%" }}>
             <Queue onClose={closeQueue} />
           </BottomSheetView>
         </BottomSheetModal>
@@ -190,5 +192,8 @@ const styles = StyleSheet.create({
   playerContainer: {
     backgroundColor: Colors.bg,
     height: "100%",
+  },
+  queueModalContainer: {
+    backgroundColor: Colors.primaryDark,
   },
 });
