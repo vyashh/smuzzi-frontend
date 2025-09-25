@@ -16,6 +16,7 @@ import PlaylistView from "../../components/PlaylistView";
 import Player from "../../components/Player";
 import HeaderTitle from "../../components/HeaderTitle";
 import TrackPlayer from "react-native-track-player";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
@@ -61,7 +62,25 @@ function LibraryPage() {
   return (
     <View style={globalStyles.container}>
       <HeaderTitle>Library </HeaderTitle>
-      <AppText>{songs.length} Tracks</AppText>
+      <AppText style={styles.tracks}>{songs.length} Tracks</AppText>
+      <View style={styles.quickActions}>
+        <View style={styles.quickActionsButton}>
+          <View style={styles.quickActionsButtonContainer}>
+            <View style={styles.quickActionsButtonContainerIcon}>
+              <Ionicons name="shuffle" size={24} color={Colors.primary} />
+            </View>
+            <AppText style={styles.quickActionsButtonText}>Play</AppText>
+          </View>
+        </View>
+        <View style={styles.quickActionsButton}>
+          <View style={styles.quickActionsButtonContainer}>
+            <View style={styles.quickActionsButtonContainerIcon}>
+              <Ionicons name="play" size={24} color={Colors.primary} />
+            </View>
+            <AppText style={styles.quickActionsButtonText}>Shuffle</AppText>
+          </View>
+        </View>
+      </View>
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id}
@@ -93,5 +112,31 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.text,
     fontSize: 42,
+  },
+  quickActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  quickActionsButton: {
+    // borderBlockColor: "red",
+    paddingHorizontal: 45,
+    borderRadius: 8,
+    backgroundColor: Colors.surface,
+    marginBottom: 10,
+  },
+  quickActionsButtonContainer: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quickActionsButtonText: {
+    fontWeight: "bold",
+    color: Colors.primary,
+  },
+  quickActionsButtonContainerIcon: {
+    paddingRight: 10,
+  },
+  tracks: {
+    marginVertical: 10,
   },
 });

@@ -5,11 +5,14 @@ const CarouselView = ({ title, artist, cover }) => {
   return (
     <View style={styles.container}>
       <View>
-        <Image style={styles.cover} source={{ uri: cover }} />
+        <Image
+          style={styles.cover}
+          source={{ uri: cover || "https://placehold.co/600x600.png" }}
+        />
       </View>
       <View style={styles.details}>
-        <AppText style={styles.detailsTitle}>{title}</AppText>
-        <AppText>{artist}</AppText>
+        <AppText style={styles.detailsTitle}>{title || "Title"}</AppText>
+        <AppText>{artist || "Artist"}</AppText>
       </View>
     </View>
   );

@@ -42,7 +42,7 @@ const Player = () => {
   const animatedIndex = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
 
-  const [sheetIndex, setSheetIndex] = useState(0);
+  const [sheetIndex] = useState(0);
 
   // get active track here
   const activeTrack = useActiveTrack();
@@ -136,7 +136,6 @@ const Player = () => {
       animatedPosition={animatedPosition}
       enableDynamicSizing={false}
       enablePanDownToClose={false}
-      onChange={setSheetIndex}
     >
       <BottomSheetView style={styles.playerContainer}>
         {/* mini player view */}
@@ -218,7 +217,7 @@ const Player = () => {
                   </View>
                   <View style={styles.fullButtons}>
                     <View>
-                      <Ionicons name="repeat" size={24} color={Colors.text} />
+                      <Ionicons name="shuffle" size={24} color={Colors.text} />
                     </View>
                     <View>
                       <Ionicons
@@ -332,7 +331,6 @@ const styles = StyleSheet.create({
     height: 300,
     borderRadius: 12,
     marginBottom: 16,
-    marginTop: 30,
   },
   artistDetailsContainer: {
     flexDirection: "row",
