@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,6 +21,7 @@ import { Asset } from "expo-asset";
 
 import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
+import Queue from "./Queue";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -28,10 +33,16 @@ const Player = () => {
   const animatedIndex = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
 
-  const [showQueue, setShowQueue] = useState(false); // still available if you need it
   const DEFAULT_ARTWORK_URI = Asset.fromModule(
     require("../assets/placeholder-artwork.png")
   ).uri;
+
+  // queue handling
+  const queueModalRef = useRef(null);
+  const queueSnapPoints = useMemo(() => ["50%", "85%"], []);
+
+  const openQueue = () => queueModalRef.current?.present();
+  const closeQueue = () => queueModalRef.current?.dismiss();
 
   // active track & meta
   const activeTrack = useActiveTrack();
@@ -145,11 +156,29 @@ const Player = () => {
         <PlayerFull
           meta={meta}
           playerState={playerState}
+          onOpenQueue={openQueue}
           onTogglePlay={handlePlayState}
           onChangeSong={changeSong}
           onClose={close}
           animatedStyles={{ fullStyle, backdropStyle }}
         />
+        <BottomSheetModal
+          ref={queueModalRef}
+          snapPoints={queueSnapPoints}
+          enablePanDownToClose
+          backdropComponent={(props) => (
+            <BottomSheetBackdrop
+              {...props}
+              appearsOnIndex={1}
+              disappearsOnIndex={-1}
+              pressBehavior="close"
+            />
+          )}
+        >
+          <BottomSheetView style={{ flex: 1 }}>
+            <Queue onClose={closeQueue} />
+          </BottomSheetView>
+        </BottomSheetModal>
       </BottomSheetView>
     </BottomSheet>
   );

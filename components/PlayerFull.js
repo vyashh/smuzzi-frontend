@@ -14,6 +14,7 @@ import AppText from "./AppText";
 import PlayerProgressBar from "./PlayerProgressBar";
 import LikeButton from "./LikeButton";
 import { Colors } from "../constants/colors";
+import Queue from "./Queue";
 
 const PlayerFull = ({
   meta,
@@ -22,6 +23,7 @@ const PlayerFull = ({
   onChangeSong,
   onClose,
   animatedStyles,
+  onOpenQueue,
 }) => {
   const { fullStyle, backdropStyle } = animatedStyles;
 
@@ -123,7 +125,13 @@ const PlayerFull = ({
                 </View>
 
                 <View>
-                  <Ionicons name="list-outline" size={24} color={Colors.text} />
+                  <Pressable onPress={onOpenQueue}>
+                    <Ionicons
+                      name="list-outline"
+                      size={24}
+                      color={Colors.text}
+                    />
+                  </Pressable>
                 </View>
               </View>
             </View>

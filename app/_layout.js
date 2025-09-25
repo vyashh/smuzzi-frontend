@@ -8,6 +8,7 @@ import TrackPlayer, {
   Event,
   AppKilledPlaybackBehavior,
 } from "react-native-track-player";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const RootLayout = () => {
   const { serverSelected, isLoggedIn, shouldCreateAccount } = useAuthStore();
@@ -61,20 +62,22 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen name="(tabs)" />
-        </Stack.Protected>
-        <Stack.Protected guard={!serverSelected}>
-          <Stack.Screen name="auth/server-select" />
-        </Stack.Protected>
-        <Stack.Protected guard={serverSelected && !isLoggedIn}>
-          <Stack.Screen name="auth/sign-in" />
-        </Stack.Protected>
-        <Stack.Protected guard={serverSelected && shouldCreateAccount}>
-          <Stack.Screen name="auth/sign-up" />
-        </Stack.Protected>
-      </Stack>
+      <BottomSheetModalProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Protected guard={isLoggedIn}>
+            <Stack.Screen name="(tabs)" />
+          </Stack.Protected>
+          <Stack.Protected guard={!serverSelected}>
+            <Stack.Screen name="auth/server-select" />
+          </Stack.Protected>
+          <Stack.Protected guard={serverSelected && !isLoggedIn}>
+            <Stack.Screen name="auth/sign-in" />
+          </Stack.Protected>
+          <Stack.Protected guard={serverSelected && shouldCreateAccount}>
+            <Stack.Screen name="auth/sign-up" />
+          </Stack.Protected>
+        </Stack>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 };

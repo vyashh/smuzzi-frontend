@@ -19,6 +19,7 @@ import TrackPlayer from "react-native-track-player";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { shuffle } from "../../helpers/misc";
 import { Asset } from "expo-asset";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
@@ -146,7 +147,9 @@ function LibraryPage() {
         )}
         ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
       />
-      <Player />
+      <BottomSheetModalProvider>
+        <Player />
+      </BottomSheetModalProvider>
     </View>
   );
 }
