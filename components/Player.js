@@ -116,6 +116,15 @@ const Player = () => {
     }
   };
 
+  // previous and next
+  const changeSong = (action) => {
+    if (action === "prev") {
+      TrackPlayer.skipToPrevious();
+    } else {
+      TrackPlayer.skipToNext();
+    }
+  };
+
   useEffect(() => {
     if (!activeTrack) return;
     setMeta({
@@ -220,11 +229,17 @@ const Player = () => {
                       <Ionicons name="shuffle" size={24} color={Colors.text} />
                     </View>
                     <View>
-                      <Ionicons
-                        name="play-skip-back"
-                        size={24}
-                        color={Colors.text}
-                      />
+                      <Pressable
+                        onPress={() => {
+                          changeSong("previous");
+                        }}
+                      >
+                        <Ionicons
+                          name="play-skip-back"
+                          size={24}
+                          color={Colors.text}
+                        />
+                      </Pressable>
                     </View>
                     <Pressable
                       style={styles.controls}
@@ -245,11 +260,17 @@ const Player = () => {
                       )}
                     </Pressable>
                     <View>
-                      <Ionicons
-                        name="play-skip-forward"
-                        size={24}
-                        color={Colors.text}
-                      />
+                      <Pressable
+                        onPress={() => {
+                          changeSong("next");
+                        }}
+                      >
+                        <Ionicons
+                          name="play-skip-forward"
+                          size={24}
+                          color={Colors.text}
+                        />
+                      </Pressable>
                     </View>
                     <View>
                       <Ionicons
