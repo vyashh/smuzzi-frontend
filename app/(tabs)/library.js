@@ -7,7 +7,10 @@ import {
   View,
 } from "react-native";
 import { Colors } from "../../constants/colors";
-import { globalStyles } from "../../constants/globalStyles";
+import {
+  DEFAULT_ARTWORK_URI,
+  globalStyles,
+} from "../../constants/globalStyles";
 import { useSongsStore } from "../../utils/songsStore";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../utils/authStore";
@@ -25,14 +28,11 @@ function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
-  const DEFAULT_ARTWORK_URI = Asset.fromModule(
-    require("../../assets/placeholder-artwork.png")
-  ).uri;
 
   const loadPlay = async (index) => {
     const song = songs[index];
 
-    console.log(song);
+    console.log(song.cover_url);
     await TrackPlayer.reset();
 
     try {
@@ -42,7 +42,7 @@ function LibraryPage() {
         url: `${serverUrl}/api/stream/${song.id}`, // progressive original
         title: song.title || "Unknown Title",
         artist: song.artist || "Unknown Artist",
-        artwork: song.cover_url || undefined,
+        artwork: song.cover_url || DEFAULT_ARTWORK_URI,
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       await TrackPlayer.play();

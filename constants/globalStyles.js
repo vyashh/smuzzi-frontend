@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "./colors";
+import { Asset } from "expo-asset";
 
 const globalStyles = new StyleSheet.create({
   container: {
@@ -12,4 +13,8 @@ const globalStyles = new StyleSheet.create({
   },
 });
 
-export { globalStyles };
+const DEFAULT_ARTWORK_URI = Asset.fromModule(
+  require("../assets/placeholder-artwork.png")
+).uri;
+
+export { globalStyles, DEFAULT_ARTWORK_URI };
