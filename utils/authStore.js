@@ -46,7 +46,7 @@ export const useAuthStore = create(
               });
             });
         } catch (error) {
-          console.log(error);
+          console.log("loginError: " + error.message);
         }
       },
       logOut: () => {

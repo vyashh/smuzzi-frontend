@@ -24,7 +24,10 @@ function LibraryPage() {
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
-  const loadPlay = async (song) => {
+  const loadPlay = async (index) => {
+    const song = songs[index];
+
+    console.log(song);
     await TrackPlayer.reset();
 
     try {
@@ -38,6 +41,7 @@ function LibraryPage() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       await TrackPlayer.play();
+      console.log("playing original quality");
     } catch (e) {
       console.log("Progressive failed, retrying with HLS fallback", e);
       await TrackPlayer.reset();
@@ -53,6 +57,7 @@ function LibraryPage() {
         headers: { Authorization: `Bearer ${accessToken}` }, // for master only; variants/segments use token
       });
       await TrackPlayer.play();
+      console.log("playing aac quality");
     }
   };
 
@@ -60,7 +65,6 @@ function LibraryPage() {
     await TrackPlayer.stop();
 
     const shuffledSongs = shuffle(songs);
-    console.log(shuffledSongs);
 
     shuffledSongs.forEach(async (song) => {
       try {
@@ -125,14 +129,13 @@ function LibraryPage() {
         refreshing={isFetching}
         onRefresh={fetchSongs}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
-            <Pressable onPress={() => loadPlay(item)}>
+            <Pressable onPress={() => loadPlay(index)}>
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
                 cover={item.cover_url}
-                // duration={item.duration}
               />
             </Pressable>
           </View>

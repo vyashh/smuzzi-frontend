@@ -31,6 +31,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import PlayerProgressBar from "./PlayerProgressBar";
 import { LinearGradient } from "expo-linear-gradient";
 import LikeButton from "./LikeButton";
+import Queue from "./Queue";
+import { Asset } from "expo-asset";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -43,6 +45,11 @@ const Player = () => {
   const animatedPosition = useSharedValue(0);
 
   const [sheetIndex] = useState(0);
+
+  const [showQueue, setShowQueue] = useState(false);
+  const DEFAULT_ARTWORK_URI = Asset.fromModule(
+    require("../assets/placeholder-artwork.png")
+  ).uri;
 
   // get active track here
   const activeTrack = useActiveTrack();
@@ -131,7 +138,7 @@ const Player = () => {
       title: activeTrack.title ?? "Title",
       artist: activeTrack.artist ?? "Artist",
       albumTitle: activeTrack.album,
-      artworkUri: activeTrack.artwork,
+      artworkUri: activeTrack.artwork ?? DEFAULT_ARTWORK_URI,
     });
   }, [activeTrack?.id]);
 
@@ -180,7 +187,7 @@ const Player = () => {
           blurRadius={15}
         >
           <LinearGradient
-            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0.2)", "rgba(0,0,0,0.8)"]}
+            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0.2)", "rgba(0,0,0,1)"]}
             locations={[0, 0.5, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
@@ -197,13 +204,13 @@ const Player = () => {
                 <View style={styles.fullHeader}>
                   <Ionicons
                     name="ellipsis-horizontal"
-                    size={32}
+                    size={28}
                     color={Colors.text}
                   />
                   <Pressable onPress={close}>
                     <Ionicons
                       name="chevron-down-outline"
-                      size={32}
+                      size={28}
                       color={Colors.text}
                     />
                   </Pressable>
@@ -330,7 +337,7 @@ const styles = StyleSheet.create({
   },
   fullPlayer: {
     flex: 1,
-    paddingTop: 88, // keeps space so mini doesn't overlap during drag
+    paddingTop: 88,
     alignItems: "center",
     height: "100%",
   },
@@ -345,7 +352,7 @@ const styles = StyleSheet.create({
   },
   fullBody: {
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   fullCover: {
     width: 300,
@@ -357,7 +364,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     marginTop: 8,
     marginBottom: 8,
   },
