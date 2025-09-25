@@ -2,16 +2,34 @@ import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Colors } from "../constants/colors";
+import TrackPlayer from "react-native-track-player";
+import { useEffect, useState } from "react";
 
-const QueueView = ({ title, artist, cover, id }) => {
+const QueueView = ({ title, artist, cover, id, playing = false }) => {
+  const [currentTrackId, setCurrentTrackId] = useState([]);
+
+  const getCurrentTrackId = async () => {
+    await TrackPlayer.getActiveTrack().then((track) => {
+      setCurrentTrackId(track.id);
+    });
+  };
+
+  useEffect(() => {
+    getCurrentTrackId();
+  }, [currentTrackId, getCurrentTrackId]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <View>
         <Image style={styles.cover} source={{ uri: cover }} />
       </View>
       <View style={[styles.details]}>
         <AppText
-          style={[styles.detailsTitle, { width: "250" }]}
+          style={[
+            styles.detailsTitle,
+            { width: "250" },
+            playing && styles.activeTrack,
+          ]}
           ellipsizeMode="tail"
           numberOfLines={1}
         >
@@ -19,7 +37,7 @@ const QueueView = ({ title, artist, cover, id }) => {
         </AppText>
         <View>
           <AppText
-            style={{ width: "250" }}
+            style={[{ width: "250" }, playing && styles.activeTrack]}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -28,7 +46,9 @@ const QueueView = ({ title, artist, cover, id }) => {
         </View>
       </View>
       <View>
-        <Ionicons name="menu-outline" size={32} color={Colors.textMuted} />
+        {!playing && (
+          <Ionicons name="menu-outline" size={32} color={Colors.textMuted} />
+        )}
       </View>
     </View>
   );
@@ -56,5 +76,8 @@ const styles = new StyleSheet.create({
     fontWeight: "bold",
     width: "100%",
     height: "auto",
+  },
+  activeTrack: {
+    color: Colors.primary,
   },
 });

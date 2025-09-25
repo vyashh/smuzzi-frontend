@@ -10,20 +10,30 @@ import { useEffect, useState } from "react";
 
 const Queue = () => {
   const [queue, setQueue] = useState([]);
+  const [nowPlaying, setNowPlaying] = useState([]);
 
   const getQueue = async () => {
-    TrackPlayer.getQueue().then((queue) => {
+    await TrackPlayer.getQueue().then((queue) => {
       setQueue(queue);
+    });
+  };
+
+  const getCurrentTrack = async () => {
+    await TrackPlayer.getActiveTrack().then((track) => {
+      setNowPlaying(track);
     });
   };
 
   useEffect(() => {
     getQueue();
-  }, [queue, getQueue]);
+    getCurrentTrack();
+  }, [queue, getQueue, nowPlaying, getCurrentTrack]);
 
   return (
-    <View style={[style.queueContainer]}>
-      <SubTitle>Queue</SubTitle>
+    <View style={[styles.queueContainer]}>
+      <View style={styles.header}>
+        <SubTitle>Queue</SubTitle>
+      </View>
       <FlatList
         data={queue}
         keyExtractor={(item) => item.id}
@@ -31,11 +41,12 @@ const Queue = () => {
           <View style={{ padding: 12 }}>
             {/* <Pressable onPress={() => loadPlay(index)}> */}
             <QueueView
+              id={item.id}
               artist={item.artist}
               title={item.title}
               cover={item.artwork ? item.artwork : DEFAULT_ARTWORK_URI}
+              playing={nowPlaying.id === item.id && true}
             />
-            {/* </Pressable> */}
           </View>
         )}
       />
@@ -45,11 +56,13 @@ const Queue = () => {
 
 export default Queue;
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   queueContainer: {
     flex: 1,
-    height: "100%",
     backgroundColor: Colors.bg,
     paddingHorizontal: 12,
+  },
+  header: {
+    paddingBottom: 10,
   },
 });
