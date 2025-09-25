@@ -231,7 +231,7 @@ const Player = () => {
                     <View>
                       <Pressable
                         onPress={() => {
-                          changeSong("previous");
+                          changeSong("prev");
                         }}
                       >
                         <Ionicons

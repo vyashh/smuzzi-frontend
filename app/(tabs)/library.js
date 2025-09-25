@@ -122,6 +122,8 @@ function LibraryPage() {
       </View>
       <FlatList
         data={songs}
+        refreshing={isFetching}
+        onRefresh={fetchSongs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>

@@ -2,9 +2,15 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/globalStyles";
 import { useAuthStore } from "../../utils/authStore";
+import TrackPlayer from "react-native-track-player";
 
 function ProfilePage() {
   const { logOut } = useAuthStore();
+
+  const logOutProcedure = async () => {
+    await TrackPlayer.stop();
+    logOut();
+  };
 
   return (
     <View style={globalStyles.container}>
