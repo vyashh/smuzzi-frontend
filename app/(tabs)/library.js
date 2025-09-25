@@ -18,11 +18,15 @@ import HeaderTitle from "../../components/HeaderTitle";
 import TrackPlayer from "react-native-track-player";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { shuffle } from "../../helpers/misc";
+import { Asset } from "expo-asset";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
+  const DEFAULT_ARTWORK_URI = Asset.fromModule(
+    require("../../assets/placeholder-artwork.png")
+  ).uri;
 
   const loadPlay = async (index) => {
     const song = songs[index];
@@ -135,7 +139,7 @@ function LibraryPage() {
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
-                cover={item.cover_url}
+                cover={item.cover_url ? item.cover_url : DEFAULT_ARTWORK_URI}
               />
             </Pressable>
           </View>
