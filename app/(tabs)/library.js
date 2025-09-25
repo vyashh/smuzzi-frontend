@@ -9,7 +9,7 @@ import {
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/globalStyles";
 import { useSongsStore } from "../../utils/songsStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../../utils/authStore";
 import AppText from "../../components/AppText";
 import PlaylistView from "../../components/PlaylistView";
@@ -17,17 +17,18 @@ import Player from "../../components/Player";
 import HeaderTitle from "../../components/HeaderTitle";
 import TrackPlayer from "react-native-track-player";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { shuffle } from "../../helpers/misc";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
-  const loadQueue = async (song) => {
+  const loadPlay = async (song) => {
     await TrackPlayer.reset();
 
     try {
-      // 1) Progressive (instant, scrubbable, zero disk)
+      // instant stream original quality
       await TrackPlayer.add({
         id: String(song.id),
         url: `${serverUrl}/api/stream/${song.id}`, // progressive original
@@ -40,7 +41,7 @@ function LibraryPage() {
     } catch (e) {
       console.log("Progressive failed, retrying with HLS fallback", e);
       await TrackPlayer.reset();
-      // 2) HLS fallback (ephemeral)
+      // hls fallback aac 160k bitrate in the backend
       await TrackPlayer.add({
         id: String(song.id),
         url: `${serverUrl}/api/stream/${song.id}/index.m3u8`, // master
@@ -55,6 +56,42 @@ function LibraryPage() {
     }
   };
 
+  const loadShuffle = async () => {
+    await TrackPlayer.stop();
+
+    const shuffledSongs = shuffle(songs);
+    console.log(shuffledSongs);
+
+    shuffledSongs.forEach(async (song) => {
+      try {
+        // instant stream original quality
+        await TrackPlayer.add({
+          id: String(song.id),
+          url: `${serverUrl}/api/stream/${song.id}`, // progressive original
+          title: song.title || "Unknown Title",
+          artist: song.artist || "Unknown Artist",
+          artwork: song.cover_url || undefined,
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      } catch (e) {
+        console.log("Progressive failed, retrying with HLS fallback", e);
+        await TrackPlayer.reset();
+        // hls fallback aac 160k bitrate in the backend
+        await TrackPlayer.add({
+          id: String(song.id),
+          url: `${serverUrl}/api/stream/${song.id}/index.m3u8`, // master
+          type: "hls",
+          contentType: "application/x-mpegURL",
+          title: song.title || "Unknown Title",
+          artist: song.artist || "Unknown Artist",
+          artwork: song.cover_url || undefined,
+          headers: { Authorization: `Bearer ${accessToken}` }, // for master only; variants/segments use token
+        });
+      }
+    });
+    await TrackPlayer.play();
+  };
+
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -67,26 +104,28 @@ function LibraryPage() {
         <View style={styles.quickActionsButton}>
           <View style={styles.quickActionsButtonContainer}>
             <View style={styles.quickActionsButtonContainerIcon}>
-              <Ionicons name="shuffle" size={24} color={Colors.primary} />
+              <Ionicons name="play-outline" size={24} color={Colors.primary} />
             </View>
             <AppText style={styles.quickActionsButtonText}>Play</AppText>
           </View>
         </View>
-        <View style={styles.quickActionsButton}>
-          <View style={styles.quickActionsButtonContainer}>
-            <View style={styles.quickActionsButtonContainerIcon}>
-              <Ionicons name="play" size={24} color={Colors.primary} />
+        <Pressable onPress={loadShuffle}>
+          <View style={styles.quickActionsButton}>
+            <View style={styles.quickActionsButtonContainer}>
+              <View style={styles.quickActionsButtonContainerIcon}>
+                <Ionicons name="shuffle" size={24} color={Colors.primary} />
+              </View>
+              <AppText style={styles.quickActionsButtonText}>Shuffle</AppText>
             </View>
-            <AppText style={styles.quickActionsButtonText}>Shuffle</AppText>
           </View>
-        </View>
+        </Pressable>
       </View>
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>
-            <Pressable onPress={() => loadQueue(item)}>
+            <Pressable onPress={() => loadPlay(item)}>
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
