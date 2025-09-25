@@ -1,17 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  Image,
-  Pressable,
-  View,
-  StyleSheet,
-  ImageBackground,
-} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Animated, {
   useSharedValue,
@@ -20,19 +8,15 @@ import Animated, {
   Extrapolation,
   useDerivedValue,
 } from "react-native-reanimated";
-import AppText from "./AppText";
 import { Colors } from "../constants/colors";
 import TrackPlayer, {
   useActiveTrack,
   usePlaybackState,
 } from "react-native-track-player";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import PlayerProgressBar from "./PlayerProgressBar";
-import { LinearGradient } from "expo-linear-gradient";
-import LikeButton from "./LikeButton";
-import Queue from "./Queue";
 import { Asset } from "expo-asset";
+
+import PlayerMini from "./PlayerMini";
+import PlayerFull from "./PlayerFull";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -44,22 +28,21 @@ const Player = () => {
   const animatedIndex = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
 
-  const [sheetIndex] = useState(0);
-
-  const [showQueue, setShowQueue] = useState(false);
+  const [showQueue, setShowQueue] = useState(false); // still available if you need it
   const DEFAULT_ARTWORK_URI = Asset.fromModule(
     require("../assets/placeholder-artwork.png")
   ).uri;
 
-  // get active track here
+  // active track & meta
   const activeTrack = useActiveTrack();
   const [meta, setMeta] = useState({
     title: activeTrack?.title || "Title",
     artist: activeTrack?.artist || "Artist",
-    artworkUri: activeTrack?.artwork,
-    albumTitle: activeTrack?.album,
+    artworkUri: activeTrack?.artwork || DEFAULT_ARTWORK_URI,
+    albumTitle: activeTrack?.album || "",
   });
 
+  // animate progress between mini (0) and full (1)
   const progress = useSharedValue(0);
   useDerivedValue(() => {
     progress.value = interpolate(
@@ -70,7 +53,7 @@ const Player = () => {
     );
   });
 
-  // MINI player fades out
+  // Animated styles for the two views
   const miniStyle = useAnimatedStyle(() => {
     const p = progress.value;
     return {
@@ -85,11 +68,10 @@ const Player = () => {
           ),
         },
       ],
-      zIndex: interpolate(p, [0, 1], [2, 0], Extrapolation.CLAMP), // above when collapsed
+      zIndex: interpolate(p, [0, 1], [2, 0], Extrapolation.CLAMP),
     };
   });
 
-  // fading dingen
   const fullStyle = useAnimatedStyle(() => {
     const p = progress.value;
     return {
@@ -97,33 +79,28 @@ const Player = () => {
       transform: [
         { scale: interpolate(p, [0, 1], [0.96, 1], Extrapolation.CLAMP) },
       ],
-      zIndex: interpolate(p, [0, 1], [-1, 2], Extrapolation.CLAMP), // behind when collapsed
-      elevation: interpolate(p, [0, 1], [0, 8], Extrapolation.CLAMP), // Android: raise when open
+      zIndex: interpolate(p, [0, 1], [-1, 2], Extrapolation.CLAMP),
+      elevation: interpolate(p, [0, 1], [0, 8], Extrapolation.CLAMP),
     };
   });
 
-  // darkening backgound cover background image with a backdrop
   const backdropStyle = useAnimatedStyle(() => {
-    const p = progress.value; //
-    return {
-      opacity: interpolate(p, [0, 1], [0.6, 0.1], Extrapolation.CLAMP),
-    };
+    const p = progress.value;
+    return { opacity: interpolate(p, [0, 1], [0.6, 0.1], Extrapolation.CLAMP) };
   });
 
+  // controls
   const open = () => bottomSheetRef.current?.snapToIndex(1);
   const close = () => bottomSheetRef.current?.snapToIndex(0);
 
-  // play and pause feature
   const handlePlayState = () => {
     if (playerState.state === "playing") {
       TrackPlayer.pause();
     } else if (playerState.state === "paused") {
-      console.log("playing");
       TrackPlayer.play();
     }
   };
 
-  // previous and next
   const changeSong = (action) => {
     if (action === "prev") {
       TrackPlayer.skipToPrevious();
@@ -137,9 +114,10 @@ const Player = () => {
     setMeta({
       title: activeTrack.title ?? "Title",
       artist: activeTrack.artist ?? "Artist",
-      albumTitle: activeTrack.album,
+      albumTitle: activeTrack.album ?? "",
       artworkUri: activeTrack.artwork ?? DEFAULT_ARTWORK_URI,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTrack?.id]);
 
   return (
@@ -154,144 +132,24 @@ const Player = () => {
       enablePanDownToClose={false}
     >
       <BottomSheetView style={styles.playerContainer}>
-        {/* mini player view */}
-        <Animated.View style={[styles.miniPlayerContainer, miniStyle]}>
-          <Pressable style={styles.row} onPress={open}>
-            <Image style={styles.cover} source={{ uri: meta.artworkUri }} />
-            <View style={styles.details}>
-              <AppText
-                style={styles.detailsTitle}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {meta.title}
-              </AppText>
-              <AppText numberOfLines={1}>{meta.artist}</AppText>
-            </View>
-            <View>
-              <Pressable style={styles.controls} onPress={handlePlayState}>
-                {playerState.state === "playing" ? (
-                  <Ionicons name="pause" size={32} color={Colors.primary} />
-                ) : (
-                  <Ionicons name="play" size={32} color={Colors.primary} />
-                )}
-              </Pressable>
-            </View>
-          </Pressable>
-        </Animated.View>
-        {/* full player view */}
-        <ImageBackground
-          source={{ uri: meta.artworkUri }}
-          resizeMethod="cover"
-          style={styles.backgroundImage}
-          blurRadius={15}
-        >
-          <LinearGradient
-            colors={["rgba(0,0,0,0.6)", "rgba(0,0,0,0.2)", "rgba(0,0,0,1)"]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFillObject}
-            pointerEvents="none"
-          />
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.backDrop, backdropStyle]}
-          />
-          <SafeAreaProvider>
-            <SafeAreaView>
-              <Animated.View style={[styles.fullPlayer, fullStyle]}>
-                <View style={styles.fullHeader}>
-                  <Ionicons
-                    name="ellipsis-horizontal"
-                    size={28}
-                    color={Colors.text}
-                  />
-                  <Pressable onPress={close}>
-                    <Ionicons
-                      name="chevron-down-outline"
-                      size={28}
-                      color={Colors.text}
-                    />
-                  </Pressable>
-                </View>
+        {/* Mini Player */}
+        <PlayerMini
+          meta={meta}
+          playerState={playerState}
+          onTogglePlay={handlePlayState}
+          onOpen={open}
+          animatedStyle={miniStyle}
+        />
 
-                <View style={styles.fullBody}>
-                  <Image
-                    style={styles.fullCover}
-                    source={{ uri: meta.artworkUri }}
-                  />
-                  <View style={styles.artistDetailsContainer}>
-                    <View style={styles.artistDetails}>
-                      <AppText style={styles.fullTitle}>{meta.title}</AppText>
-                      <AppText style={styles.fullArtist}>{meta.artist}</AppText>
-                    </View>
-                    <LikeButton />
-                  </View>
-                  <View style={styles.progressBar}>
-                    <PlayerProgressBar />
-                  </View>
-                  <View style={styles.fullButtons}>
-                    <View>
-                      <Ionicons name="shuffle" size={24} color={Colors.text} />
-                    </View>
-                    <View>
-                      <Pressable
-                        onPress={() => {
-                          changeSong("prev");
-                        }}
-                      >
-                        <Ionicons
-                          name="play-skip-back"
-                          size={24}
-                          color={Colors.text}
-                        />
-                      </Pressable>
-                    </View>
-                    <Pressable
-                      style={styles.controls}
-                      onPress={handlePlayState}
-                    >
-                      {playerState.state === "playing" ? (
-                        <Ionicons
-                          name="pause-circle"
-                          size={96}
-                          color={Colors.text}
-                        />
-                      ) : (
-                        <Ionicons
-                          name="play-circle"
-                          size={96}
-                          color={Colors.text}
-                        />
-                      )}
-                    </Pressable>
-                    <View>
-                      <Pressable
-                        onPress={() => {
-                          changeSong("next");
-                        }}
-                      >
-                        <Ionicons
-                          name="play-skip-forward"
-                          size={24}
-                          color={Colors.text}
-                        />
-                      </Pressable>
-                    </View>
-                    <View>
-                      <Ionicons
-                        name="list-outline"
-                        size={24}
-                        color={Colors.text}
-                      />
-                    </View>
-                  </View>
-                </View>
-              </Animated.View>
-            </SafeAreaView>
-          </SafeAreaProvider>
-        </ImageBackground>
+        {/* Full Player */}
+        <PlayerFull
+          meta={meta}
+          playerState={playerState}
+          onTogglePlay={handlePlayState}
+          onChangeSong={changeSong}
+          onClose={close}
+          animatedStyles={{ fullStyle, backdropStyle }}
+        />
       </BottomSheetView>
     </BottomSheet>
   );
@@ -303,100 +161,5 @@ const styles = StyleSheet.create({
   playerContainer: {
     backgroundColor: Colors.bg,
     height: "100%",
-
-    // paddingBottom: 8,
-  },
-  miniPlayerContainer: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    paddingHorizontal: 8,
-    paddingVertical: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cover: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
-    borderRadius: 8,
-  },
-  details: {
-    flex: 1,
-    minWidth: 0,
-  },
-  detailsTitle: {
-    fontWeight: "bold",
-    width: "100%",
-  },
-  controls: {
-    marginLeft: 8,
-  },
-  fullPlayer: {
-    flex: 1,
-    paddingTop: 88,
-    alignItems: "center",
-    height: "100%",
-  },
-  fullHeader: {
-    position: "absolute",
-    top: 12,
-    left: 12,
-    right: 12,
-    bottom: 0,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  fullBody: {
-    alignItems: "center",
-    paddingHorizontal: 12,
-  },
-  fullCover: {
-    width: 300,
-    height: 300,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  artistDetailsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingHorizontal: 16,
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  artistDetails: {
-    alignSelf: "stretch",
-    alignItems: "flex-start",
-    paddingHorizontal: 16,
-  },
-  fullTitle: {
-    marginBottom: 5,
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  fullArtist: {
-    marginTop: 2,
-  },
-  fullButtons: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    justifyContent: "space-between",
-  },
-  backgroundImage: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  backDrop: {
-    ...StyleSheet.absoluteFillObject,
-
-    backgroundColor: "rgba(0, 0, 0, 1)",
-  },
-  progressBar: {
-    marginTop: 10,
   },
 });

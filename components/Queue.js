@@ -1,12 +1,8 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
 
-const Queue = () => {
-  return (
-    <BottomSheet>
-      <AppText>Bitch</AppText>
-    </BottomSheet>
-  );
+const Queue = ({ children }) => {
+  return <BottomSheet>{children}</BottomSheet>;
 };
 
 export default Queue;
