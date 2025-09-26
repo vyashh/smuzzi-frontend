@@ -22,6 +22,7 @@ import { Asset } from "expo-asset";
 import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
 import Queue from "./Queue";
+import { DEFAULT_ARTWORK_URI } from "../constants/globalStyles";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
@@ -32,10 +33,6 @@ const Player = () => {
 
   const animatedIndex = useSharedValue(0);
   const animatedPosition = useSharedValue(0);
-
-  const DEFAULT_ARTWORK_URI = Asset.fromModule(
-    require("../assets/placeholder-artwork.png")
-  ).uri;
 
   // queue handling
   const queueModalRef = useRef(null);

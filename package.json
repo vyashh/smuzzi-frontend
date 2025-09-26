@@ -29,6 +29,7 @@
     "@react-native-vector-icons/evil-icons": "^12.3.0",
     "@react-native-vector-icons/fontawesome6": "^12.2.0",
     "@react-navigation/bottom-tabs": "^7.4.7",
+    "@types/react-native": "^0.72.8",
     "axios": "^1.12.2",
     "expo": "~54.0.10",
     "expo-asset": "^12.0.9",

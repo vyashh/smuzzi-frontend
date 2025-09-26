@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": { "@components/*": ["components/*"] },
+    "types": ["react", "react-native"],
+    "allowJs": true,          // temp till project is fully converted to ts
+    "checkJs": false          // no types in default js files.
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist"]
+}
