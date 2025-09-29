@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { getItem, setItem, deleteItemAsync } from "expo-secure-store";
-import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuthStore } from "./authStore";
+import { toSongs } from "types/song";
 
 export const useSongsStore = create(
   persist(
@@ -22,7 +23,7 @@ export const useSongsStore = create(
             },
           });
           set({
-            songs: data,
+            songs: toSongs(data),
             isFetching: false,
           });
         } catch (error) {
@@ -32,16 +33,7 @@ export const useSongsStore = create(
     }),
     {
       name: "songs-store-v2",
-      storage: createJSONStorage(
-        () => (
-          AsyncStorage,
-          {
-            setItem,
-            getItem,
-            removeItem: deleteItemAsync,
-          }
-        )
-      ),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
