@@ -1,39 +1,64 @@
-import { create } from "zustand";
+import { create, StoreApi, UseBoundStore } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { getItem, setItem, deleteItemAsync } from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuthStore } from "./authStore";
-import { toSongs } from "types/song";
+import { Song, toSongs } from "types/song";
 
-export const useSongsStore = create(
-  persist(
-    (set, get) => ({
-      isFetching: true,
-      error: "",
-      songs: [],
-      fetchSongs: async () => {
-        const { serverUrl, accessToken } = useAuthStore.getState();
-        console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
+interface SongsState {
+  isFetching: boolean;
+  error: string | null;
+  songs: ReadonlyArray<Song>;
+  fetchSongs: () => Promise<void>;
+  setSongs: (s: ReadonlyArray<Song>) => void;
+  clear: () => void;
+}
 
-        try {
-          const { data } = await axios.get(`${serverUrl}/api/songs`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          set({
-            songs: toSongs(data),
-            isFetching: false,
-          });
-        } catch (error) {
-          set({ error: error, isFetching: false });
-        }
-      },
-    }),
-    {
-      name: "songs-store-v2",
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
+export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
+  create<SongsState>()(
+    persist<SongsState>(
+      (set, get) => ({
+        isFetching: false,
+        error: null,
+        songs: [] as ReadonlyArray<Song>,
+        setSongs: (s) => set({ songs: s }),
+        clear: () => set({ songs: [], error: null }),
+        fetchSongs: async () => {
+          const { serverUrl, accessToken } = useAuthStore.getState();
+          console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
+
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            set({
+              songs: toSongs(data),
+              isFetching: false,
+            });
+          } catch (error: any) {
+            set({ error: error, isFetching: false });
+          }
+        },
+      }),
+      { name: "songs-store-v2", storage: createJSONStorage(() => AsyncStorage) }
+    )
+  );
+
+// fetchSongs: async () => {
+//         const { serverUrl, accessToken } = useAuthStore.getState();
+//         console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
+
+//         try {
+//           const { data } = await axios.get(`${serverUrl}/api/songs`, {
+//             headers: {
+//               Authorization: `Bearer ${accessToken}`,
+//             },
+//           });
+
+//         } catch (error) {
+//           set({ error: error, isFetching: false });
+//         }
+//       },
+//     }),
