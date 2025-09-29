@@ -3,7 +3,7 @@ import TrackPlayer, { Track } from "react-native-track-player";
 import type { Song } from "../types/song";
 import { useAuthStore } from "./authStore";
 import { useSongsStore } from "./songsStore";
-
+import { shuffle } from "../helpers/misc";
 const buildTrack = (
   song: Song,
   serverUrl: string,
@@ -27,15 +27,23 @@ const buildTrack = (
     : { ...common, url: `${serverUrl}/api/stream/${song.id}` };
 };
 
-export const loadPlay = async (index: number) => {
+export const loadPlay = async ({
+  songIndex = 0,
+  shuffled = false,
+}: {
+  songIndex?: number;
+  shuffled?: boolean;
+}) => {
   const { serverUrl, accessToken } = useAuthStore.getState();
   const { songs } = useSongsStore.getState();
 
-  const songsFromIndex = songs.slice(index);
+  const songsFromIndex = songs.slice(songIndex);
+  const songsShuffled = shuffle(songs); // shuffle later
+  const queue = songsFromIndex;
 
   await TrackPlayer.reset();
 
-  songsFromIndex.map(async (song: Song) => {
+  queue.map(async (song: Song) => {
     try {
       await TrackPlayer.add(buildTrack(song, serverUrl, accessToken));
       await TrackPlayer.play();

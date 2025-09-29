@@ -45,20 +45,3 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
       { name: "songs-store-v2", storage: createJSONStorage(() => AsyncStorage) }
     )
   );
-
-// fetchSongs: async () => {
-//         const { serverUrl, accessToken } = useAuthStore.getState();
-//         console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
-
-//         try {
-//           const { data } = await axios.get(`${serverUrl}/api/songs`, {
-//             headers: {
-//               Authorization: `Bearer ${accessToken}`,
-//             },
-//           });
-
-//         } catch (error) {
-//           set({ error: error, isFetching: false });
-//         }
-//       },
-//     }),

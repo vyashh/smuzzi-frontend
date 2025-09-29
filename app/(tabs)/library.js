@@ -30,41 +30,6 @@ function LibraryPage() {
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
-  const loadShuffle = async () => {
-    await TrackPlayer.stop();
-
-    const shuffledSongs = shuffle(songs);
-
-    shuffledSongs.forEach(async (song) => {
-      try {
-        // instant stream original quality
-        await TrackPlayer.add({
-          id: String(song.id),
-          url: `${serverUrl}/api/stream/${song.id}`, // progressive original
-          title: song.title || "Unknown Title",
-          artist: song.artist || "Unknown Artist",
-          artwork: song.cover_url || undefined,
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-      } catch (e) {
-        console.log("Progressive failed, retrying with HLS fallback", e);
-        await TrackPlayer.reset();
-        // hls fallback aac 160k bitrate in the backend
-        await TrackPlayer.add({
-          id: String(song.id),
-          url: `${serverUrl}/api/stream/${song.id}/index.m3u8`, // master
-          type: "hls",
-          contentType: "application/x-mpegURL",
-          title: song.title || "Unknown Title",
-          artist: song.artist || "Unknown Artist",
-          artwork: song.cover_url || undefined,
-          headers: { Authorization: `Bearer ${accessToken}` }, // for master only; variants/segments use token
-        });
-      }
-    });
-    await TrackPlayer.play();
-  };
-
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -82,7 +47,7 @@ function LibraryPage() {
             <AppText style={styles.quickActionsButtonText}>Play</AppText>
           </View>
         </View>
-        <Pressable onPress={loadShuffle}>
+        <Pressable onPress={() => loadPlay({ shuffled: true })}>
           <View style={styles.quickActionsButton}>
             <View style={styles.quickActionsButtonContainer}>
               <View style={styles.quickActionsButtonContainerIcon}>
@@ -100,7 +65,7 @@ function LibraryPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
-            <Pressable onPress={() => loadPlay(index)}>
+            <Pressable onPress={() => loadPlay({ songIndex: index })}>
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
