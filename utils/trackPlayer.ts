@@ -1,6 +1,8 @@
 // utils/trackPlayer.ts
 import TrackPlayer, { Track } from "react-native-track-player";
 import type { Song } from "../types/song";
+import { useAuthStore } from "./authStore";
+import { useSongsStore } from "./songsStore";
 
 const buildTrack = (song: Song, serverUrl: string, token: string, hls = false): Track => {
   const common = {
@@ -16,7 +18,12 @@ const buildTrack = (song: Song, serverUrl: string, token: string, hls = false): 
     : { ...common, url: `${serverUrl}/api/stream/${song.id}` };
 };
 
-export const loadPlay = async (song: Song, serverUrl: string, accessToken: string) => {
+export const loadPlay = async (index: number) => {
+  const {serverUrl, accessToken} = useAuthStore.getState();
+  const {songs} = useSongsStore.getState();
+
+  const song = songs[index];
+
   await TrackPlayer.reset();
   try {
     await TrackPlayer.add(buildTrack(song, serverUrl, accessToken));
