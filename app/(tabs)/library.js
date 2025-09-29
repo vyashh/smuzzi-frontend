@@ -104,7 +104,7 @@ function LibraryPage() {
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
-                cover={item.cover_url ? item.cover_url : DEFAULT_ARTWORK_URI}
+                cover={item.coverUrl}
               />
             </Pressable>
           </View>
