@@ -10,6 +10,7 @@ interface LikesState {
   error: string | null;
   likedSongs: ReadonlyArray<Song>;
   fetchLikes: () => Promise<void>;
+  likeSong: () => Promise<void>;
   setSongs: (s: ReadonlyArray<Song>) => void;
 }
 
@@ -43,6 +44,9 @@ export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
           } finally {
             set({ isFetching: false });
           }
+        },
+        likeSong: async () => {
+          set({ isFetching: true, error: null });
         },
       }),
       { name: "likes-store-v2", storage: createJSONStorage(() => AsyncStorage) }

@@ -10,7 +10,7 @@ const ServerSelectPage = () => {
   const selectServer = useAuthStore((state) => state.selectServer);
   const setServerUrl = useAuthStore((state) => state.setServerUrl);
 
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState("http://localhost:3000");
   const [alert, setAlert] = useState("");
 
   const serverUrlHandler = () => {

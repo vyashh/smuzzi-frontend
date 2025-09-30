@@ -4,6 +4,8 @@ import type { Song } from "../types/song";
 import { useAuthStore } from "./authStore";
 import { useSongsStore } from "./songsStore";
 import { shuffle } from "../helpers/misc";
+import { useLikeStore } from "./likesStore";
+import { PlaylistType } from "constants/global";
 const buildTrack = (
   song: Song,
   serverUrl: string,
@@ -30,14 +32,20 @@ const buildTrack = (
 export const loadPlay = async ({
   songIndex = 0,
   shuffled = false,
+  viewType = "allTracks",
 }: {
   songIndex?: number;
   shuffled?: boolean;
+  viewType?: PlaylistType;
 }) => {
   const { serverUrl, accessToken } = useAuthStore.getState();
   const { songs } = useSongsStore.getState();
+  const { likedSongs } = useLikeStore.getState();
+  const playlist = viewType === "likes" ? likedSongs : songs;
 
-  const songsFromIndex = songs.slice(songIndex);
+  console.log("loadplay() " + viewType);
+
+  const songsFromIndex = playlist.slice(songIndex);
   const songsShuffled = shuffle(songs); // shuffle later
   const queue = songsFromIndex;
 

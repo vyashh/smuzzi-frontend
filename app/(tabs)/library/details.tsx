@@ -103,7 +103,12 @@ const playlist = () => {
         keyExtractor={(item: Song) => String(item.id)}
         renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
-            <Pressable onPress={() => loadPlay({ songIndex: index })}>
+            <Pressable
+              onPress={() => {
+                console.log(item.id);
+                loadPlay({ songIndex: index, viewType });
+              }}
+            >
               <PlaylistView
                 artist={item.artist}
                 title={item.title}
