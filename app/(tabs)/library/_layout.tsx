@@ -14,7 +14,9 @@ const LibraryStackLayout = () => {
         name="details"
         options={{
           headerShown: true,
-          headerTitle: "",
+          headerStyle: {
+            backgroundColor: Colors.bg,
+          },
         }}
       />
     </Stack>

@@ -40,8 +40,8 @@ const playlist = () => {
   }, [songs, fetchSongs]);
 
   return (
-    <View style={globalStyles.container}>
-      {/* <HeaderTitle>Library</HeaderTitle> */}
+    <View style={[globalStyles.container, { paddingTop: 0 }]}>
+      <HeaderTitle>{title}</HeaderTitle>
       <AppText style={styles.tracks}>{songs.length} Tracks</AppText>
       <View style={styles.quickActions}>
         <View style={styles.quickActionsButton}>
@@ -91,9 +91,7 @@ const playlist = () => {
 export default playlist;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 100,
-  },
+  container: {},
   text: {
     color: Colors.text,
     fontSize: 42,
