@@ -1,3 +1,4 @@
+import { Colors } from "constants/colors";
 import { Stack } from "expo-router";
 
 const LibraryStackLayout = () => {
@@ -13,6 +14,7 @@ const LibraryStackLayout = () => {
         name="details"
         options={{
           headerShown: true,
+          headerTitle: "",
         }}
       />
     </Stack>

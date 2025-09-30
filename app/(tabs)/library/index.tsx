@@ -7,7 +7,11 @@ import {
   View,
 } from "react-native";
 import { Colors } from "../../../constants/colors";
-import { DEFAULT_ARTWORK_URI, globalStyles } from "../../../constants/global";
+import {
+  DEFAULT_ARTWORK_URI,
+  globalStyles,
+  PlaylistType,
+} from "../../../constants/global";
 import { useSongsStore } from "../../../utils/songsStore";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../../utils/authStore";
@@ -19,11 +23,19 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { loadPlay } from "utils/trackPlayer";
 import LibraryPlaylistView from "@components/LibraryPlaylistView";
+import { router } from "expo-router";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
+
+  const handleOnpress = (viewType: PlaylistType, title: string) => {
+    router.push({
+      pathname: "/(tabs)/library/details",
+      params: { viewType, title },
+    });
+  };
 
   useEffect(() => {
     fetchSongs();
@@ -33,7 +45,9 @@ function LibraryPage() {
     <View style={globalStyles.container}>
       <HeaderTitle>Library</HeaderTitle>
       <View style={styles.playlists}>
-        <LibraryPlaylistView title="My Likes" viewType="likes" />
+        <Pressable onPress={() => handleOnpress("allTracks", "Likes")}>
+          <LibraryPlaylistView title="My Likes" viewType="likes" />
+        </Pressable>
         <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
         <LibraryPlaylistView title="Random playlist name" viewType="playlist" />
         <LibraryPlaylistView
