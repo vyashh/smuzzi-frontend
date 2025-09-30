@@ -3,7 +3,7 @@ import AppText from "./AppText";
 import { Colors } from "../constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-const PlaylistView = ({ title, artist, cover, duration }) => {
+const PlaylistView = ({ title, artist, cover }) => {
   return (
     <View style={styles.container}>
       <View>
