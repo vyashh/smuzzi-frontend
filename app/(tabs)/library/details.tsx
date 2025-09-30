@@ -16,10 +16,11 @@ import Player from "@components/Player";
 import { Ionicons } from "@expo/vector-icons";
 import { useSongsStore } from "utils/songsStore";
 import { useAuthStore } from "utils/authStore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Song } from "types/song";
 import PlaylistView from "@components/PlaylistView";
+import { useLikeStore } from "utils/likesStore";
 
 const playlist = () => {
   const { viewType, title } = useLocalSearchParams<{
@@ -27,22 +28,40 @@ const playlist = () => {
     title: string;
   }>();
   const { songs, isFetching } = useSongsStore();
-  const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
-  // const [filteredData, setFilteredData] = useState<ReadonlyArray<Song>>([]);
 
-  // const filterData = () => {
+  const { likedSongs } = useLikeStore();
+  const fetchLikes = useLikeStore((state) => state.fetchLikes);
 
-  // }
+  const { serverUrl, accessToken } = useAuthStore();
+  const displayedSongs: ReadonlyArray<Song> = useMemo(() => {
+    switch (viewType) {
+      case "allTracks":
+        console.log(viewType);
+        return songs;
 
+      case "likes":
+        return likedSongs;
+
+      case "playlist":
+        // TODO: if you pass a playlistId via params, filter here.
+        // For now, default to catalog (or [] if you prefer).
+        console.log(viewType);
+        return songs;
+
+      default:
+        return songs;
+    }
+  }, [viewType, songs]);
   useEffect(() => {
     fetchSongs();
-  }, [songs, fetchSongs]);
+    fetchLikes();
+  }, [songs, fetchSongs, fetchLikes]);
 
   return (
     <View style={[globalStyles.container, { paddingTop: 0 }]}>
       <HeaderTitle>{title}</HeaderTitle>
-      <AppText style={styles.tracks}>{songs.length} Tracks</AppText>
+      <AppText style={styles.tracks}>{displayedSongs.length} Tracks</AppText>
       <View style={styles.quickActions}>
         <View style={styles.quickActionsButton}>
           <View style={styles.quickActionsButtonContainer}>
@@ -64,7 +83,7 @@ const playlist = () => {
         </Pressable>
       </View>
       <FlatList<Song>
-        data={songs}
+        data={displayedSongs}
         refreshing={isFetching}
         onRefresh={fetchSongs}
         keyExtractor={(item: Song) => String(item.id)}
