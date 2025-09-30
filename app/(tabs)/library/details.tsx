@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import AppText from "@components/AppText";
-import { globalStyles } from "constants/global";
+import { globalStyles, PlaylistType } from "constants/global";
 import HeaderTitle from "@components/HeaderTitle";
 import { Colors } from "constants/colors";
 
@@ -16,12 +16,24 @@ import Player from "@components/Player";
 import { Ionicons } from "@expo/vector-icons";
 import { useSongsStore } from "utils/songsStore";
 import { useAuthStore } from "utils/authStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { Song } from "types/song";
+import PlaylistView from "@components/PlaylistView";
 
 const playlist = () => {
+  const { viewType, title } = useLocalSearchParams<{
+    viewType: PlaylistType;
+    title: string;
+  }>();
   const { songs, isFetching } = useSongsStore();
   const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
+  // const [filteredData, setFilteredData] = useState<ReadonlyArray<Song>>([]);
+
+  // const filterData = () => {
+
+  // }
 
   useEffect(() => {
     fetchSongs();
@@ -51,24 +63,24 @@ const playlist = () => {
           </View>
         </Pressable>
       </View>
-      {/* <FlatList
-          data={songs}
-          refreshing={isFetching}
-          onRefresh={fetchSongs}
-          keyExtractor={(item: number) => item.id}
-          renderItem={({ item, index }) => (
-            <View style={{ padding: 12 }}>
-              <Pressable onPress={() => loadPlay({ songIndex: index })}>
-                <PlaylistView
-                  artist={item.artist}
-                  title={item.title}
-                  cover={item.coverUrl}
-                />
-              </Pressable>
-            </View>
-          )}
-          ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
-        /> */}
+      <FlatList<Song>
+        data={songs}
+        refreshing={isFetching}
+        onRefresh={fetchSongs}
+        keyExtractor={(item: Song) => String(item.id)}
+        renderItem={({ item, index }) => (
+          <View style={{ padding: 12 }}>
+            <Pressable onPress={() => loadPlay({ songIndex: index })}>
+              <PlaylistView
+                artist={item.artist}
+                title={item.title}
+                cover={item.coverUrl}
+              />
+            </Pressable>
+          </View>
+        )}
+        ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
+      />
       <BottomSheetModalProvider>
         <Player />
       </BottomSheetModalProvider>

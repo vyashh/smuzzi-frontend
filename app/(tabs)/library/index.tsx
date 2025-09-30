@@ -45,10 +45,12 @@ function LibraryPage() {
     <View style={globalStyles.container}>
       <HeaderTitle>Library</HeaderTitle>
       <View style={styles.playlists}>
-        <Pressable onPress={() => handleOnpress("allTracks", "Likes")}>
+        <Pressable onPress={() => handleOnpress("likes", "Likes")}>
           <LibraryPlaylistView title="My Likes" viewType="likes" />
         </Pressable>
-        <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
+        <Pressable onPress={() => handleOnpress("allTracks", "All Tracks")}>
+          <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
+        </Pressable>
         <LibraryPlaylistView title="Random playlist name" viewType="playlist" />
         <LibraryPlaylistView
           title="Another random Playlist name"
