@@ -24,6 +24,10 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         setSongs: (s) => set({ songs: s }),
         clear: () => set({ songs: [], error: null }),
         fetchSongs: async () => {
+          if (get().isFetching) return;
+
+          set({ isFetching: true, error: null });
+
           const { serverUrl, accessToken } = useAuthStore.getState();
           console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
 
@@ -39,6 +43,8 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
             });
           } catch (error: any) {
             set({ error: error, isFetching: false });
+          } finally {
+            set({ isFetching: true });
           }
         },
       }),

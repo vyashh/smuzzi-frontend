@@ -39,7 +39,7 @@ function LibraryPage() {
 
   useEffect(() => {
     fetchSongs();
-  }, []);
+  }, [fetchSongs]);
 
   return (
     <View style={globalStyles.container}>
