@@ -2,17 +2,33 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
-import { DEFAULT_ARTWORK_URI, LIKES_ICON_URI } from "constants/global";
+import {
+  ALL_TRACKS_ICON_URI,
+  DEFAULT_ARTWORK_URI,
+  LIKES_ICON_URI,
+  PlaylistType,
+} from "constants/global";
 
 interface LibraryPlaylistViewProps {
-  // viewType:
+  viewType: PlaylistType;
+  title: string;
 }
 
-const LibraryPlaylistView = () => {
+const LibraryPlaylistView = ({ viewType, title }: LibraryPlaylistViewProps) => {
+  const ICON_BY_VIEW = {
+    likes: LIKES_ICON_URI,
+    allTracks: ALL_TRACKS_ICON_URI,
+    playlist: DEFAULT_ARTWORK_URI,
+    default: DEFAULT_ARTWORK_URI,
+  };
+
   return (
     <View style={styles.container}>
       <View>
-        <Image style={styles.cover} source={{ uri: LIKES_ICON_URI }} />
+        <Image
+          style={styles.cover}
+          source={{ uri: ICON_BY_VIEW[viewType] ?? ICON_BY_VIEW.default }}
+        />
       </View>
       <View>
         <AppText
@@ -20,15 +36,15 @@ const LibraryPlaylistView = () => {
           ellipsizeMode="tail"
           numberOfLines={1}
         >
-          My Likes
+          {title}
         </AppText>
       </View>
       <View>
         <View style={styles.actionButtons}>
           <Ionicons
-            name="checkmark-circle-outline"
+            name="cloud-download-outline"
             size={16}
-            color={Colors.text}
+            color={Colors.neutral}
           />
           <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
         </View>
