@@ -2,9 +2,11 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
-import { DEFAULT_ARTWORK_URI, LIKES_ICON_URI } from "constants/globalStyles";
+import { DEFAULT_ARTWORK_URI, LIKES_ICON_URI } from "constants/global";
 
-interface LibraryPlaylistViewProps {}
+interface LibraryPlaylistViewProps {
+  // viewType:
+}
 
 const LibraryPlaylistView = () => {
   return (
@@ -12,7 +14,7 @@ const LibraryPlaylistView = () => {
       <View>
         <Image style={styles.cover} source={{ uri: LIKES_ICON_URI }} />
       </View>
-      <View style={[styles.details, { flex: 2 }]}>
+      <View>
         <AppText
           style={[styles.detailsTitle, { width: "250" }]}
           ellipsizeMode="tail"
@@ -21,12 +23,7 @@ const LibraryPlaylistView = () => {
           My Likes
         </AppText>
       </View>
-      <View
-        style={{
-          flex: 3,
-          alignItems: "flex-end",
-        }}
-      >
+      <View>
         <View style={styles.actionButtons}>
           <Ionicons
             name="checkmark-circle-outline"
@@ -49,6 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     gap: 10,
     paddingVertical: 10,
+    marginVertical: 5,
   },
 
   cover: {
@@ -64,6 +62,6 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: "row",
-    gap: 20,
+    gap: 30,
   },
 });

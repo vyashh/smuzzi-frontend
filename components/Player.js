@@ -22,7 +22,7 @@ import { Asset } from "expo-asset";
 import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
 import Queue from "./Queue";
-import { DEFAULT_ARTWORK_URI } from "../constants/globalStyles";
+import { DEFAULT_ARTWORK_URI } from "../constants/global";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);

@@ -2,7 +2,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/colors";
-import { DEFAULT_ARTWORK_URI, globalStyles } from "../constants/globalStyles";
+import { DEFAULT_ARTWORK_URI, globalStyles } from "../constants/global";
 import TrackPlayer from "react-native-track-player";
 import QueueView from "./QueueView";
 import SubTitle from "./SubTitle";
