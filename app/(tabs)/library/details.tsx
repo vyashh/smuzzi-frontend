@@ -28,54 +28,48 @@ const playlist = () => {
     title: string;
   }>();
   const { songs, isFetching } = useSongsStore();
-  const fetchSongs = useSongsStore((state) => state.fetchSongs);
+  const fetchSongs = useSongsStore((s) => s.fetchSongs);
+  const isSongsFetching = useSongsStore((s) => s.isFetching);
 
   const { likedSongs } = useLikeStore();
   const fetchLikes = useLikeStore((state) => state.fetchLikes);
+  const isLikesFetching = useLikeStore((s) => s.isFetching);
 
-  const { serverUrl, accessToken } = useAuthStore();
-  const displayedSongs: ReadonlyArray<Song> = useMemo(() => {
-    switch (viewType) {
-      case "allTracks":
-        return songs;
-
-      case "likes":
-        return likedSongs;
-
-      case "playlist":
-        // todo
-        console.log(viewType);
-        return songs;
-
-      default:
-        return songs;
-    }
-  }, [viewType, songs]);
+  const refreshing =
+    viewType === "likes" ? isSongsFetching || isLikesFetching : isSongsFetching;
 
   const handleRefresh = () => {
     switch (viewType) {
       case "allTracks":
         console.log("details.tsx fetchSongs()");
         fetchSongs();
-
+        break;
       case "likes":
-        console.log("details.tsx fetchSongs()");
+        console.log("details.tsx fetchLikes()");
         fetchLikes();
-        return likedSongs;
-
+        break;
       case "playlist":
-        // todo
-        console.log(viewType);
-        return songs;
-
+        console.log("details.tsx playlist refresh");
+        break;
       default:
-        return songs;
+        break;
     }
   };
 
+  const displayedSongs = useMemo(() => {
+    switch (viewType) {
+      case "likes":
+        return likedSongs;
+      case "allTracks":
+      case "playlist":
+      default:
+        return songs;
+    }
+  }, [viewType, songs, likedSongs]);
+
   useEffect(() => {
     fetchSongs();
-    if (viewType === "likes") fetchLikes;
+    if (viewType === "likes") fetchLikes();
   }, [fetchSongs, fetchLikes, viewType]);
 
   return (
@@ -104,7 +98,7 @@ const playlist = () => {
       </View>
       <FlatList<Song>
         data={displayedSongs}
-        refreshing={isFetching}
+        refreshing={refreshing}
         onRefresh={handleRefresh}
         keyExtractor={(item: Song) => String(item.id)}
         renderItem={({ item, index }) => (
