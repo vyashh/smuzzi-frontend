@@ -28,7 +28,6 @@ export const useAuthStore = create(
       // auth - handlers -- defaults
       logIn: async () => {
         const { serverUrl } = get();
-        console.log(serverUrl);
         try {
           return await axios
             .post(`${serverUrl}/api/login`, {

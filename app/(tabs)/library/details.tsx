@@ -37,15 +37,13 @@ const playlist = () => {
   const displayedSongs: ReadonlyArray<Song> = useMemo(() => {
     switch (viewType) {
       case "allTracks":
-        console.log(viewType);
         return songs;
 
       case "likes":
         return likedSongs;
 
       case "playlist":
-        // TODO: if you pass a playlistId via params, filter here.
-        // For now, default to catalog (or [] if you prefer).
+        // todo
         console.log(viewType);
         return songs;
 
@@ -53,10 +51,32 @@ const playlist = () => {
         return songs;
     }
   }, [viewType, songs]);
+
+  const handleRefresh = () => {
+    switch (viewType) {
+      case "allTracks":
+        console.log("details.tsx fetchSongs()");
+        fetchSongs();
+
+      case "likes":
+        console.log("details.tsx fetchSongs()");
+        fetchLikes();
+        return likedSongs;
+
+      case "playlist":
+        // todo
+        console.log(viewType);
+        return songs;
+
+      default:
+        return songs;
+    }
+  };
+
   useEffect(() => {
     fetchSongs();
-    fetchLikes();
-  }, [songs, fetchSongs, fetchLikes]);
+    if (viewType === "likes") fetchLikes;
+  }, [fetchSongs, fetchLikes, viewType]);
 
   return (
     <View style={[globalStyles.container, { paddingTop: 0 }]}>
@@ -85,7 +105,7 @@ const playlist = () => {
       <FlatList<Song>
         data={displayedSongs}
         refreshing={isFetching}
-        onRefresh={fetchSongs}
+        onRefresh={handleRefresh}
         keyExtractor={(item: Song) => String(item.id)}
         renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
@@ -98,7 +118,7 @@ const playlist = () => {
             </Pressable>
           </View>
         )}
-        ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
+        // ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
       />
       <BottomSheetModalProvider>
         <Player />

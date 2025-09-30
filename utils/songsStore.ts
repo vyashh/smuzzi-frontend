@@ -8,9 +8,9 @@ import { Song, toSongs } from "types/song";
 interface SongsState {
   isFetching: boolean;
   error: string | null;
-  songs: ReadonlyArray<Song>;
+  songs: Array<Song>;
   fetchSongs: () => Promise<void>;
-  setSongs: (s: ReadonlyArray<Song>) => void;
+  setSongs: (s: Array<Song>) => void;
   clear: () => void;
 }
 
@@ -20,7 +20,7 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
       (set, get) => ({
         isFetching: false,
         error: null,
-        songs: [] as ReadonlyArray<Song>,
+        songs: [] as Array<Song>,
         setSongs: (s) => set({ songs: s }),
         clear: () => set({ songs: [], error: null }),
         fetchSongs: async () => {
@@ -29,7 +29,9 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
           set({ isFetching: true, error: null });
 
           const { serverUrl, accessToken } = useAuthStore.getState();
-          console.log(`logging onto server: ${serverUrl} with ${accessToken}`);
+          console.log(
+            `songstore() logging onto server: ${serverUrl} with ${accessToken}`
+          );
 
           try {
             const { data } = await axios.get(`${serverUrl}/api/songs`, {
@@ -48,6 +50,15 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
           }
         },
       }),
-      { name: "songs-store-v2", storage: createJSONStorage(() => AsyncStorage) }
+      {
+        name: "songs-store-v2",
+        storage: createJSONStorage(() => AsyncStorage),
+        partialize: (s) => ({ songs: s.songs } as unknown as SongsState),
+        onRehydrateStorage: () => (state) => {
+          if (!state) return;
+          state.isFetching = false;
+          state.error = null;
+        },
+      }
     )
   );
