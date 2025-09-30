@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
-import { globalStyles } from "../../constants/globalStyles";
+import { globalStyles } from "../../constants/global";
 
 function SearchPage() {
   return (

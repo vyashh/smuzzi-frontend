@@ -1,5 +1,5 @@
 import { Button, StyleSheet, TextInput, View } from "react-native";
-import { globalStyles } from "../../constants/globalStyles";
+import { globalStyles } from "../../constants/global";
 import AppText from "../../components/AppText";
 import HeaderTitle from "../../components/HeaderTitle";
 import { useAuthStore } from "../../utils/authStore";

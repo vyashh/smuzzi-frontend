@@ -6,10 +6,11 @@ const Colors = {
   secondary: "#1E1E1E",
 
   // UI states
-  success: "#00ff22ff",
+  success: "#BFFCAD",
   warning: "#f59e0b",
   danger: "#ef4444",
   info: "#3b82f6",
+  neutral: "#cacacaff",
 
   // Surfaces & text
   bg: "#101010",

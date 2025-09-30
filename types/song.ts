@@ -1,4 +1,4 @@
-import { DEFAULT_ARTWORK_URI } from "constants/globalStyles";
+import { DEFAULT_ARTWORK_URI } from "constants/global";
 
 // mirror of db response
 export interface ApiSong {

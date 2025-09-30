@@ -10,7 +10,7 @@ import { Colors } from "../../constants/colors";
 import { Link } from "expo-router";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
-import { globalStyles } from "../../constants/globalStyles";
+import { globalStyles } from "../../constants/global";
 import AppText from "../../components/AppText";
 import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
