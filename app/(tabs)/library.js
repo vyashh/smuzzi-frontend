@@ -36,7 +36,7 @@ function LibraryPage() {
 
   return (
     <View style={globalStyles.container}>
-      <HeaderTitle>Library </HeaderTitle>
+      <HeaderTitle>Library</HeaderTitle>
       <AppText style={styles.tracks}>{songs.length} Tracks</AppText>
       <View style={styles.quickActions}>
         <View style={styles.quickActionsButton}>
