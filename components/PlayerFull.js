@@ -26,7 +26,7 @@ const PlayerFull = ({
   onOpenQueue,
 }) => {
   const { fullStyle, backdropStyle } = animatedStyles;
-
+  console.log(meta);
   return (
     <ImageBackground
       source={{ uri: meta.artworkUri }}
@@ -76,7 +76,7 @@ const PlayerFull = ({
                   <AppText style={styles.fullTitle}>{meta.title}</AppText>
                   <AppText style={styles.fullArtist}>{meta.artist}</AppText>
                 </View>
-                <LikeButton />
+                <LikeButton trackId={meta.id} />
               </View>
 
               <View style={styles.progressBar}>

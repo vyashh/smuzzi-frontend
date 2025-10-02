@@ -44,6 +44,7 @@ const Player = () => {
   // active track & meta
   const activeTrack = useActiveTrack();
   const [meta, setMeta] = useState({
+    id: activeTrack?.id || null,
     title: activeTrack?.title || "Title",
     artist: activeTrack?.artist || "Artist",
     artworkUri: activeTrack?.artwork || DEFAULT_ARTWORK_URI,
@@ -120,6 +121,7 @@ const Player = () => {
   useEffect(() => {
     if (!activeTrack) return;
     setMeta({
+      id: activeTrack.id ?? null,
       title: activeTrack.title ?? "Title",
       artist: activeTrack.artist ?? "Artist",
       albumTitle: activeTrack.album ?? "",
