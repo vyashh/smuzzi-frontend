@@ -27,14 +27,19 @@ import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 
 function LibraryPage() {
-  const { songs, isFetching } = useSongsStore();
-  const { serverUrl, accessToken } = useAuthStore();
   const fetchSongs = useSongsStore((state) => state.fetchSongs);
 
-  const handleOnpress = (viewType: PlaylistType, title: string) => {
+  const handleOnpressShowPlaylist = (viewType: PlaylistType, title: string) => {
     router.push({
       pathname: "/(tabs)/library/details",
       params: { viewType, title },
+    });
+  };
+
+  const handleOnpressCreatePlaylist = () => {
+    console.log("hey");
+    router.push({
+      pathname: "/(tabs)/library/new-playlist",
     });
   };
 
@@ -45,12 +50,16 @@ function LibraryPage() {
   return (
     <View style={globalStyles.container}>
       <HeaderTitle>Library</HeaderTitle>
-      <CreatePlaylist />
+      <Pressable onPress={handleOnpressCreatePlaylist}>
+        <CreatePlaylist />
+      </Pressable>
       <View style={styles.playlists}>
-        <Pressable onPress={() => handleOnpress("likes", "Likes")}>
+        <Pressable onPress={() => handleOnpressShowPlaylist("likes", "Likes")}>
           <LibraryPlaylistView title="My Likes" viewType="likes" />
         </Pressable>
-        <Pressable onPress={() => handleOnpress("allTracks", "All Tracks")}>
+        <Pressable
+          onPress={() => handleOnpressShowPlaylist("allTracks", "All Tracks")}
+        >
           <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
         </Pressable>
         <LibraryPlaylistView title="Random playlist name" viewType="playlist" />

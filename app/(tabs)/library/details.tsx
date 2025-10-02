@@ -73,7 +73,7 @@ const playlist = () => {
   }, [fetchSongs, fetchLikes, viewType]);
 
   return (
-    <View style={[globalStyles.container, { paddingTop: 0 }]}>
+    <View style={[globalStyles.container]}>
       <HeaderTitle>{title}</HeaderTitle>
       <AppText style={styles.tracks}>{displayedSongs.length} Tracks</AppText>
       <View style={styles.quickActions}>
@@ -127,7 +127,6 @@ const playlist = () => {
 export default playlist;
 
 const styles = StyleSheet.create({
-  container: {},
   text: {
     color: Colors.text,
     fontSize: 42,

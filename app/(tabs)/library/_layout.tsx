@@ -13,7 +13,16 @@ const LibraryStackLayout = () => {
       <Stack.Screen
         name="details"
         options={{
-          headerShown: true,
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: Colors.bg,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="new-playlist"
+        options={{
+          headerShown: false,
           headerStyle: {
             backgroundColor: Colors.bg,
           },
