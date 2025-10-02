@@ -11,7 +11,7 @@ const CreatePlaylist = () => {
       <Text style={styles.text}>Create Playlist</Text>
       <Ionicons
         style={styles.icon}
-        name="add-circle-outline"
+        name="add-outline"
         size={24}
         color={Colors.primary}
       />
