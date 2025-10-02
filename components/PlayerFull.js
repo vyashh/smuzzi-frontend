@@ -46,7 +46,6 @@ const PlayerFull = ({
         pointerEvents="none"
         style={[styles.backDrop, backdropStyle]}
       />
-
       <SafeAreaProvider>
         <SafeAreaView>
           <Animated.View style={[styles.fullPlayer, fullStyle]}>

@@ -116,7 +116,6 @@ const playlist = () => {
             </Pressable>
           </View>
         )}
-        // ListFooterComponent={isFetching ? <ActivityIndicator /> : null}
       />
       <BottomSheetModalProvider>
         <Player />

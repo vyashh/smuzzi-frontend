@@ -10,7 +10,7 @@ interface LikesState {
   error: string | null;
   likedSongs: ReadonlyArray<Song>;
   fetchLikes: () => Promise<void>;
-  likeSong: () => Promise<void>;
+  postLikedSong: (trackId: number) => Promise<void>;
   setSongs: (s: ReadonlyArray<Song>) => void;
 }
 
@@ -45,8 +45,25 @@ export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
             set({ isFetching: false });
           }
         },
-        likeSong: async () => {
+        postLikedSong: async (trackId) => {
           set({ isFetching: true, error: null });
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            await axios
+              .post(`${serverUrl}/api/songs/${trackId}/like`, null, {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              })
+              .then(() => get().fetchLikes());
+          } catch (error) {
+            set({
+              error: error instanceof Error ? error.message : String(error),
+            });
+          } finally {
+            set({ isFetching: false });
+          }
         },
       }),
       { name: "likes-store-v2", storage: createJSONStorage(() => AsyncStorage) }
