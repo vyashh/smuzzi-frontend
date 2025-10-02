@@ -24,6 +24,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { loadPlay } from "utils/trackPlayer";
 import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
+import CreatePlaylist from "@components/CreatePlaylist";
 
 function LibraryPage() {
   const { songs, isFetching } = useSongsStore();
@@ -44,6 +45,7 @@ function LibraryPage() {
   return (
     <View style={globalStyles.container}>
       <HeaderTitle>Library</HeaderTitle>
+      <CreatePlaylist />
       <View style={styles.playlists}>
         <Pressable onPress={() => handleOnpress("likes", "Likes")}>
           <LibraryPlaylistView title="My Likes" viewType="likes" />
