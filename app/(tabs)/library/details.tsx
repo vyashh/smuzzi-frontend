@@ -68,51 +68,65 @@ const playlist = () => {
     switch (viewType) {
       case "likes":
         return likedSongs;
-      case "allTracks":
       case "playlist":
         return playlistTracks;
+      case "allTracks":
       default:
         return songs;
     }
-  }, [viewType, songs, likedSongs]);
+  }, [viewType, songs, likedSongs, playlistTracks]);
 
   useEffect(() => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
-    if (viewType === "playlist" && playlistId) {
-      fetchPlaylistTracks(playlistId);
-    }
+    if (viewType === "playlist" && playlistId) fetchPlaylistTracks(playlistId);
   }, [fetchSongs, fetchLikes, fetchPlaylistTracks, viewType, playlistId]);
 
   return (
     <View style={[globalStyles.container]}>
       <TopBar />
       <HeaderTitle>{title}</HeaderTitle>
-      <AppText style={styles.tracks}>
-        {displayedSongs?.length
-          ? displayedSongs.length
-          : "No tracks in playlist"}
-        Tracks
-      </AppText>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <AppText style={styles.tracks}>
+          {displayedSongs?.length
+            ? displayedSongs.length
+            : "No tracks in playlist"}
+        </AppText>
+        <AppText> Tracks</AppText>
+      </View>
       <View style={styles.quickActions}>
         <View style={styles.quickActionsButton}>
-          <View style={styles.quickActionsButtonContainer}>
-            <View style={styles.quickActionsButtonContainerIcon}>
-              <Ionicons name="play-outline" size={24} color={Colors.primary} />
+          <Pressable
+            onPress={() =>
+              loadPlay({ songIndex: 0, list: displayedSongs ?? [] })
+            }
+          >
+            <View style={styles.quickActionsButtonContainer}>
+              <View style={styles.quickActionsButtonContainerIcon}>
+                <Ionicons
+                  name="play-outline"
+                  size={24}
+                  color={Colors.primary}
+                />
+              </View>
+              <AppText style={styles.quickActionsButtonText}>Play</AppText>
             </View>
-            <AppText style={styles.quickActionsButtonText}>Play</AppText>
-          </View>
+          </Pressable>
         </View>
-        <Pressable onPress={() => loadPlay({ shuffled: true })}>
-          <View style={styles.quickActionsButton}>
+        <View style={styles.quickActionsButton}>
+          <Pressable
+            onPress={() =>
+              loadPlay({ shuffled: true, list: displayedSongs ?? [] })
+            }
+          >
             <View style={styles.quickActionsButtonContainer}>
               <View style={styles.quickActionsButtonContainerIcon}>
                 <Ionicons name="shuffle" size={24} color={Colors.primary} />
               </View>
               <AppText style={styles.quickActionsButtonText}>Shuffle</AppText>
             </View>
-          </View>
-        </Pressable>
+          </Pressable>
+        </View>
       </View>
       <FlatList<Song>
         data={displayedSongs}
@@ -122,9 +136,9 @@ const playlist = () => {
         renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
             <Pressable
-              onPress={() => {
-                loadPlay({ songIndex: index, viewType });
-              }}
+              onPress={() =>
+                loadPlay({ songIndex: index, list: displayedSongs ?? [] })
+              }
             >
               <PlaylistView
                 artist={item.artist}

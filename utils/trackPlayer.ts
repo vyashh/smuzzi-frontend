@@ -2,10 +2,9 @@
 import TrackPlayer, { Track } from "react-native-track-player";
 import type { Song } from "../types/song";
 import { useAuthStore } from "./authStore";
-import { useSongsStore } from "./songsStore";
 import { shuffle } from "../helpers/misc";
-import { useLikeStore } from "./likesStore";
 import { PlaylistType } from "constants/global";
+
 const buildTrack = (
   song: Song,
   serverUrl: string,
@@ -32,33 +31,37 @@ const buildTrack = (
 export const loadPlay = async ({
   songIndex = 0,
   shuffled = false,
-  viewType = "allTracks",
+  list,
 }: {
   songIndex?: number;
   shuffled?: boolean;
-  viewType?: PlaylistType;
+  list: ReadonlyArray<Song>;
 }) => {
   const { serverUrl, accessToken } = useAuthStore.getState();
-  const { songs } = useSongsStore.getState();
-  const { likedSongs } = useLikeStore.getState();
-  const playlist = viewType === "likes" ? likedSongs : songs;
 
-  console.log("loadplay() " + viewType);
+  let ordered = list;
+  if (shuffled) {
+    const selected = list[songIndex];
+    const rest = [...list.slice(0, songIndex), ...list.slice(songIndex + 1)];
+    ordered = [selected, ...shuffle(rest)];
+    songIndex = 0;
+  }
 
-  const songsFromIndex = playlist.slice(songIndex);
-  const songsShuffled = shuffle(songs); // shuffle later
-  const queue = songsFromIndex;
+  const tracks = ordered.map((s) => buildTrack(s, serverUrl, accessToken));
 
   await TrackPlayer.reset();
 
-  queue.map(async (song: Song) => {
-    try {
-      await TrackPlayer.add(buildTrack(song, serverUrl, accessToken));
-      await TrackPlayer.play();
-    } catch (e) {
-      await TrackPlayer.reset();
-      await TrackPlayer.add(buildTrack(song, serverUrl, accessToken, true));
-      await TrackPlayer.play();
-    }
-  });
+  try {
+    await TrackPlayer.add(tracks);
+
+    // playing original track
+    await TrackPlayer.skip(songIndex);
+    await TrackPlayer.play();
+  } catch {
+    // hls fallback
+    await TrackPlayer.reset();
+    const first = ordered[songIndex];
+    await TrackPlayer.add([buildTrack(first, serverUrl, accessToken, true)]);
+    await TrackPlayer.play();
+  }
 };
