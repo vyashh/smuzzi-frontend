@@ -50,13 +50,13 @@ export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
           const { serverUrl, accessToken } = useAuthStore.getState();
 
           try {
-            await axios
-              .post(`${serverUrl}/api/songs/${trackId}/like`, null, {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              })
-              .then(() => get().fetchLikes());
+            await axios.post(`${serverUrl}/api/songs/${trackId}/like`, null, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            set({ isFetching: false });
+            await get().fetchLikes();
           } catch (error) {
             set({
               error: error instanceof Error ? error.message : String(error),

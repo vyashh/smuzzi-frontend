@@ -10,28 +10,14 @@ interface LikeButtonProps {
 }
 
 const LikeButton = ({ trackId }: LikeButtonProps) => {
-  const { postLikedSong } = useLikeStore();
-  const likedSongs = useLikeStore((s) => s.likedSongs);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const isLiked = useLikeStore((s) =>
+    s.likedSongs.some((song) => String(song.id) === String(trackId))
+  );
+  const postLikedSong = useLikeStore((s) => s.postLikedSong);
 
   const likedHandler = () => {
     postLikedSong(trackId);
-
-    // console.log("liked: " + track);
   };
-
-  const findLikedTrackStatus = () => {
-    const foundIsLiked = likedSongs.find((song) => song.id === Number(trackId));
-    if (foundIsLiked !== undefined) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
-    }
-  };
-
-  useEffect(() => {
-    findLikedTrackStatus();
-  }, [findLikedTrackStatus, isLiked, setIsLiked]);
 
   return (
     <Pressable onPress={likedHandler}>
