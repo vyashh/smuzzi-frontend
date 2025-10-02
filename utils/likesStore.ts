@@ -11,6 +11,7 @@ interface LikesState {
   likedSongs: ReadonlyArray<Song>;
   fetchLikes: () => Promise<void>;
   postLikedSong: (trackId: number) => Promise<void>;
+  deleteLikedSong: (trackId: number) => Promise<void>;
   setSongs: (s: ReadonlyArray<Song>) => void;
 }
 
@@ -51,6 +52,26 @@ export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
 
           try {
             await axios.post(`${serverUrl}/api/songs/${trackId}/like`, null, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            set({ isFetching: false });
+            await get().fetchLikes();
+          } catch (error) {
+            set({
+              error: error instanceof Error ? error.message : String(error),
+            });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        deleteLikedSong: async (trackId) => {
+          set({ isFetching: true, error: null });
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            await axios.delete(`${serverUrl}/api/songs/${trackId}/like`, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },

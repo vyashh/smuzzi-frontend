@@ -14,9 +14,10 @@ const LikeButton = ({ trackId }: LikeButtonProps) => {
     s.likedSongs.some((song) => String(song.id) === String(trackId))
   );
   const postLikedSong = useLikeStore((s) => s.postLikedSong);
+  const deleteLikedSong = useLikeStore((s) => s.deleteLikedSong);
 
   const likedHandler = () => {
-    postLikedSong(trackId);
+    isLiked ? deleteLikedSong(trackId) : postLikedSong(trackId);
   };
 
   return (
