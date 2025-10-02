@@ -105,7 +105,6 @@ const playlist = () => {
           <View style={{ padding: 12 }}>
             <Pressable
               onPress={() => {
-                console.log(item.id);
                 loadPlay({ songIndex: index, viewType });
               }}
             >

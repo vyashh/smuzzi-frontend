@@ -26,7 +26,6 @@ const PlayerFull = ({
   onOpenQueue,
 }) => {
   const { fullStyle, backdropStyle } = animatedStyles;
-  console.log(meta);
   return (
     <ImageBackground
       source={{ uri: meta.artworkUri }}
