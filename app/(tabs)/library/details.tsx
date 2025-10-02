@@ -21,6 +21,7 @@ import { useLocalSearchParams } from "expo-router";
 import { Song } from "types/song";
 import PlaylistView from "@components/PlaylistView";
 import { useLikeStore } from "utils/likesStore";
+import TopBar from "@components/TopBar";
 
 const playlist = () => {
   const { viewType, title } = useLocalSearchParams<{
@@ -74,6 +75,7 @@ const playlist = () => {
 
   return (
     <View style={[globalStyles.container]}>
+      <TopBar />
       <HeaderTitle>{title}</HeaderTitle>
       <AppText style={styles.tracks}>{displayedSongs.length} Tracks</AppText>
       <View style={styles.quickActions}>
