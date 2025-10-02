@@ -32,10 +32,12 @@ export const loadPlay = async ({
   songIndex = 0,
   shuffled = false,
   list,
+  shuffleMode = "keepSelectionFirst",
 }: {
   songIndex?: number;
   shuffled?: boolean;
-  list: ReadonlyArray<Song>;
+  list: ReadonlyArray<Song> | [];
+  shuffleMode?: "keepSelectionFirst" | "randomStart";
 }) => {
   const { serverUrl, accessToken } = useAuthStore.getState();
 
@@ -45,6 +47,16 @@ export const loadPlay = async ({
     const rest = [...list.slice(0, songIndex), ...list.slice(songIndex + 1)];
     ordered = [selected, ...shuffle(rest)];
     songIndex = 0;
+  }
+
+  if (shuffled && shuffleMode === "keepSelectionFirst") {
+    const selected = list[songIndex];
+    const rest = [...list.slice(0, songIndex), ...list.slice(songIndex + 1)];
+    ordered = [selected, ...shuffle(rest)];
+    songIndex = 0;
+  } else if (shuffled && shuffleMode === "randomStart") {
+    ordered = shuffle(list.slice());
+    songIndex = Math.floor(Math.random() * ordered.length);
   }
 
   const tracks = ordered.map((s) => buildTrack(s, serverUrl, accessToken));

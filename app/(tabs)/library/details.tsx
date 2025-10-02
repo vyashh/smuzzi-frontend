@@ -86,7 +86,7 @@ const playlist = () => {
     <View style={[globalStyles.container]}>
       <TopBar />
       <HeaderTitle>{title}</HeaderTitle>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.trackDetails}>
         <AppText style={styles.tracks}>
           {displayedSongs?.length
             ? displayedSongs.length
@@ -98,7 +98,11 @@ const playlist = () => {
         <View style={styles.quickActionsButton}>
           <Pressable
             onPress={() =>
-              loadPlay({ songIndex: 0, list: displayedSongs ?? [] })
+              loadPlay({
+                list: displayedSongs ?? [],
+                songIndex: 0,
+                shuffled: false,
+              })
             }
           >
             <View style={styles.quickActionsButtonContainer}>
@@ -116,7 +120,11 @@ const playlist = () => {
         <View style={styles.quickActionsButton}>
           <Pressable
             onPress={() =>
-              loadPlay({ shuffled: true, list: displayedSongs ?? [] })
+              loadPlay({
+                list: displayedSongs ?? [],
+                shuffled: true,
+                shuffleMode: "randomStart",
+              })
             }
           >
             <View style={styles.quickActionsButtonContainer}>
@@ -186,6 +194,7 @@ const styles = StyleSheet.create({
   quickActionsButtonContainerIcon: {
     paddingRight: 10,
   },
+  trackDetails: { flexDirection: "row", alignItems: "center" },
   tracks: {
     marginVertical: 10,
   },
