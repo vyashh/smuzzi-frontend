@@ -22,12 +22,15 @@ import { Song } from "types/song";
 import PlaylistView from "@components/PlaylistView";
 import { useLikeStore } from "utils/likesStore";
 import TopBar from "@components/TopBar";
+import { usePlaylistsStore } from "utils/playlistsStore";
 
 const playlist = () => {
-  const { viewType, title } = useLocalSearchParams<{
+  const { viewType, title, playlistId } = useLocalSearchParams<{
     viewType: PlaylistType;
     title: string;
+    playlistId?: any;
   }>();
+
   const { songs, isFetching } = useSongsStore();
   const fetchSongs = useSongsStore((s) => s.fetchSongs);
   const isSongsFetching = useSongsStore((s) => s.isFetching);
@@ -35,6 +38,9 @@ const playlist = () => {
   const { likedSongs } = useLikeStore();
   const fetchLikes = useLikeStore((state) => state.fetchLikes);
   const isLikesFetching = useLikeStore((s) => s.isFetching);
+
+  const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
+  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
 
   const refreshing =
     viewType === "likes" ? isSongsFetching || isLikesFetching : isSongsFetching;
@@ -52,6 +58,7 @@ const playlist = () => {
       case "playlist":
         console.log("details.tsx playlist refresh");
         break;
+
       default:
         break;
     }
@@ -63,6 +70,7 @@ const playlist = () => {
         return likedSongs;
       case "allTracks":
       case "playlist":
+        return playlistTracks;
       default:
         return songs;
     }
@@ -71,13 +79,21 @@ const playlist = () => {
   useEffect(() => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
-  }, [fetchSongs, fetchLikes, viewType]);
+    if (viewType === "playlist" && playlistId) {
+      fetchPlaylistTracks(playlistId);
+    }
+  }, [fetchSongs, fetchLikes, fetchPlaylistTracks, viewType, playlistId]);
 
   return (
     <View style={[globalStyles.container]}>
       <TopBar />
       <HeaderTitle>{title}</HeaderTitle>
-      <AppText style={styles.tracks}>{displayedSongs.length} Tracks</AppText>
+      <AppText style={styles.tracks}>
+        {displayedSongs?.length
+          ? displayedSongs.length
+          : "No tracks in playlist"}
+        Tracks
+      </AppText>
       <View style={styles.quickActions}>
         <View style={styles.quickActionsButton}>
           <View style={styles.quickActionsButtonContainer}>

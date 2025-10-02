@@ -3,14 +3,16 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuthStore } from "./authStore";
-import { Song, toSongs } from "types";
+import { Song, toSongs } from "types/song";
 import { Playlist, toPlaylists } from "types/playlist";
 
 interface PlaylistsStore {
   isFetching: boolean;
   error: string | null;
   playlists: ReadonlyArray<Playlist>;
+  playlistTracks: ReadonlyArray<Song> | null;
   fetchPlaylists: () => Promise<void>;
+  fetchPlaylistTracks: (playlistId: number) => Promise<void>;
   postPlaylist: (playlist: Playlist) => Promise<void>;
   deletePlaylist: (playlistId: number) => Promise<void>;
   setPlaylists: (p: ReadonlyArray<Playlist>) => void;
@@ -23,6 +25,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
         isFetching: false,
         error: null,
         playlists: [] as ReadonlyArray<Playlist>,
+        playlistTracks: null,
         setPlaylists: (p) => set({ playlists: p }),
         fetchPlaylists: async () => {
           if (get().isFetching) return;
@@ -59,6 +62,32 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
             });
             set({ isFetching: false });
             await get().fetchPlaylists();
+          } catch (error: any) {
+            set({ error: error, isFetching: false });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        fetchPlaylistTracks: async (playlistId) => {
+          if (get().isFetching) return;
+
+          set({ isFetching: true, error: null });
+
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            const { data } = await axios.get(
+              `${serverUrl}/api/playlists/${playlistId}/tracks`,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+            set({
+              playlistTracks: toSongs(data),
+              isFetching: false,
+            });
           } catch (error: any) {
             set({ error: error, isFetching: false });
           } finally {

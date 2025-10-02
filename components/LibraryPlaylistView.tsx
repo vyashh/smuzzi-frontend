@@ -8,13 +8,20 @@ import {
   LIKES_ICON_URI,
   PlaylistType,
 } from "constants/global";
+import { use } from "react";
+import { usePlaylistsStore } from "utils/playlistsStore";
 
 interface LibraryPlaylistViewProps {
   viewType: PlaylistType;
   title: string;
+  playlistId?: number;
 }
 
-const LibraryPlaylistView = ({ viewType, title }: LibraryPlaylistViewProps) => {
+const LibraryPlaylistView = ({
+  viewType,
+  title,
+  playlistId,
+}: LibraryPlaylistViewProps) => {
   const ICON_BY_VIEW = {
     likes: LIKES_ICON_URI,
     allTracks: ALL_TRACKS_ICON_URI,

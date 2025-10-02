@@ -25,14 +25,20 @@ import { loadPlay } from "utils/trackPlayer";
 import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
+import { usePlaylistsStore } from "utils/playlistsStore";
 
 function LibraryPage() {
-  const fetchSongs = useSongsStore((state) => state.fetchSongs);
+  const playlists = usePlaylistsStore((state) => state.playlists);
+  const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
 
-  const handleOnpressShowPlaylist = (viewType: PlaylistType, title: string) => {
+  const handleOnpressShowPlaylist = (
+    viewType: PlaylistType,
+    title: string,
+    playlistId?: number
+  ) => {
     router.push({
       pathname: "/(tabs)/library/details",
-      params: { viewType, title },
+      params: { viewType, title, playlistId },
     });
   };
 
@@ -44,8 +50,8 @@ function LibraryPage() {
   };
 
   useEffect(() => {
-    fetchSongs();
-  }, [fetchSongs]);
+    fetchPlaylists();
+  }, [fetchPlaylists]);
 
   return (
     <View style={globalStyles.container}>
@@ -62,13 +68,25 @@ function LibraryPage() {
         >
           <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
         </Pressable>
-        <LibraryPlaylistView title="Random playlist name" viewType="playlist" />
-        <LibraryPlaylistView
-          title="Another random Playlist name"
-          viewType="playlist"
-        />
-        <LibraryPlaylistView title="Driving shit boi" viewType="playlist" />
-        <LibraryPlaylistView title="ay" viewType="playlist" />
+        {playlists.map((playlist) => (
+          <Pressable
+            key={playlist.id}
+            onPress={() =>
+              handleOnpressShowPlaylist(
+                "playlist",
+                playlist.name || "Playlist",
+                playlist.id
+              )
+            }
+          >
+            <LibraryPlaylistView
+              title={playlist.name || "Playlist"}
+              viewType="playlist"
+              playlistId={playlist.id}
+            />
+          </Pressable>
+        ))}
+        {/* Static Playlists for UI purposes */}
       </View>
 
       <BottomSheetModalProvider>
