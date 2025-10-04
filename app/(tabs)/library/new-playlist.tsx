@@ -1,10 +1,19 @@
 import AppText from "@components/AppText";
+import Button from "@components/Button";
 import TopBar from "@components/TopBar";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
 import { globalStyles } from "constants/global";
 import { useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { usePlaylistsStore } from "utils/playlistsStore";
 
 const NewPlaylistPage = () => {
@@ -16,25 +25,32 @@ const NewPlaylistPage = () => {
   };
 
   return (
-    <View style={[globalStyles.container]}>
-      {/* <TopBar /> */}
-      <View style={styles.container}>
-        <AppText style={styles.text}>Create Playlist </AppText>
-        <TextInput
-          placeholder="Enter playlist name"
-          placeholderTextColor="#aaa"
-          style={styles.input}
-          value={playlistName}
-          onChangeText={setPlaylistName}
-        />
-        <Pressable onPress={handleCreatePlaylist}>
-          <Ionicons name="add-circle" size={64} color={Colors.primary} />
-        </Pressable>
-        <Pressable onPress={handleCreatePlaylist}>
-          <AppText style={[styles.text, { marginTop: 20 }]}>Cancel</AppText>
-        </Pressable>
-      </View>
-    </View>
+    <KeyboardAvoidingView
+      style={[globalStyles.container]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ flex: 1 }}>
+          <TopBar />
+          <View style={styles.container}>
+            <AppText style={styles.text}>Give your playlist a name </AppText>
+            <TextInput
+              placeholder="My Playlist"
+              placeholderTextColor="#aaa"
+              style={styles.input}
+              value={playlistName}
+              onChangeText={setPlaylistName}
+              returnKeyType="done"
+              onSubmitEditing={handleCreatePlaylist}
+              autoFocus
+            />
+
+            <Button>Create</Button>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -43,20 +59,19 @@ export default NewPlaylistPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    justifyContent: "center",
     alignItems: "center",
-    alignContent: "space-between",
   },
-  text: { fontWeight: "bold", color: "#fff", fontSize: 24 },
+  text: { color: "#fff", fontSize: 18 },
   input: {
-    borderColor: "#555",
+    borderColor: Colors.primary,
+    borderBottomWidth: 1,
     padding: 12,
-    marginTop: 20,
+    marginVertical: 100,
     width: "90%",
     color: "#fff",
-    fontSize: 18,
+    fontSize: 32,
     textAlign: "center",
-    justifyContent: "center",
-    alignContent: "center",
   },
 });
