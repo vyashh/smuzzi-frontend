@@ -1,27 +1,9 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { Colors } from "../../../constants/colors";
-import {
-  DEFAULT_ARTWORK_URI,
-  globalStyles,
-  PlaylistType,
-} from "../../../constants/global";
-import { useSongsStore } from "../../../utils/songsStore";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { globalStyles, PlaylistType } from "../../../constants/global";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../../utils/authStore";
-import AppText from "../../../components/AppText";
-import PlaylistView from "../../../components/PlaylistView";
 import Player from "../../../components/Player";
 import HeaderTitle from "../../../components/HeaderTitle";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { loadPlay } from "utils/trackPlayer";
 import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
@@ -90,25 +72,6 @@ function LibraryPage() {
             </Pressable>
           )}
         />
-        {/* {playlists.map((playlist) => (
-          <Pressable
-            key={playlist.id}
-            onPress={() =>
-              handleOnpressShowPlaylist(
-                "playlist",
-                playlist.name || "Playlist",
-                playlist.id
-              )
-            }
-          >
-            <LibraryPlaylistView
-              title={playlist.name || "Playlist"}
-              viewType="playlist"
-              playlistId={playlist.id}
-            />
-          </Pressable>
-        ))} */}
-        {/* Static Playlists for UI purposes */}
       </View>
 
       <BottomSheetModalProvider>
