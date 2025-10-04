@@ -4,11 +4,13 @@ import TopBar from "@components/TopBar";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
 import { globalStyles } from "constants/global";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
@@ -21,7 +23,9 @@ const NewPlaylistPage = () => {
   const postPlaylist = usePlaylistsStore((s) => s.postPlaylist);
 
   const handleCreatePlaylist = async () => {
-    await postPlaylist(playlistName);
+    await postPlaylist(playlistName).then(() => {
+      router.back();
+    });
   };
 
   return (
@@ -46,7 +50,9 @@ const NewPlaylistPage = () => {
               autoFocus
             />
 
-            <Button>Create</Button>
+            <Pressable onPress={handleCreatePlaylist}>
+              <Button>Create</Button>
+            </Pressable>
           </View>
         </View>
       </TouchableWithoutFeedback>
