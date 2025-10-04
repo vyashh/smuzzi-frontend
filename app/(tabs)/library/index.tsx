@@ -43,7 +43,6 @@ function LibraryPage() {
   };
 
   const handleOnpressCreatePlaylist = () => {
-    console.log("hey");
     router.push({
       pathname: "/(tabs)/library/new-playlist",
     });
@@ -68,7 +67,30 @@ function LibraryPage() {
         >
           <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
         </Pressable>
-        {playlists.map((playlist) => (
+        <FlatList
+          style={{ flex: 1 }}
+          data={playlists}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => (
+            <Pressable
+              key={item.id}
+              onPress={() =>
+                handleOnpressShowPlaylist(
+                  "playlist",
+                  item.name || "Playlist",
+                  item.id
+                )
+              }
+            >
+              <LibraryPlaylistView
+                title={item.name || "Playlist"}
+                viewType="playlist"
+                playlistId={item.id}
+              />
+            </Pressable>
+          )}
+        />
+        {/* {playlists.map((playlist) => (
           <Pressable
             key={playlist.id}
             onPress={() =>
@@ -85,7 +107,7 @@ function LibraryPage() {
               playlistId={playlist.id}
             />
           </Pressable>
-        ))}
+        ))} */}
         {/* Static Playlists for UI purposes */}
       </View>
 
@@ -100,7 +122,7 @@ export default LibraryPage;
 
 const styles = StyleSheet.create({
   playlists: {
-    height: 60,
+    flex: 1,
     width: "100%",
   },
 });
