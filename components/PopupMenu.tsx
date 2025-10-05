@@ -56,10 +56,6 @@ const PopupMenu = ({ onPressHandler, children }: PopupMenuProps) => {
             attributes: {
               destructive: true,
             },
-            image: Platform.select({
-              ios: "trash",
-              android: "ic_menu_delete",
-            }),
           },
         ]}
         shouldOpenOnLongPress={false}
