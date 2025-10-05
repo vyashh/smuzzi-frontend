@@ -8,8 +8,6 @@ import {
   LIKES_ICON_URI,
   PlaylistType,
 } from "constants/global";
-import { use } from "react";
-import { usePlaylistsStore } from "utils/playlistsStore";
 import PopupMenu from "./PopupMenu";
 
 interface LibraryPlaylistViewProps {
@@ -33,11 +31,8 @@ const LibraryPlaylistView = ({
   };
 
   return (
-    <View style={styles.container}>
-      <Pressable
-        style={styles.containerContent}
-        onPress={handleOnPressPlaylist}
-      >
+    <Pressable style={styles.container} onPress={handleOnPressPlaylist}>
+      <View style={styles.containerContent}>
         <View>
           <Image
             style={styles.cover}
@@ -46,33 +41,27 @@ const LibraryPlaylistView = ({
         </View>
         <View>
           <AppText
-            style={[styles.detailsTitle, { width: "250" }]}
+            style={[styles.detailsTitle, { width: 250 }]}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
             {title}
           </AppText>
         </View>
-      </Pressable>
-      <View>
-        <Pressable>
-          <View style={styles.actionButtons}>
-            <Ionicons
-              name="cloud-download-outline"
-              size={16}
-              color={Colors.neutral}
-            />
-            <PopupMenu>
-              <Ionicons
-                name="ellipsis-vertical"
-                size={16}
-                color={Colors.text}
-              />
-            </PopupMenu>
-          </View>
-        </Pressable>
       </View>
-    </View>
+      <View pointerEvents="box-none">
+        <View style={styles.actionButtons}>
+          <Ionicons
+            name="cloud-download-outline"
+            size={16}
+            color={Colors.neutral}
+          />
+          <PopupMenu>
+            <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
+          </PopupMenu>
+        </View>
+      </View>
+    </Pressable>
   );
 };
 
@@ -90,7 +79,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
   cover: {
     width: 40,

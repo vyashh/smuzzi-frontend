@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Platform, StyleSheet, Text } from "react-native";
 import { Button, View } from "react-native";
 import AppText from "./AppText";
+import { Colors } from "constants/colors";
 
 interface PopupMenuProps {
   onPressHandler?: () => void;
@@ -11,31 +12,21 @@ interface PopupMenuProps {
 
 const PopupMenu = ({ onPressHandler, children }: PopupMenuProps) => {
   const menuRef = useRef<MenuComponentRef>(null);
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} pointerEvents="box-none">
       <MenuView
         ref={menuRef} //android only
         actions={[
           {
-            id: "add",
-            title: "Add",
-            titleColor: "#ffffffff",
-            image: Platform.select({
-              ios: "plus",
-              android: "ic_menu_add",
-            }),
-            imageColor: "#ffffffff",
+            id: "edit",
+            title: "Edit",
             subactions: [
               {
                 id: "nested1",
                 title: "Nested action",
-                // titleColor: "rgba(250,180,100,0.5)",
                 subtitle: "State is mixed",
-                image: Platform.select({
-                  ios: "heart.fill",
-                  android: "ic_menu_today",
-                }),
-                imageColor: "rgba(100,200,250,0.3)",
+
                 state: "mixed",
               },
               {
@@ -44,28 +35,24 @@ const PopupMenu = ({ onPressHandler, children }: PopupMenuProps) => {
                 attributes: {
                   destructive: true,
                 },
-                image: Platform.select({
-                  ios: "trash",
-                  android: "ic_menu_delete",
-                }),
               },
             ],
           },
+          // {
+          //   id: "share",
+          //   title: "Share Action",
+          //   titleColor: "#46F289",
+          //   subtitle: "Share action on SNS",
+          //   image: Platform.select({
+          //     ios: "square.and.arrow.up",
+          //     android: "ic_menu_share",
+          //   }),
+          //   imageColor: "#46F289",
+          //   state: "on",
+          // },
           {
-            id: "share",
-            title: "Share Action",
-            titleColor: "#46F289",
-            subtitle: "Share action on SNS",
-            image: Platform.select({
-              ios: "square.and.arrow.up",
-              android: "ic_menu_share",
-            }),
-            imageColor: "#46F289",
-            state: "on",
-          },
-          {
-            id: "destructive",
-            title: "Destructive Action",
+            id: "deletePlaylist",
+            title: "Delete Playlist",
             attributes: {
               destructive: true,
             },

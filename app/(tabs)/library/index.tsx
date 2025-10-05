@@ -42,7 +42,6 @@ function LibraryPage() {
         <CreatePlaylist />
       </Pressable>
       <View style={styles.playlists}>
-        {/* <Pressable onPress={() => handleOnpressShowPlaylist("likes", "Likes")}> */}
         <LibraryPlaylistView
           handleOnPressPlaylist={() =>
             handleOnpressShowPlaylist("likes", "Likes")
@@ -50,33 +49,30 @@ function LibraryPage() {
           title="My Likes"
           viewType="likes"
         />
-        {/* </Pressable> */}
-        <Pressable
-          onPress={() => handleOnpressShowPlaylist("allTracks", "All Tracks")}
-        >
-          <LibraryPlaylistView title="All Tracks" viewType="allTracks" />
-        </Pressable>
+        <LibraryPlaylistView
+          title="All Tracks"
+          viewType="allTracks"
+          handleOnPressPlaylist={() =>
+            handleOnpressShowPlaylist("allTracks", "All Tracks")
+          }
+        />
         <FlatList
           style={{ flex: 1 }}
           data={playlists}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
-            <Pressable
-              key={item.id}
-              onPress={() =>
+            <LibraryPlaylistView
+              title={item.name || "Playlist"}
+              viewType="playlist"
+              playlistId={item.id}
+              handleOnPressPlaylist={() =>
                 handleOnpressShowPlaylist(
                   "playlist",
                   item.name || "Playlist",
                   item.id
                 )
               }
-            >
-              <LibraryPlaylistView
-                title={item.name || "Playlist"}
-                viewType="playlist"
-                playlistId={item.id}
-              />
-            </Pressable>
+            />
           )}
         />
       </View>

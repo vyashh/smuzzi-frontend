@@ -1,7 +1,7 @@
 import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
 interface AppTextProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   style?: StyleProp<TextStyle>;
 }
 
