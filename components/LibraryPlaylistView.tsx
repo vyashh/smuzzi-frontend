@@ -9,6 +9,7 @@ import {
   PlaylistType,
 } from "constants/global";
 import PopupMenu from "./PopupMenu";
+import { useRef } from "react";
 
 interface LibraryPlaylistViewProps {
   viewType: PlaylistType;
@@ -29,9 +30,16 @@ const LibraryPlaylistView = ({
     playlist: DEFAULT_ARTWORK_URI,
     default: DEFAULT_ARTWORK_URI,
   };
+  const menuTouchRef = useRef(false);
 
   return (
-    <Pressable style={styles.container} onPress={handleOnPressPlaylist}>
+    <Pressable
+      style={styles.container}
+      onPress={() => {
+        if (menuTouchRef.current) return;
+        handleOnPressPlaylist?.();
+      }}
+    >
       <View style={styles.containerContent}>
         <View>
           <Image
@@ -50,7 +58,15 @@ const LibraryPlaylistView = ({
         </View>
       </View>
       <View pointerEvents="box-none">
-        <View style={styles.actionButtons}>
+        <View
+          style={styles.actionButtons}
+          onTouchStart={() => {
+            menuTouchRef.current = true;
+          }}
+          onTouchEnd={() => {
+            setTimeout(() => (menuTouchRef.current = false), 0);
+          }}
+        >
           <Ionicons
             name="cloud-download-outline"
             size={16}
