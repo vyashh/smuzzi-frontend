@@ -8,6 +8,7 @@ import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import PopupMenu from "@components/PopupMenu";
 
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
@@ -41,9 +42,15 @@ function LibraryPage() {
         <CreatePlaylist />
       </Pressable>
       <View style={styles.playlists}>
-        <Pressable onPress={() => handleOnpressShowPlaylist("likes", "Likes")}>
-          <LibraryPlaylistView title="My Likes" viewType="likes" />
-        </Pressable>
+        {/* <Pressable onPress={() => handleOnpressShowPlaylist("likes", "Likes")}> */}
+        <LibraryPlaylistView
+          handleOnPressPlaylist={() =>
+            handleOnpressShowPlaylist("likes", "Likes")
+          }
+          title="My Likes"
+          viewType="likes"
+        />
+        {/* </Pressable> */}
         <Pressable
           onPress={() => handleOnpressShowPlaylist("allTracks", "All Tracks")}
         >
@@ -87,5 +94,6 @@ const styles = StyleSheet.create({
   playlists: {
     flex: 1,
     width: "100%",
+    marginBottom: 80,
   },
 });

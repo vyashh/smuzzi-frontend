@@ -38,7 +38,7 @@ const NewPlaylistPage = () => {
         <View style={{ flex: 1 }}>
           <TopBar />
           <View style={styles.container}>
-            <AppText style={styles.text}>Give your playlist a name </AppText>
+            <AppText>Give your playlist a name </AppText>
             <TextInput
               placeholder="My Playlist"
               placeholderTextColor="#aaa"
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  text: { color: "#fff", fontSize: 18 },
   input: {
     borderColor: Colors.primary,
     borderBottomWidth: 1,
