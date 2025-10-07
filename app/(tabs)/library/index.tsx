@@ -13,6 +13,9 @@ import OptionSheet, { OptionsSheetRef } from "@components/OptionsSheet";
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<number | null>(
+    null
+  );
 
   const optionsRef = useRef<OptionsSheetRef>(null);
   const openOptions = () => optionsRef.current?.present();
@@ -32,6 +35,12 @@ function LibraryPage() {
     router.push({
       pathname: "/(tabs)/library/new-playlist",
     });
+  };
+
+  const handleOpenOptions = (playlistId: number) => {
+    setSelectedPlaylistId(playlistId);
+    console.log("open options for", playlistId);
+    openOptions();
   };
 
   useEffect(() => {
@@ -76,7 +85,7 @@ function LibraryPage() {
                     item.id
                   )
                 }
-                onOpenOptions={openOptions}
+                onOpenOptions={() => handleOpenOptions(item.id)}
               />
             )}
           />

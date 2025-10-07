@@ -13,7 +13,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   }));
 
   return (
-    <BottomSheetModal ref={modalRef} snapPoints={["50%"]}>
+    <BottomSheetModal ref={modalRef} snapPoints={["35%"]}>
       <BottomSheetView>
         <AppText>Option Sheet</AppText>
       </BottomSheetView>
