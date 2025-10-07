@@ -26,6 +26,7 @@ function LibraryPage() {
     title: string,
     playlistId?: number
   ) => {
+    console.log("handleOnPressShowPlaylist()");
     router.push({
       pathname: "/(tabs)/library/details",
       params: { viewType, title, playlistId },

@@ -37,10 +37,10 @@ const LibraryPlaylistView = ({
   return (
     <Pressable
       style={styles.container}
-      // onPress={() => {
-      //   if (menuTouchRef.current) return;
-      //   handleOnPressPlaylist?.();
-      // }}
+      onPress={() => {
+        if (menuTouchRef.current) return;
+        handleOnPressPlaylist?.();
+      }}
     >
       <View style={styles.containerContent}>
         <View>
