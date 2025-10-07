@@ -23,7 +23,7 @@ export default InputField;
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
+    // margin: 10,
   },
   input: {
     height: 40,

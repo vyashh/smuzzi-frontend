@@ -11,7 +11,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
@@ -62,11 +62,23 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
           <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
           <Text style={styles.saveButton}>Save</Text>
         </View>
-        <View>
-          <InputField
-            placeholder="Playlist name"
-            value={sheetProps?.selectedOptionsPlaylist?.name}
-          />
+        <View style={styles.content}>
+          <View>
+            <Image
+              style={styles.artwork}
+              source={{ uri: "https://placehold.co/600x600.png" }}
+            />
+          </View>
+          <View style={styles.contentInputFields}>
+            <InputField
+              placeholder="Playlist name"
+              value={sheetProps?.selectedOptionsPlaylist?.name}
+            />
+            <InputField
+              placeholder="Playlist name"
+              value={sheetProps?.selectedOptionsPlaylist?.name}
+            />
+          </View>
         </View>
         <View style={styles.bottomActionButtons}>
           <Ionicons
@@ -104,5 +116,18 @@ const styles = StyleSheet.create({
   bottomActionButtons: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  content: {
+    marginVertical: 20,
+    flexDirection: "row",
+  },
+  contentInputFields: {
+    flex: 1,
+    marginLeft: 10,
+    justifyContent: "space-between",
+  },
+  artwork: {
+    width: 100,
+    height: 100,
   },
 });
