@@ -40,7 +40,10 @@ function LibraryPage() {
 
   const handleOnOpenOptions = (playlist: Playlist) => {
     console.log("open options for", playlist.id);
-    optionsRef.current?.present({ selectedOptionsPlaylist: playlist });
+    optionsRef.current?.present({
+      selectedOptionsPlaylist: playlist,
+      type: "playlist",
+    });
   };
 
   useEffect(() => {

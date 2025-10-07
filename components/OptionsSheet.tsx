@@ -11,12 +11,14 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
 import InputField from "./InputField";
-import { EDIT_ARTWORK_URI } from "constants/global";
+import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
+import { usePlaylistsStore } from "utils/playlistsStore";
+import { dismiss } from "expo-router/build/global-state/routing";
 
 export type OptionsSheetRef = {
   present: (props: OptionSheetProps) => void;
@@ -25,10 +27,12 @@ export type OptionsSheetRef = {
 
 interface OptionSheetProps {
   selectedOptionsPlaylist: Playlist | null;
+  type: OptionType;
 }
 const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
   const [sheetProps, setSheetProps] = useState<OptionSheetProps | null>(null);
+  const { deletePlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionSheetProps) => {
@@ -37,6 +41,18 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
     },
     dismiss: () => modalRef.current?.dismiss(),
   }));
+
+  const handleDelete = () => {
+    if (
+      sheetProps?.type === "playlist" &&
+      sheetProps?.selectedOptionsPlaylist?.id !== undefined
+    ) {
+      console.log("playlist delete");
+      deletePlaylist(sheetProps.selectedOptionsPlaylist.id).then(() =>
+        modalRef.current?.dismiss()
+      );
+    }
+  };
 
   useEffect(() => {
     console.log("Options Sheet Props:", sheetProps);
@@ -82,7 +98,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
             />
           </View>
         </View>
-        <View style={styles.bottomActionButtons}>
+        <Pressable style={styles.bottomActionButtons} onPress={handleDelete}>
           <Ionicons
             style={{ marginRight: 8 }}
             name="trash-bin"
@@ -90,7 +106,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
             color={Colors.danger}
           />
           <AppText>Delete playlist</AppText>
-        </View>
+        </Pressable>
       </BottomSheetView>
     </BottomSheetModal>
   );

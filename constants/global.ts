@@ -31,6 +31,7 @@ const ALL_TRACKS_ICON_URI = Asset.fromModule(
 
 // types
 type PlaylistType = "playlist" | "likes" | "allTracks";
+type OptionType = "playlist" | "track";
 
 export {
   globalStyles,
@@ -39,4 +40,5 @@ export {
   ALL_TRACKS_ICON_URI,
   EDIT_ARTWORK_URI,
   PlaylistType,
+  OptionType,
 };
