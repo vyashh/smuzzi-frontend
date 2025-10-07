@@ -14,6 +14,8 @@ import AppText from "./AppText";
 import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
+import { Ionicons } from "@expo/vector-icons";
+import InputField from "./InputField";
 
 export type OptionsSheetRef = {
   present: (props: OptionSheetProps) => void;
@@ -55,12 +57,26 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
       handleStyle={{ display: "none" }}
     >
       <BottomSheetView style={styles.container}>
-        <View style={styles.actionButtons}>
+        <View style={styles.topActionButtons}>
           <Text style={styles.deleteButton}>Cancel</Text>
           <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
           <Text style={styles.saveButton}>Save</Text>
         </View>
-        <AppText>{sheetProps?.selectedOptionsPlaylist?.name}</AppText>
+        <View>
+          <InputField
+            placeholder="Playlist name"
+            value={sheetProps?.selectedOptionsPlaylist?.name}
+          />
+        </View>
+        <View style={styles.bottomActionButtons}>
+          <Ionicons
+            style={{ marginRight: 8 }}
+            name="trash-bin"
+            size={18}
+            color={Colors.danger}
+          />
+          <AppText>Delete playlist</AppText>
+        </View>
       </BottomSheetView>
     </BottomSheetModal>
   );
@@ -73,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
     padding: 10,
   },
-  actionButtons: {
+  topActionButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -84,5 +100,9 @@ const styles = StyleSheet.create({
   saveButton: {
     color: Colors.primary,
     fontWeight: "bold",
+  },
+  bottomActionButtons: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
