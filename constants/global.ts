@@ -21,6 +21,10 @@ const LIKES_ICON_URI = Asset.fromModule(
   require("../assets/likes-icon.png")
 ).uri;
 
+const EDIT_ARTWORK_URI = Asset.fromModule(
+  require("../assets/artwork_edit.png")
+).uri;
+
 const ALL_TRACKS_ICON_URI = Asset.fromModule(
   require("../assets/all-tracks-icon.png")
 ).uri;
@@ -33,5 +37,6 @@ export {
   DEFAULT_ARTWORK_URI,
   LIKES_ICON_URI,
   ALL_TRACKS_ICON_URI,
+  EDIT_ARTWORK_URI,
   PlaylistType,
 };

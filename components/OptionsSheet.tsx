@@ -16,6 +16,7 @@ import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
 import InputField from "./InputField";
+import { EDIT_ARTWORK_URI } from "constants/global";
 
 export type OptionsSheetRef = {
   present: (props: OptionSheetProps) => void;
@@ -64,10 +65,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
         </View>
         <View style={styles.content}>
           <View>
-            <Image
-              style={styles.artwork}
-              source={{ uri: "https://placehold.co/600x600.png" }}
-            />
+            <Image style={styles.artwork} source={{ uri: EDIT_ARTWORK_URI }} />
           </View>
           <View style={styles.contentInputFields}>
             <InputField
@@ -76,7 +74,11 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
             />
             <InputField
               placeholder="Playlist name"
-              value={sheetProps?.selectedOptionsPlaylist?.name}
+              value={
+                sheetProps?.selectedOptionsPlaylist?.description
+                  ? sheetProps.selectedOptionsPlaylist.description
+                  : "Enter description"
+              }
             />
           </View>
         </View>
@@ -116,6 +118,7 @@ const styles = StyleSheet.create({
   bottomActionButtons: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 10,
   },
   content: {
     marginVertical: 20,
@@ -129,5 +132,6 @@ const styles = StyleSheet.create({
   artwork: {
     width: 100,
     height: 100,
+    borderRadius: 8,
   },
 });

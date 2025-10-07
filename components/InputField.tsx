@@ -1,3 +1,4 @@
+import { Colors } from "constants/colors";
 import { StyleSheet, TextInput, View } from "react-native";
 
 interface InputFieldProps {
@@ -26,10 +27,10 @@ const styles = StyleSheet.create({
     // margin: 10,
   },
   input: {
+    backgroundColor: Colors.surface,
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
     paddingLeft: 8,
-    color: "red",
+    color: Colors.text,
+    borderRadius: 8,
   },
 });
