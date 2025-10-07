@@ -11,7 +11,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 
@@ -55,7 +55,11 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
       handleStyle={{ display: "none" }}
     >
       <BottomSheetView style={styles.container}>
-        <AppText>Playlist Options</AppText>
+        <View style={styles.actionButtons}>
+          <Text style={styles.deleteButton}>Cancel</Text>
+          <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
+          <Text style={styles.saveButton}>Save</Text>
+        </View>
         <AppText>{sheetProps?.selectedOptionsPlaylist?.name}</AppText>
       </BottomSheetView>
     </BottomSheetModal>
@@ -67,5 +71,18 @@ export default OptionSheet;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bg,
+    padding: 10,
+  },
+  actionButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  deleteButton: {
+    color: Colors.danger,
+    fontWeight: "bold",
+  },
+  saveButton: {
+    color: Colors.primary,
+    fontWeight: "bold",
   },
 });
