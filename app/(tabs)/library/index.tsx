@@ -9,17 +9,18 @@ import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import OptionSheet, { OptionsSheetRef } from "@components/OptionsSheet";
+import { Playlist } from "types/playlist";
 
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState<number | null>(
-    null
-  );
+  const [selectedOptionsPlaylist, setSelectedOptionsPlaylist] =
+    useState<Playlist | null>(null);
 
   const optionsRef = useRef<OptionsSheetRef>(null);
-  const openOptions = () => optionsRef.current?.present();
-
+  const openOptions = (id: number, title: string) => {
+    optionsRef.current?.present({ selectedOptionsPlaylist });
+  };
   const handleOnpressShowPlaylist = (
     viewType: PlaylistType,
     title: string,
@@ -37,10 +38,9 @@ function LibraryPage() {
     });
   };
 
-  const handleOpenOptions = (playlistId: number) => {
-    setSelectedPlaylistId(playlistId);
-    console.log("open options for", playlistId);
-    openOptions();
+  const handleOnOpenOptions = (playlist: Playlist) => {
+    console.log("open options for", playlist.id);
+    optionsRef.current?.present({ selectedOptionsPlaylist: playlist });
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function LibraryPage() {
                     item.id
                   )
                 }
-                onOpenOptions={() => handleOpenOptions(item.id)}
+                onOpenOptions={() => handleOnOpenOptions(item)}
               />
             )}
           />
