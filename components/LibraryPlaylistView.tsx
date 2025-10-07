@@ -16,6 +16,7 @@ interface LibraryPlaylistViewProps {
   title: string;
   playlistId?: number;
   handleOnPressPlaylist?: () => void;
+  onOpenOptions?: () => void;
 }
 
 const LibraryPlaylistView = ({
@@ -23,6 +24,7 @@ const LibraryPlaylistView = ({
   title,
   playlistId,
   handleOnPressPlaylist,
+  onOpenOptions,
 }: LibraryPlaylistViewProps) => {
   const ICON_BY_VIEW = {
     likes: LIKES_ICON_URI,
@@ -35,10 +37,10 @@ const LibraryPlaylistView = ({
   return (
     <Pressable
       style={styles.container}
-      onPress={() => {
-        if (menuTouchRef.current) return;
-        handleOnPressPlaylist?.();
-      }}
+      // onPress={() => {
+      //   if (menuTouchRef.current) return;
+      //   handleOnPressPlaylist?.();
+      // }}
     >
       <View style={styles.containerContent}>
         <View>
@@ -72,9 +74,18 @@ const LibraryPlaylistView = ({
             size={16}
             color={Colors.neutral}
           />
-          <PopupMenu>
+          <Pressable
+            onPress={(e) => {
+              console.log("Options Pressed");
+              e.stopPropagation();
+              onOpenOptions?.();
+            }}
+            onPressIn={(e) => e.stopPropagation()}
+            hitSlop={8}
+            style={{ padding: 4 }}
+          >
             <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
-          </PopupMenu>
+          </Pressable>
         </View>
       </View>
     </Pressable>

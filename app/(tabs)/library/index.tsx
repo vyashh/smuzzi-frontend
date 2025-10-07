@@ -1,6 +1,6 @@
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { globalStyles, PlaylistType } from "../../../constants/global";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Player from "../../../components/Player";
 import HeaderTitle from "../../../components/HeaderTitle";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -8,11 +8,14 @@ import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
-import PopupMenu from "@components/PopupMenu";
+import OptionSheet, { OptionsSheetRef } from "@components/OptionsSheet";
 
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
+
+  const optionsRef = useRef<OptionsSheetRef>(null);
+  const openOptions = () => optionsRef.current?.present();
 
   const handleOnpressShowPlaylist = (
     viewType: PlaylistType,
@@ -36,51 +39,53 @@ function LibraryPage() {
   }, [fetchPlaylists]);
 
   return (
-    <View style={globalStyles.container}>
-      <HeaderTitle>Library</HeaderTitle>
-      <Pressable onPress={handleOnpressCreatePlaylist}>
-        <CreatePlaylist />
-      </Pressable>
-      <View style={styles.playlists}>
-        <LibraryPlaylistView
-          handleOnPressPlaylist={() =>
-            handleOnpressShowPlaylist("likes", "Likes")
-          }
-          title="My Likes"
-          viewType="likes"
-        />
-        <LibraryPlaylistView
-          title="All Tracks"
-          viewType="allTracks"
-          handleOnPressPlaylist={() =>
-            handleOnpressShowPlaylist("allTracks", "All Tracks")
-          }
-        />
-        <FlatList
-          style={{ flex: 1 }}
-          data={playlists}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <LibraryPlaylistView
-              title={item.name || "Playlist"}
-              viewType="playlist"
-              playlistId={item.id}
-              handleOnPressPlaylist={() =>
-                handleOnpressShowPlaylist(
-                  "playlist",
-                  item.name || "Playlist",
-                  item.id
-                )
-              }
-            />
-          )}
-        />
-      </View>
+    <BottomSheetModalProvider>
+      <View style={globalStyles.container}>
+        <HeaderTitle>Library</HeaderTitle>
+        <Pressable onPress={handleOnpressCreatePlaylist}>
+          <CreatePlaylist />
+        </Pressable>
+        <View style={styles.playlists}>
+          <LibraryPlaylistView
+            handleOnPressPlaylist={() =>
+              handleOnpressShowPlaylist("likes", "Likes")
+            }
+            title="My Likes"
+            viewType="likes"
+          />
+          <LibraryPlaylistView
+            title="All Tracks"
+            viewType="allTracks"
+            handleOnPressPlaylist={() =>
+              handleOnpressShowPlaylist("allTracks", "All Tracks")
+            }
+          />
+          <FlatList
+            style={{ flex: 1 }}
+            data={playlists}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <LibraryPlaylistView
+                title={item.name || "Playlist"}
+                viewType="playlist"
+                playlistId={item.id}
+                handleOnPressPlaylist={() =>
+                  handleOnpressShowPlaylist(
+                    "playlist",
+                    item.name || "Playlist",
+                    item.id
+                  )
+                }
+                onOpenOptions={openOptions}
+              />
+            )}
+          />
+          <OptionSheet ref={optionsRef} />
+        </View>
 
-      <BottomSheetModalProvider>
         <Player />
-      </BottomSheetModalProvider>
-    </View>
+      </View>
+    </BottomSheetModalProvider>
   );
 }
 
