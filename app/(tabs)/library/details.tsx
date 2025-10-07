@@ -23,6 +23,7 @@ import PlaylistView from "@components/PlaylistView";
 import { useLikeStore } from "utils/likesStore";
 import TopBar from "@components/TopBar";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import { useActiveTrack } from "react-native-track-player";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{
@@ -44,6 +45,8 @@ const playlist = () => {
 
   const refreshing =
     viewType === "likes" ? isSongsFetching || isLikesFetching : isSongsFetching;
+
+  const activeTrack = useActiveTrack();
 
   const handleRefresh = () => {
     switch (viewType) {
@@ -158,7 +161,7 @@ const playlist = () => {
         )}
       />
       <BottomSheetModalProvider>
-        <Player />
+        {activeTrack && <Player />}
       </BottomSheetModalProvider>
     </View>
   );

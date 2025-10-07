@@ -10,12 +10,14 @@ import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import OptionSheet, { OptionsSheetRef } from "@components/OptionsSheet";
 import { Playlist } from "types/playlist";
+import { useActiveTrack } from "react-native-track-player";
 
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
   const [selectedOptionsPlaylist, setSelectedOptionsPlaylist] =
     useState<Playlist | null>(null);
+  const activeTrack = useActiveTrack();
 
   const optionsRef = useRef<OptionsSheetRef>(null);
   const openOptions = (id: number, title: string) => {
@@ -96,7 +98,7 @@ function LibraryPage() {
           <OptionSheet ref={optionsRef} />
         </View>
 
-        <Player />
+        {activeTrack && <Player />}
       </View>
     </BottomSheetModalProvider>
   );

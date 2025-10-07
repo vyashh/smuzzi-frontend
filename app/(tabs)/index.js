@@ -16,9 +16,11 @@ import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
 import { useCallback, useMemo, useRef } from "react";
 import Player from "../../components/Player";
+import { useActiveTrack } from "react-native-track-player";
 
 function Home() {
   const userName = "Vyash";
+  const activeTrack = useActiveTrack();
 
   // callbacks
   const handleSheetChanges = useCallback((index) => {
@@ -56,7 +58,7 @@ function Home() {
         </View>
       </View>
       <HeaderTitle style={{ marginTop: 40 }}>Recently added</HeaderTitle>
-      <Player />
+      {activeTrack && <Player />}
     </View>
   );
 }
