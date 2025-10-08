@@ -54,6 +54,10 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
     }
   };
 
+  const handleCancel = () => {
+    modalRef.current?.dismiss();
+  };
+
   useEffect(() => {
     if (sheetProps) {
       setPlaylistName(sheetProps.selectedOptionsPlaylist?.name ?? "");
@@ -77,7 +81,9 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
     >
       <BottomSheetView style={styles.container}>
         <View style={styles.topActionButtons}>
-          <Text style={styles.deleteButton}>Cancel</Text>
+          <Pressable onPress={handleCancel}>
+            <Text style={styles.deleteButton}>Cancel</Text>
+          </Pressable>
           <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
           <Text style={styles.saveButton}>Save</Text>
         </View>
