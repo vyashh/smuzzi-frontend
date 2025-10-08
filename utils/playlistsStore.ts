@@ -14,6 +14,10 @@ interface PlaylistsStore {
   fetchPlaylists: () => Promise<void>;
   fetchPlaylistTracks: (playlistId: number) => Promise<void>;
   postPlaylist: (playlistName: string) => Promise<Playlist>;
+  patchPlaylist: (
+    playlistId: number,
+    payload: { name?: string; description?: string | null }
+  ) => Promise<void>;
   deletePlaylist: (playlistId: number) => Promise<void>;
   setPlaylists: (p: ReadonlyArray<Playlist>) => void;
 }
@@ -98,6 +102,30 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
             set({ isFetching: false });
           }
         },
+        patchPlaylist: async (playlistId, payload) => {
+          set({ isFetching: true, error: null });
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            await axios.patch(
+              `${serverUrl}/api/playlists/${playlistId}`,
+              payload,
+              { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+            set({ isFetching: false });
+            await get().fetchPlaylists();
+          } catch (error: any) {
+            const msg =
+              error?.response?.data?.detail ??
+              (typeof error?.message === "string"
+                ? error.message
+                : String(error));
+            set({ error: msg, isFetching: false });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+
         deletePlaylist: async (playlistId) => {
           set({ isFetching: true, error: null });
           const { serverUrl, accessToken } = useAuthStore.getState();

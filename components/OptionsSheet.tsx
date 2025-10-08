@@ -32,8 +32,10 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
   const [sheetProps, setSheetProps] = useState<OptionSheetProps | null>(null);
   const { deletePlaylist } = usePlaylistsStore();
+  const [playlistId, setPlaylistId] = useState<number>();
   const [playlistName, setPlaylistName] = useState<string>("");
   const [playlistDescription, setPlaylistDescription] = useState<string>("");
+  const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionSheetProps) => {
@@ -55,7 +57,14 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
     }
   };
 
-  const handleChange = () => {};
+  const handleChange = () => {
+    if (playlistId !== undefined) {
+      patchPlaylist(playlistId, {
+        name: playlistName,
+        description: playlistDescription,
+      }).then(() => handleCancel());
+    }
+  };
 
   const handleCancel = () => {
     modalRef.current?.dismiss();
@@ -67,8 +76,9 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
       setPlaylistDescription(
         sheetProps.selectedOptionsPlaylist?.description ?? ""
       );
+      setPlaylistId(sheetProps.selectedOptionsPlaylist?.id ?? undefined);
     }
-  }, [sheetProps, setPlaylistName, setPlaylistDescription]);
+  }, [sheetProps, setPlaylistName, setPlaylistDescription, setPlaylistId]);
   return (
     <BottomSheetModal
       ref={modalRef}
@@ -91,7 +101,9 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
             <Text style={styles.deleteButton}>Cancel</Text>
           </Pressable>
           <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
-          <Text style={styles.saveButton}>Save</Text>
+          <Pressable onPress={handleChange}>
+            <Text style={styles.saveButton}>Save</Text>
+          </Pressable>
         </View>
         <View style={styles.content}>
           <View>
