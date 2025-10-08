@@ -18,7 +18,6 @@ import { Ionicons } from "@expo/vector-icons";
 import InputField from "./InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
-import { dismiss } from "expo-router/build/global-state/routing";
 
 export type OptionsSheetRef = {
   present: (props: OptionSheetProps) => void;
@@ -33,6 +32,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
   const [sheetProps, setSheetProps] = useState<OptionSheetProps | null>(null);
   const { deletePlaylist } = usePlaylistsStore();
+  const [playlistName, setPlaylistName] = useState<string>("");
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionSheetProps) => {
@@ -55,7 +55,9 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   };
 
   useEffect(() => {
-    console.log("Options Sheet Props:", sheetProps);
+    if (sheetProps) {
+      setPlaylistName(sheetProps.selectedOptionsPlaylist?.name ?? "");
+    }
   }, [sheetProps]);
   return (
     <BottomSheetModal
@@ -86,7 +88,8 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
           <View style={styles.contentInputFields}>
             <InputField
               placeholder="Playlist name"
-              value={sheetProps?.selectedOptionsPlaylist?.name}
+              value={playlistName}
+              onChangeText={setPlaylistName}
             />
             <InputField
               placeholder="Playlist name"
