@@ -118,6 +118,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
             <InputField
               placeholder="Playlist description"
               value={playlistDescription}
+              onChangeText={setPlaylistDescription}
             />
           </View>
         </View>
