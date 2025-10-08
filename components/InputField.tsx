@@ -13,6 +13,7 @@ const InputField = ({ placeholder, value, onChangeText }: InputFieldProps) => {
       <TextInput
         style={styles.input}
         placeholder={placeholder}
+        placeholderTextColor={Colors.textMuted}
         value={value}
         onChangeText={onChangeText}
       />

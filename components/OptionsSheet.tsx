@@ -33,6 +33,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const [sheetProps, setSheetProps] = useState<OptionSheetProps | null>(null);
   const { deletePlaylist } = usePlaylistsStore();
   const [playlistName, setPlaylistName] = useState<string>("");
+  const [playlistDescription, setPlaylistDescription] = useState<string>("");
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionSheetProps) => {
@@ -54,6 +55,8 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
     }
   };
 
+  const handleChange = () => {};
+
   const handleCancel = () => {
     modalRef.current?.dismiss();
   };
@@ -61,8 +64,11 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   useEffect(() => {
     if (sheetProps) {
       setPlaylistName(sheetProps.selectedOptionsPlaylist?.name ?? "");
+      setPlaylistDescription(
+        sheetProps.selectedOptionsPlaylist?.description ?? ""
+      );
     }
-  }, [sheetProps]);
+  }, [sheetProps, setPlaylistName, setPlaylistDescription]);
   return (
     <BottomSheetModal
       ref={modalRef}
@@ -98,12 +104,8 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
               onChangeText={setPlaylistName}
             />
             <InputField
-              placeholder="Playlist name"
-              value={
-                sheetProps?.selectedOptionsPlaylist?.description
-                  ? sheetProps.selectedOptionsPlaylist.description
-                  : "Enter description"
-              }
+              placeholder="Playlist description"
+              value={playlistDescription}
             />
           </View>
         </View>

@@ -5,6 +5,7 @@ export interface ApiPlaylist {
   id: number;
   name: string;
   user_id: string | null;
+  description: string;
   created_at: string;
 }
 
@@ -13,6 +14,7 @@ export interface Playlist {
   id: number;
   name: string;
   userId: string | null;
+  description: string;
   createdAt: string;
 }
 
@@ -22,6 +24,7 @@ export const toPlaylist = (dto: ApiPlaylist): Playlist => {
     id: dto.id,
     name: dto.name,
     userId: dto.user_id,
+    description: dto.description,
     createdAt: dto.created_at,
   };
 };
