@@ -11,7 +11,15 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import AppText from "./AppText";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
@@ -94,44 +102,58 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
       enableDynamicSizing
       enablePanDownToClose
       handleStyle={{ display: "none" }}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
     >
-      <BottomSheetView style={styles.container}>
-        <View style={styles.topActionButtons}>
-          <Pressable onPress={handleCancel}>
-            <Text style={styles.deleteButton}>Cancel</Text>
-          </Pressable>
-          <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
-          <Pressable onPress={handleChange}>
-            <Text style={styles.saveButton}>Save</Text>
-          </Pressable>
-        </View>
-        <View style={styles.content}>
-          <View>
-            <Image style={styles.artwork} source={{ uri: EDIT_ARTWORK_URI }} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        style={{ flex: 1 }}
+      >
+        <BottomSheetView style={styles.container}>
+          <View style={styles.topActionButtons}>
+            <Pressable onPress={handleCancel}>
+              <Text style={styles.deleteButton}>Cancel</Text>
+            </Pressable>
+            <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
+            <Pressable onPress={handleChange}>
+              <Text style={styles.saveButton}>Save</Text>
+            </Pressable>
           </View>
-          <View style={styles.contentInputFields}>
-            <InputField
-              placeholder="Playlist name"
-              value={playlistName}
-              onChangeText={setPlaylistName}
-            />
-            <InputField
-              placeholder="Playlist description"
-              value={playlistDescription}
-              onChangeText={setPlaylistDescription}
-            />
+          <View style={styles.content}>
+            <View>
+              <Image
+                style={styles.artwork}
+                source={{ uri: EDIT_ARTWORK_URI }}
+              />
+            </View>
+            <View style={styles.contentInputFields}>
+              <InputField
+                placeholder="Playlist name"
+                value={playlistName}
+                onChangeText={setPlaylistName}
+                useBottomSheetInput
+              />
+              <InputField
+                placeholder="Playlist description"
+                value={playlistDescription}
+                onChangeText={setPlaylistDescription}
+                useBottomSheetInput
+              />
+            </View>
           </View>
-        </View>
-        <Pressable style={styles.bottomActionButtons} onPress={handleDelete}>
-          <Ionicons
-            style={{ marginRight: 8 }}
-            name="trash-bin"
-            size={18}
-            color={Colors.danger}
-          />
-          <AppText>Delete playlist</AppText>
-        </Pressable>
-      </BottomSheetView>
+          <Pressable style={styles.bottomActionButtons} onPress={handleDelete}>
+            <Ionicons
+              style={{ marginRight: 8 }}
+              name="trash-bin"
+              size={18}
+              color={Colors.danger}
+            />
+            <AppText>Delete playlist</AppText>
+          </Pressable>
+        </BottomSheetView>
+      </KeyboardAvoidingView>
     </BottomSheetModal>
   );
 });
