@@ -97,15 +97,7 @@ const playlist = () => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
     if (viewType === "playlist" && playlistId) fetchPlaylistTracks(playlistId);
-  }, [
-    fetchSongs,
-    fetchLikes,
-    fetchPlaylistTracks,
-    viewType,
-    playlistId,
-    displayedSongs,
-    handleOnOpenOptions,
-  ]);
+  }, [fetchSongs, fetchLikes, fetchPlaylistTracks, viewType, playlistId]);
 
   return (
     <BottomSheetModalProvider>
