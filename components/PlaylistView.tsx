@@ -7,9 +7,15 @@ interface PlaylistViewProps {
   title: string;
   artist: string;
   cover: string;
+  onOpenOptions?: () => void;
 }
 
-const PlaylistView = ({ title, artist, cover }: PlaylistViewProps) => {
+const PlaylistView = ({
+  title,
+  artist,
+  cover,
+  onOpenOptions,
+}: PlaylistViewProps) => {
   return (
     <View style={styles.container}>
       <View>
@@ -40,7 +46,18 @@ const PlaylistView = ({ title, artist, cover }: PlaylistViewProps) => {
             justifyContent: "center",
           }}
         >
-          <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
+          <Pressable
+            onPress={(e) => {
+              console.log("Options Pressed");
+              e.stopPropagation();
+              onOpenOptions?.();
+            }}
+            onPressIn={(e) => e.stopPropagation()}
+            hitSlop={8}
+            style={{ padding: 4 }}
+          >
+            <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
+          </Pressable>
         </View>
       </Pressable>
     </View>

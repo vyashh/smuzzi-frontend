@@ -26,19 +26,19 @@ import { Ionicons } from "@expo/vector-icons";
 import InputField from "../InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import { Song } from "types/song";
 
 export type OptionsSheetTrackRef = {
-  present: (props: OptionSheetTrackProps) => void;
+  present: (props: OptionsSheetTrackProps) => void;
   dismiss: () => void;
 };
 
-interface OptionSheetTrackProps {
-  selectedOptionsPlaylist: Playlist | null;
-  type: OptionType;
+interface OptionsSheetTrackProps {
+  selectedOptionsTrack: Song | null;
 }
-const OptionSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
+const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
-  const [sheetProps, setSheetProps] = useState<OptionSheetTrackProps | null>(
+  const [sheetProps, setSheetProps] = useState<OptionsSheetTrackProps | null>(
     null
   );
   const { deletePlaylist } = usePlaylistsStore();
@@ -48,7 +48,7 @@ const OptionSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
-    present: (props: OptionSheetTrackProps) => {
+    present: (props: OptionsSheetTrackProps) => {
       setSheetProps(props);
       modalRef.current?.present();
     },
@@ -160,7 +160,7 @@ const OptionSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   );
 });
 
-export default OptionSheetTrack;
+export default OptionsSheetTrack;
 
 const styles = StyleSheet.create({
   container: {

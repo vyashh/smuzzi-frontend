@@ -27,6 +27,7 @@ import OptionsSheetPlaylist, {
   OptionsSheetTrackRef,
 } from "@components/Options/OptionsSheetTrack";
 import PlaylistActionButtons from "@components/Buttons/PlaylistActionButtons";
+import OptionSheetTrack from "@components/Options/OptionsSheetTrack";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{
@@ -46,6 +47,8 @@ const playlist = () => {
 
   const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
   const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
+
+  const [selectedTrack, setSelectedTrack] = useState<Song>();
 
   const refreshing =
     viewType === "likes" ? isSongsFetching || isLikesFetching : isSongsFetching;
@@ -83,6 +86,13 @@ const playlist = () => {
     }
   }, [viewType, songs, likedSongs, playlistTracks]);
 
+  const handleOnOpenOptions = (track: Song) => {
+    console.log("open options for", track.id);
+    optionsRef.current?.present({
+      selectedOptionsTrack: track,
+    });
+  };
+
   useEffect(() => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
@@ -94,46 +104,50 @@ const playlist = () => {
     viewType,
     playlistId,
     displayedSongs,
+    handleOnOpenOptions,
   ]);
 
   return (
-    <View style={[globalStyles.container]}>
-      <TopBar />
-      <HeaderTitle>{title}</HeaderTitle>
-      <View style={styles.trackDetails}>
-        <AppText style={styles.tracks}>
-          {displayedSongs?.length
-            ? displayedSongs.length
-            : "No tracks in playlist"}
-        </AppText>
-        <AppText> Tracks</AppText>
-      </View>
-      <PlaylistActionButtons displayedSongs={displayedSongs} />
-      <FlatList<Song>
-        data={displayedSongs}
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
-        keyExtractor={(item: Song) => String(item.id)}
-        renderItem={({ item, index }) => (
-          <View style={{ padding: 12 }}>
-            <Pressable
-              onPress={() =>
-                loadPlay({ songIndex: index, list: displayedSongs ?? [] })
-              }
-            >
-              <PlaylistView
-                artist={item.artist}
-                title={item.title}
-                cover={item.coverUrl}
-              />
-            </Pressable>
-          </View>
-        )}
-      />
-      <BottomSheetModalProvider>
+    <BottomSheetModalProvider>
+      <View style={[globalStyles.container]}>
+        <TopBar />
+        <HeaderTitle>{title}</HeaderTitle>
+        <View style={styles.trackDetails}>
+          <AppText style={styles.tracks}>
+            {displayedSongs?.length
+              ? displayedSongs.length
+              : "No tracks in playlist"}
+          </AppText>
+          <AppText> Tracks</AppText>
+        </View>
+        <PlaylistActionButtons displayedSongs={displayedSongs} />
+        <FlatList<Song>
+          data={displayedSongs}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          keyExtractor={(item: Song) => String(item.id)}
+          renderItem={({ item, index }) => (
+            <View style={{ padding: 12 }}>
+              <Pressable
+                onPress={() =>
+                  loadPlay({ songIndex: index, list: displayedSongs ?? [] })
+                }
+              >
+                <PlaylistView
+                  artist={item.artist}
+                  title={item.title}
+                  cover={item.coverUrl}
+                  onOpenOptions={() => handleOnOpenOptions(item)}
+                />
+              </Pressable>
+            </View>
+          )}
+        />
+        <OptionSheetTrack ref={optionsRef} />
+
         {activeTrack && <Player />}
-      </BottomSheetModalProvider>
-    </View>
+      </View>
+    </BottomSheetModalProvider>
   );
 };
 
