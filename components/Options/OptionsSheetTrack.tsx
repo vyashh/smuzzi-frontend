@@ -88,7 +88,7 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   return (
     <BottomSheetModal
       ref={modalRef}
-      snapPoints={["35%"]}
+      snapPoints={["40%"]}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
@@ -114,6 +114,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
             artist={sheetProps?.selectedOptionsTrack?.artist}
             cover={sheetProps?.selectedOptionsTrack?.coverUrl}
             title={sheetProps?.selectedOptionsTrack?.title}
+          />
+          <SingleOption
+            iconName="heart"
+            text="Add to likes"
+            iconColor={Colors.primary}
           />
           <SingleOption iconName="add" text="Add to playlist" />
           <SingleOption iconName="pencil" text="Edit track details" />

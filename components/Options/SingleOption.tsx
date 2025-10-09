@@ -1,5 +1,6 @@
 import AppText from "@components/AppText";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "constants/colors";
 import { Pressable, StyleSheet } from "react-native";
 
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -36,6 +37,6 @@ export default SingleOption;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingVertical: 20,
+    paddingVertical: 25,
   },
 });
