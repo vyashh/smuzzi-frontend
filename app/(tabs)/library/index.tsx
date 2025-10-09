@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Player from "../../../components/Player";
 import HeaderTitle from "../../../components/HeaderTitle";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import LibraryPlaylistView from "@components/LibraryPlaylistView";
+import LibraryPlaylistView from "../../../components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
@@ -44,7 +44,6 @@ function LibraryPage() {
     console.log("open options for", playlist.id);
     optionsRef.current?.present({
       selectedOptionsPlaylist: playlist,
-      type: "playlist",
     });
   };
 

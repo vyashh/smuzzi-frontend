@@ -15,8 +15,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import Player from "@components/Player";
 import { Ionicons } from "@expo/vector-icons";
 import { useSongsStore } from "utils/songsStore";
-import { useAuthStore } from "utils/authStore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Song } from "types/song";
 import PlaylistView from "@components/PlaylistView";
@@ -24,6 +23,10 @@ import { useLikeStore } from "utils/likesStore";
 import TopBar from "@components/TopBar";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import { useActiveTrack } from "react-native-track-player";
+import OptionsSheetPlaylist, {
+  OptionsSheetTrackRef,
+} from "@components/Options/OptionsSheetTrack";
+import PlaylistActionButtons from "@components/Buttons/PlaylistActionButtons";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{
@@ -31,6 +34,7 @@ const playlist = () => {
     title: string;
     playlistId?: any;
   }>();
+  const optionsRef = useRef<OptionsSheetTrackRef>(null);
 
   const { songs, isFetching } = useSongsStore();
   const fetchSongs = useSongsStore((s) => s.fetchSongs);
@@ -83,7 +87,14 @@ const playlist = () => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
     if (viewType === "playlist" && playlistId) fetchPlaylistTracks(playlistId);
-  }, [fetchSongs, fetchLikes, fetchPlaylistTracks, viewType, playlistId]);
+  }, [
+    fetchSongs,
+    fetchLikes,
+    fetchPlaylistTracks,
+    viewType,
+    playlistId,
+    displayedSongs,
+  ]);
 
   return (
     <View style={[globalStyles.container]}>
@@ -97,48 +108,7 @@ const playlist = () => {
         </AppText>
         <AppText> Tracks</AppText>
       </View>
-      <View style={styles.quickActions}>
-        <View style={styles.quickActionsButton}>
-          <Pressable
-            onPress={() =>
-              loadPlay({
-                list: displayedSongs ?? [],
-                songIndex: 0,
-                shuffled: false,
-              })
-            }
-          >
-            <View style={styles.quickActionsButtonContainer}>
-              <View style={styles.quickActionsButtonContainerIcon}>
-                <Ionicons
-                  name="play-outline"
-                  size={24}
-                  color={Colors.primary}
-                />
-              </View>
-              <AppText style={styles.quickActionsButtonText}>Play</AppText>
-            </View>
-          </Pressable>
-        </View>
-        <View style={styles.quickActionsButton}>
-          <Pressable
-            onPress={() =>
-              loadPlay({
-                list: displayedSongs ?? [],
-                shuffled: true,
-                shuffleMode: "randomStart",
-              })
-            }
-          >
-            <View style={styles.quickActionsButtonContainer}>
-              <View style={styles.quickActionsButtonContainerIcon}>
-                <Ionicons name="shuffle" size={24} color={Colors.primary} />
-              </View>
-              <AppText style={styles.quickActionsButtonText}>Shuffle</AppText>
-            </View>
-          </Pressable>
-        </View>
-      </View>
+      <PlaylistActionButtons displayedSongs={displayedSongs} />
       <FlatList<Song>
         data={displayedSongs}
         refreshing={refreshing}
@@ -173,29 +143,6 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.text,
     fontSize: 42,
-  },
-  quickActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  quickActionsButton: {
-    // borderBlockColor: "red",
-    paddingHorizontal: 45,
-    borderRadius: 8,
-    backgroundColor: Colors.surface,
-    marginBottom: 10,
-  },
-  quickActionsButtonContainer: {
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  quickActionsButtonText: {
-    fontWeight: "bold",
-    color: Colors.primary,
-  },
-  quickActionsButtonContainerIcon: {
-    paddingRight: 10,
   },
   trackDetails: { flexDirection: "row", alignItems: "center" },
   tracks: {
