@@ -10,7 +10,7 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import AppText from "./AppText";
+import AppText from "../AppText";
 import {
   Image,
   KeyboardAvoidingView,
@@ -23,7 +23,7 @@ import {
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
-import InputField from "./InputField";
+import InputField from "../InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 
@@ -38,8 +38,9 @@ interface OptionSheetTrackProps {
 }
 const OptionSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
-  const [sheetProps, setSheetProps] =
-    useState<OptionSheetTrackTrackProps | null>(null);
+  const [sheetProps, setSheetProps] = useState<OptionSheetTrackProps | null>(
+    null
+  );
   const { deletePlaylist } = usePlaylistsStore();
   const [playlistId, setPlaylistId] = useState<number>();
   const [playlistName, setPlaylistName] = useState<string>("");
@@ -47,7 +48,7 @@ const OptionSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
-    present: (props: OptionSheetTrackTrackProps) => {
+    present: (props: OptionSheetTrackProps) => {
       setSheetProps(props);
       modalRef.current?.present();
     },

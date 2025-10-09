@@ -17,17 +17,11 @@ import { useActiveTrack } from "react-native-track-player";
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
-  const [selectedOptionsPlaylist, setSelectedOptionsPlaylist] =
-    useState<Playlist | null>(null);
+  useState<Playlist | null>(null);
   const activeTrack = useActiveTrack();
 
   const optionsRef = useRef<OptionsSheetRef>(null);
-  const openOptions = (id: number, title: string) => {
-    optionsRef.current?.present({
-      selectedOptionsPlaylist,
-      type: "playlist",
-    });
-  };
+
   const handleOnpressShowPlaylist = (
     viewType: PlaylistType,
     title: string,
