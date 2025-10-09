@@ -28,17 +28,19 @@ import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 
 export type OptionsSheetRef = {
-  present: (props: OptionSheetProps) => void;
+  present: (props: OptionSheetPlaylistProps) => void;
   dismiss: () => void;
 };
 
-interface OptionSheetProps {
+interface OptionSheetPlaylistProps {
   selectedOptionsPlaylist: Playlist | null;
   type: OptionType;
 }
 const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
-  const [sheetProps, setSheetProps] = useState<OptionSheetProps | null>(null);
+  const [sheetProps, setSheetProps] = useState<OptionSheetPlaylistProps | null>(
+    null
+  );
   const { deletePlaylist } = usePlaylistsStore();
   const [playlistId, setPlaylistId] = useState<number>();
   const [playlistName, setPlaylistName] = useState<string>("");
@@ -46,7 +48,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
-    present: (props: OptionSheetProps) => {
+    present: (props: OptionSheetPlaylistProps) => {
       setSheetProps(props);
       modalRef.current?.present();
     },
