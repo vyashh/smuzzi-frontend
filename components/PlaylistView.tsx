@@ -46,18 +46,24 @@ const PlaylistView = ({
             justifyContent: "center",
           }}
         >
-          <Pressable
-            onPress={(e) => {
-              console.log("Options Pressed");
-              e.stopPropagation();
-              onOpenOptions?.();
-            }}
-            onPressIn={(e) => e.stopPropagation()}
-            hitSlop={8}
-            style={{ padding: 4 }}
-          >
-            <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
-          </Pressable>
+          {onOpenOptions && (
+            <Pressable
+              onPress={(e) => {
+                console.log("Options Pressed");
+                e.stopPropagation();
+                onOpenOptions?.();
+              }}
+              onPressIn={(e) => e.stopPropagation()}
+              hitSlop={8}
+              style={{ padding: 4 }}
+            >
+              <Ionicons
+                name="ellipsis-vertical"
+                size={16}
+                color={Colors.text}
+              />
+            </Pressable>
+          )}
         </View>
       </Pressable>
     </View>

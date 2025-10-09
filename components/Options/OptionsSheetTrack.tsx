@@ -28,6 +28,7 @@ import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import { Song } from "types/song";
 import SingleOption from "./SingleOption";
+import PlaylistView from "@components/PlaylistView";
 
 export type OptionsSheetTrackRef = {
   present: (props: OptionsSheetTrackProps) => void;
@@ -57,12 +58,9 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   }));
 
   const handleDelete = () => {
-    if (
-      sheetProps?.type === "playlist" &&
-      sheetProps?.selectedOptionsPlaylist?.id !== undefined
-    ) {
+    if (sheetProps?.selectedOptionsTrack?.id !== undefined) {
       console.log("playlist delete");
-      deletePlaylist(sheetProps.selectedOptionsPlaylist.id).then(() =>
+      deletePlaylist(sheetProps.selectedOptionsTrack.id).then(() =>
         modalRef.current?.dismiss()
       );
     }
@@ -83,11 +81,8 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
 
   useEffect(() => {
     if (sheetProps) {
-      setPlaylistName(sheetProps.selectedOptionsPlaylist?.name ?? "");
-      setPlaylistDescription(
-        sheetProps.selectedOptionsPlaylist?.description ?? ""
-      );
-      setPlaylistId(sheetProps.selectedOptionsPlaylist?.id ?? undefined);
+      setPlaylistName(sheetProps.selectedOptionsTrack?.title ?? "");
+      setPlaylistId(sheetProps.selectedOptionsTrack?.id ?? undefined);
     }
   }, [sheetProps, setPlaylistName, setPlaylistDescription, setPlaylistId]);
   return (
@@ -115,6 +110,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
+          <PlaylistView
+            artist={sheetProps?.selectedOptionsTrack?.artist}
+            cover={sheetProps?.selectedOptionsTrack?.coverUrl}
+            title={sheetProps?.selectedOptionsTrack?.title}
+          />
           <SingleOption iconName="add" text="Add to playlist" />
           <SingleOption iconName="pencil" text="Edit track details" />
           <SingleOption
