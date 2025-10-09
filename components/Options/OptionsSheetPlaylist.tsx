@@ -10,7 +10,7 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import AppText from "./AppText";
+import AppText from "../AppText";
 import {
   Image,
   KeyboardAvoidingView,
@@ -23,7 +23,7 @@ import {
 import { Colors } from "constants/colors";
 import { Playlist } from "types/playlist";
 import { Ionicons } from "@expo/vector-icons";
-import InputField from "./InputField";
+import InputField from "../InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 
@@ -34,9 +34,8 @@ export type OptionsSheetRef = {
 
 interface OptionSheetPlaylistProps {
   selectedOptionsPlaylist: Playlist | null;
-  type: OptionType;
 }
-const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
+const OptionSheetPlaylist = forwardRef<OptionsSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
   const [sheetProps, setSheetProps] = useState<OptionSheetPlaylistProps | null>(
     null
@@ -56,10 +55,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   }));
 
   const handleDelete = () => {
-    if (
-      sheetProps?.type === "playlist" &&
-      sheetProps?.selectedOptionsPlaylist?.id !== undefined
-    ) {
+    if (sheetProps?.selectedOptionsPlaylist?.id !== undefined) {
       console.log("playlist delete");
       deletePlaylist(sheetProps.selectedOptionsPlaylist.id).then(() =>
         modalRef.current?.dismiss()
@@ -160,7 +156,7 @@ const OptionSheet = forwardRef<OptionsSheetRef>((_, ref) => {
   );
 });
 
-export default OptionSheet;
+export default OptionSheetPlaylist;
 
 const styles = StyleSheet.create({
   container: {

@@ -8,7 +8,9 @@ import LibraryPlaylistView from "@components/LibraryPlaylistView";
 import { router } from "expo-router";
 import CreatePlaylist from "@components/CreatePlaylist";
 import { usePlaylistsStore } from "utils/playlistsStore";
-import OptionSheet, { OptionsSheetRef } from "@components/OptionsSheet";
+import OptionsSheetPlaylist, {
+  OptionsSheetRef,
+} from "@components/Options/OptionsSheetPlaylist";
 import { Playlist } from "types/playlist";
 import { useActiveTrack } from "react-native-track-player";
 
@@ -21,7 +23,10 @@ function LibraryPage() {
 
   const optionsRef = useRef<OptionsSheetRef>(null);
   const openOptions = (id: number, title: string) => {
-    optionsRef.current?.present({ selectedOptionsPlaylist });
+    optionsRef.current?.present({
+      selectedOptionsPlaylist,
+      type: "playlist",
+    });
   };
   const handleOnpressShowPlaylist = (
     viewType: PlaylistType,
@@ -95,7 +100,7 @@ function LibraryPage() {
               />
             )}
           />
-          <OptionSheet ref={optionsRef} />
+          <OptionsSheetPlaylist ref={optionsRef} />
         </View>
 
         {activeTrack && <Player />}
