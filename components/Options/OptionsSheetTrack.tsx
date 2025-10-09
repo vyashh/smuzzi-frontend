@@ -27,6 +27,7 @@ import InputField from "../InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import { Song } from "types/song";
+import SingleOption from "./SingleOption";
 
 export type OptionsSheetTrackRef = {
   present: (props: OptionsSheetTrackProps) => void;
@@ -114,46 +115,13 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
-          <View style={styles.topActionButtons}>
-            <Pressable onPress={handleCancel}>
-              <Text style={styles.deleteButton}>Cancel</Text>
-            </Pressable>
-            <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
-            <Pressable onPress={handleChange}>
-              <Text style={styles.saveButton}>Save</Text>
-            </Pressable>
-          </View>
-          <View style={styles.content}>
-            <View>
-              <Image
-                style={styles.artwork}
-                source={{ uri: EDIT_ARTWORK_URI }}
-              />
-            </View>
-            <View style={styles.contentInputFields}>
-              <InputField
-                placeholder="Playlist name"
-                value={playlistName}
-                onChangeText={setPlaylistName}
-                useBottomSheetInput
-              />
-              <InputField
-                placeholder="Playlist description"
-                value={playlistDescription}
-                onChangeText={setPlaylistDescription}
-                useBottomSheetInput
-              />
-            </View>
-          </View>
-          <Pressable style={styles.bottomActionButtons} onPress={handleDelete}>
-            <Ionicons
-              style={{ marginRight: 8 }}
-              name="trash-bin"
-              size={18}
-              color={Colors.danger}
-            />
-            <AppText>Delete playlist</AppText>
-          </Pressable>
+          <SingleOption iconName="add" text="Add to playlist" />
+          <SingleOption iconName="pencil" text="Edit track details" />
+          <SingleOption
+            iconName="trash"
+            text="Delete track from library"
+            iconColor={"red"}
+          />
         </BottomSheetView>
       </KeyboardAvoidingView>
     </BottomSheetModal>
@@ -167,35 +135,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
     padding: 10,
   },
-  topActionButtons: {
+  option: {
     flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  deleteButton: {
-    color: Colors.danger,
-    fontWeight: "bold",
-  },
-  saveButton: {
-    color: Colors.primary,
-    fontWeight: "bold",
-  },
-  bottomActionButtons: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  content: {
-    marginVertical: 20,
-    flexDirection: "row",
-  },
-  contentInputFields: {
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: "space-between",
-  },
-  artwork: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+    paddingVertical: 10,
   },
 });
