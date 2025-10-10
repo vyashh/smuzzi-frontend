@@ -8,15 +8,17 @@ interface PlaylistCoverProps {
 }
 
 const PlaylistCover = ({ tracks, style }: PlaylistCoverProps) => {
-  console.log(tracks.length);
+  const items = tracks.slice(0, 4);
+  const isGrid4 = items.length === 4;
+
   return (
-    <View style={[styles.container, style]}>
-      {tracks.map((song) => (
+    <View style={[styles.container, isGrid4 && styles.gridContainer, style]}>
+      {items.map((song) => (
         <Image
           key={song.id}
-          style={styles.tile}
-          resizeMode="cover"
           source={{ uri: song.coverUrl }}
+          resizeMode="cover"
+          style={isGrid4 ? styles.gridTile : styles.rowTile}
         />
       ))}
     </View>
@@ -32,7 +34,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     overflow: "hidden",
   },
-  tile: {
+  gridContainer: {
+    flexWrap: "wrap", // enables 2 rows
+  },
+  // For 4 tracks → 2x2
+  gridTile: {
+    width: "50%",
+    height: "50%",
+  },
+  // For 1–3 tracks → current behavior (row split)
+  rowTile: {
     flex: 1,
     height: "100%",
   },
