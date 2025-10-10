@@ -7,11 +7,13 @@ import { Pressable, StyleSheet, View } from "react-native";
 interface BottomSheetTopActionButtons {
   ref: React.RefObject<BottomSheetModal | null>;
   handleChange: () => void;
+  text: string;
 }
 
 const BottomSheetTopActionButtons = ({
   ref,
   handleChange,
+  text,
 }: BottomSheetTopActionButtons) => {
   const handleCancel = () => {
     ref.current?.dismiss();
@@ -23,7 +25,7 @@ const BottomSheetTopActionButtons = ({
         <Pressable onPress={handleCancel}>
           <AppText style={styles.deleteButton}>Cancel</AppText>
         </Pressable>
-        <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
+        <AppText style={{ fontWeight: "bold" }}>{text}</AppText>
         <Pressable onPress={handleChange}>
           <AppText style={styles.saveButton}>Save</AppText>
         </Pressable>

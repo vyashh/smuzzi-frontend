@@ -30,6 +30,7 @@ import { usePlaylistsStore } from "utils/playlistsStore";
 import { Song } from "types/song";
 import SingleOption from "./SingleOption";
 import PlaylistView from "@components/PlaylistView";
+import BottomSheetTopActionButtons from "@components/Buttons/BottomSheetTopActionButton";
 
 export type OptionsSheetTrackRef = {
   present: (props: OptionsSheetTrackProps) => void;
@@ -45,15 +46,10 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
     null
   );
   const { playlists } = usePlaylistsStore();
-  const { deletePlaylist } = usePlaylistsStore();
-  const [playlistId, setPlaylistId] = useState<number>();
-  const [playlistName, setPlaylistName] = useState<string>("");
-  const [playlistDescription, setPlaylistDescription] = useState<string>("");
 
   // add to playlist
   const [showPlaylists, setShowPlaylists] = useState<boolean>();
-  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist>();
-  const { patchPlaylist } = usePlaylistsStore();
+  const [addToPlaylists, setAddToPlaylists] = useState<Array<number>>();
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionsSheetTrackProps) => {
@@ -67,43 +63,22 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
     },
   }));
 
-  const handleDelete = () => {
-    if (sheetProps?.selectedOptionsTrack?.id !== undefined) {
-      console.log("playlist delete");
-      deletePlaylist(sheetProps.selectedOptionsTrack.id).then(() =>
-        modalRef.current?.dismiss()
-      );
-    }
-  };
-
-  const handleChange = () => {
-    if (playlistId !== undefined) {
-      patchPlaylist(playlistId, {
-        name: playlistName,
-        description: playlistDescription,
-      }).then(() => handleCancel());
-    }
-  };
-
   const handleAddToPlaylist = (playlist: Playlist) => {
+    setAddToPlaylists((prev) =>
+      prev ? [...prev, playlist.id] : [playlist.id]
+    );
+
     console.log(
       "Should add song: ",
       sheetProps?.selectedOptionsTrack?.id,
       " to playlist: ",
-      playlist.name
+      playlist.name,
+      " array ",
+      addToPlaylists
     );
   };
 
-  const handleCancel = () => {
-    modalRef.current?.dismiss();
-  };
-
-  useEffect(() => {
-    if (sheetProps) {
-      setPlaylistName(sheetProps.selectedOptionsTrack?.title ?? "");
-      setPlaylistId(sheetProps.selectedOptionsTrack?.id ?? undefined);
-    }
-  }, [sheetProps, setPlaylistName, setPlaylistDescription, setPlaylistId]);
+  useEffect(() => {}, []);
   return (
     <BottomSheetModal
       ref={modalRef}
@@ -129,6 +104,15 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
+          {showPlaylists && (
+            <View style={{ marginBottom: 20 }}>
+              <BottomSheetTopActionButtons
+                text="Add to playlist"
+                ref={modalRef}
+                handleChange={() => console.log(addToPlaylists)}
+              />
+            </View>
+          )}
           <PlaylistView
             artist={sheetProps?.selectedOptionsTrack?.artist}
             cover={sheetProps?.selectedOptionsTrack?.coverUrl}

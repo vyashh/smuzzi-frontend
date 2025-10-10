@@ -114,6 +114,7 @@ const OptionSheetPlaylist = forwardRef<OptionsSheetRef>((_, ref) => {
           <BottomSheetTopActionButtons
             ref={modalRef}
             handleChange={handleChange}
+            text="Edit details"
           />
           <View style={styles.content}>
             <View>
