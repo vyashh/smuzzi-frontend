@@ -1,6 +1,5 @@
 import AppText from "@components/AppText";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "constants/colors";
 import { Pressable, StyleSheet } from "react-native";
 
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -20,7 +19,7 @@ const SingleOption = ({
   text,
 }: SingleOptionProps) => {
   return (
-    <Pressable style={styles.container}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Ionicons
         style={{ marginRight: 8 }}
         name={iconName}

@@ -12,6 +12,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import AppText from "../AppText";
 import {
+  FlatList,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -43,10 +44,12 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const [sheetProps, setSheetProps] = useState<OptionsSheetTrackProps | null>(
     null
   );
+  const { playlists } = usePlaylistsStore();
   const { deletePlaylist } = usePlaylistsStore();
   const [playlistId, setPlaylistId] = useState<number>();
   const [playlistName, setPlaylistName] = useState<string>("");
   const [playlistDescription, setPlaylistDescription] = useState<string>("");
+  const [showPlaylists, setShowPlaylists] = useState<boolean>();
   const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
@@ -73,6 +76,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
         description: playlistDescription,
       }).then(() => handleCancel());
     }
+  };
+
+  const handleAddToPlaylist = () => {
+    setShowPlaylists(true);
+    console.log(showPlaylists);
   };
 
   const handleCancel = () => {
@@ -115,18 +123,37 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
             cover={sheetProps?.selectedOptionsTrack?.coverUrl}
             title={sheetProps?.selectedOptionsTrack?.title}
           />
-          <SingleOption
-            iconName="heart"
-            text="Add to likes"
-            iconColor={Colors.primary}
-          />
-          <SingleOption iconName="add" text="Add to playlist" />
-          <SingleOption iconName="pencil" text="Edit track details" />
-          <SingleOption
-            iconName="trash"
-            text="Delete track from library"
-            iconColor={"red"}
-          />
+          {!showPlaylists && (
+            <View>
+              <SingleOption
+                iconName="heart"
+                text="Add to likes"
+                iconColor={Colors.primary}
+              />
+              <SingleOption
+                onPress={handleAddToPlaylist}
+                iconName="add-circle-outline"
+                text="Add to playlist"
+              />
+              <SingleOption iconName="pencil" text="Edit track details" />
+              <SingleOption
+                iconName="trash"
+                text="Delete track from library"
+                iconColor={"red"}
+              />
+            </View>
+          )}
+
+          {showPlaylists && (
+            <FlatList
+              style={{ flex: 1 }}
+              data={playlists}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <SingleOption text={item.name} iconName="radio-button-off" />
+              )}
+            />
+          )}
         </BottomSheetView>
       </KeyboardAvoidingView>
     </BottomSheetModal>
