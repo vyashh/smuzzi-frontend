@@ -48,8 +48,8 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const { playlists } = usePlaylistsStore();
 
   // playlists setup
-  const [showPlaylists, setShowPlaylists] = useState<boolean>();
-  const [addToPlaylists, setAddToPlaylists] = useState<Array<number>>();
+  const [showPlaylists, setShowPlaylists] = useState<boolean>(false);
+  const [addToPlaylists, setAddToPlaylists] = useState<Array<number>>([]);
 
   const { postSongToPlaylist } = usePlaylistsStore();
 
@@ -140,12 +140,19 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
               renderItem={({ item }) => (
                 <SingleOption
                   text={item.name}
-                  iconName="radio-button-off"
-                  onPress={() =>
-                    setAddToPlaylists((prev) =>
-                      prev ? [...prev, item.id] : [item.id]
-                    )
+                  iconName={
+                    addToPlaylists?.includes(item.id)
+                      ? "radio-button-off"
+                      : "radio-button-on"
                   }
+                  onPress={() => {
+                    setAddToPlaylists((prev) =>
+                      prev.includes(item.id)
+                        ? prev.filter((id) => id !== item.id)
+                        : [...prev, item.id]
+                    );
+                  }}
+                  iconColor={Colors.primary}
                 />
               )}
             />
