@@ -53,21 +53,29 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
 
   const { postSongToPlaylist } = usePlaylistsStore();
 
+  const resetBottomSheet = () => {
+    setShowPlaylists(false);
+    setAddToPlaylists([]);
+  };
+
   useImperativeHandle(ref, () => ({
     present: (props: OptionsSheetTrackProps) => {
       setSheetProps(props);
-      setShowPlaylists(false);
       modalRef.current?.present();
+      resetBottomSheet();
     },
     dismiss: () => {
-      setShowPlaylists(false);
       modalRef.current?.dismiss();
+      resetBottomSheet();
     },
   }));
 
   const handleAddToPlaylist = () => {
     if (sheetProps?.selectedOptionsTrack && addToPlaylists) {
-      postSongToPlaylist(sheetProps.selectedOptionsTrack.id, addToPlaylists);
+      postSongToPlaylist(
+        sheetProps.selectedOptionsTrack.id,
+        addToPlaylists
+      ).then(() => modalRef.current?.dismiss());
     }
   };
 
@@ -142,8 +150,8 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
                   text={item.name}
                   iconName={
                     addToPlaylists?.includes(item.id)
-                      ? "radio-button-off"
-                      : "radio-button-on"
+                      ? "radio-button-on"
+                      : "radio-button-off"
                   }
                   onPress={() => {
                     setAddToPlaylists((prev) =>

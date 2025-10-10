@@ -133,7 +133,29 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
           songId: number,
           indexOfPlaylists: Array<number>
         ) => {
-          console.log(songId, indexOfPlaylists);
+          set({ isFetching: true, error: null });
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            indexOfPlaylists.map(async (playlistId) => {
+              await axios.post(
+                `${serverUrl}/api/playlists/${playlistId}/tracks`,
+                { song_id: songId },
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+              );
+            });
+            set({ isFetching: false });
+            await get().fetchPlaylists();
+          } catch (error: any) {
+            const msg =
+              error?.response?.data?.detail ??
+              (typeof error?.message === "string"
+                ? error.message
+                : String(error));
+            set({ error: msg, isFetching: false });
+          } finally {
+            set({ isFetching: false });
+          }
         },
 
         deletePlaylist: async (playlistId) => {
