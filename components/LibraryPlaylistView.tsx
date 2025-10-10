@@ -9,7 +9,9 @@ import {
   PlaylistType,
 } from "constants/global";
 import PopupMenu from "./PopupMenu";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import PlaylistCover from "./PlaylistCover";
+import { usePlaylistsStore } from "utils/playlistsStore";
 
 interface LibraryPlaylistViewProps {
   viewType: PlaylistType;
@@ -33,6 +35,14 @@ const LibraryPlaylistView = ({
     default: DEFAULT_ARTWORK_URI,
   };
   const menuTouchRef = useRef(false);
+  const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
+  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
+
+  useEffect(() => {
+    if (playlistId !== undefined && fetchPlaylistTracks) {
+      fetchPlaylistTracks(playlistId);
+    }
+  }, [playlistId, fetchPlaylistTracks]);
 
   return (
     <Pressable
@@ -44,10 +54,11 @@ const LibraryPlaylistView = ({
     >
       <View style={styles.containerContent}>
         <View>
-          <Image
+          {/* <Image
             style={styles.cover}
             source={{ uri: ICON_BY_VIEW[viewType] ?? ICON_BY_VIEW.default }}
-          />
+          /> */}
+          <PlaylistCover style={styles.cover} tracks={playlistTracks ?? []} />
         </View>
         <View>
           <AppText
