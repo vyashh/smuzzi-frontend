@@ -9,9 +9,10 @@ import {
   PlaylistType,
 } from "constants/global";
 import PopupMenu from "./PopupMenu";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PlaylistCover from "./PlaylistCover";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import { Song } from "types/song";
 
 interface LibraryPlaylistViewProps {
   viewType: PlaylistType;
@@ -39,13 +40,15 @@ const LibraryPlaylistView = ({
 
   const menuTouchRef = useRef(false);
   const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
-  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
-
+  const playlistTracks = usePlaylistsStore((s) =>
+    playlistId != null ? s.playlistTracksById[playlistId] : undefined
+  );
   useEffect(() => {
-    if (!isSystemRow && playlistId !== undefined && fetchPlaylistTracks) {
+    if (!isSystemRow && playlistId != null && !playlistTracks) {
       fetchPlaylistTracks(playlistId);
     }
-  }, [isSystemRow, playlistId, fetchPlaylistTracks]);
+  }, [isSystemRow, playlistId, fetchPlaylistTracks, playlistTracks]);
+
   return (
     <Pressable
       style={styles.container}

@@ -18,6 +18,9 @@ function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
   useState<Playlist | null>(null);
+  const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
+  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
+
   const activeTrack = useActiveTrack();
 
   const optionsRef = useRef<OptionsSheetRef>(null);

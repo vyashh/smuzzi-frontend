@@ -13,6 +13,8 @@ interface PlaylistsStore {
   playlistTracks: ReadonlyArray<Song> | null;
   fetchPlaylists: () => Promise<void>;
   fetchPlaylistTracks: (playlistId: number) => Promise<void>;
+
+  playlistTracksById: Record<number, ReadonlyArray<Song>>;
   postPlaylist: (playlistName: string) => Promise<Playlist>;
   patchPlaylist: (
     playlistId: number,
@@ -34,6 +36,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
         error: null,
         playlists: [] as ReadonlyArray<Playlist>,
         playlistTracks: null,
+        playlistTracksById: {},
         setPlaylists: (p) => set({ playlists: p }),
         fetchPlaylists: async () => {
           if (get().isFetching) return;
@@ -81,8 +84,6 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
           }
         },
         fetchPlaylistTracks: async (playlistId) => {
-          if (get().isFetching) return;
-
           set({ isFetching: true, error: null });
 
           const { serverUrl, accessToken } = useAuthStore.getState();
@@ -96,10 +97,13 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
                 },
               }
             );
-            set({
-              playlistTracks: toSongs(data),
+            set((s) => ({
+              playlistTracksById: {
+                ...s.playlistTracksById,
+                [playlistId]: toSongs(data),
+              },
               isFetching: false,
-            });
+            }));
           } catch (error: any) {
             set({ error: error, isFetching: false });
           } finally {
