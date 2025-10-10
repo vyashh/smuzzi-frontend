@@ -13,8 +13,8 @@ interface PlaylistsStore {
   playlistTracks: ReadonlyArray<Song> | null;
   fetchPlaylists: () => Promise<void>;
   fetchPlaylistTracks: (playlistId: number) => Promise<void>;
-
   playlistTracksById: Record<number, ReadonlyArray<Song>>;
+  isFetchingById?: Record<number, boolean>;
   postPlaylist: (playlistName: string) => Promise<Playlist>;
   patchPlaylist: (
     playlistId: number,
@@ -33,6 +33,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
     persist<PlaylistsStore>(
       (set, get) => ({
         isFetching: false,
+        isFetchingById: {},
         error: null,
         playlists: [] as ReadonlyArray<Playlist>,
         playlistTracks: null,
@@ -84,8 +85,13 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
           }
         },
         fetchPlaylistTracks: async (playlistId) => {
-          set({ isFetching: true, error: null });
-
+          const { isFetchingById = {}, playlistTracksById = {} } = get();
+          if (isFetchingById[playlistId]) return;
+          if (playlistTracksById[playlistId]) return;
+          set({
+            error: null,
+            isFetchingById: { ...isFetchingById, [playlistId]: true },
+          });
           const { serverUrl, accessToken } = useAuthStore.getState();
 
           try {
@@ -102,12 +108,17 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
                 ...s.playlistTracksById,
                 [playlistId]: toSongs(data),
               },
-              isFetching: false,
             }));
           } catch (error: any) {
             set({ error: error, isFetching: false });
           } finally {
-            set({ isFetching: false });
+            set((s) => ({
+              isFetching: false, // optional global spinner
+              isFetchingById: {
+                ...(s.isFetchingById || {}),
+                [playlistId]: false,
+              },
+            }));
           }
         },
         patchPlaylist: async (playlistId, payload) => {

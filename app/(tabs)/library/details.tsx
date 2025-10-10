@@ -35,6 +35,8 @@ const playlist = () => {
     title: string;
     playlistId?: any;
   }>();
+  const pid = playlistId != null ? Number(playlistId) : undefined; // ← ensure number
+
   const optionsRef = useRef<OptionsSheetTrackRef>(null);
 
   const { songs, isFetching } = useSongsStore();
@@ -46,7 +48,9 @@ const playlist = () => {
   const isLikesFetching = useLikeStore((s) => s.isFetching);
 
   const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
-  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
+  const playlistTracks = usePlaylistsStore((s) =>
+    pid != null ? s.playlistTracksById[pid] : undefined
+  );
 
   const [selectedTrack, setSelectedTrack] = useState<Song>();
 
@@ -96,9 +100,17 @@ const playlist = () => {
   useEffect(() => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
-    if (viewType === "playlist" && playlistId) fetchPlaylistTracks(playlistId);
-  }, [fetchSongs, fetchLikes, fetchPlaylistTracks, viewType, playlistId]);
-
+    if (viewType === "playlist" && pid != null && !playlistTracks) {
+      fetchPlaylistTracks(pid);
+    }
+  }, [
+    fetchSongs,
+    fetchLikes,
+    fetchPlaylistTracks,
+    viewType,
+    pid,
+    playlistTracks,
+  ]);
   return (
     <BottomSheetModalProvider>
       <View style={[globalStyles.container]}>
