@@ -18,6 +18,7 @@ interface LibraryPlaylistViewProps {
   viewType: PlaylistType;
   title: string;
   playlistId?: number;
+  options?: boolean;
   handleOnPressPlaylist?: () => void;
   onOpenOptions?: () => void;
 }
@@ -26,6 +27,7 @@ const LibraryPlaylistView = ({
   viewType,
   title,
   playlistId,
+  options = true,
   handleOnPressPlaylist,
   onOpenOptions,
 }: LibraryPlaylistViewProps) => {
@@ -81,33 +83,38 @@ const LibraryPlaylistView = ({
         </View>
       </View>
       <View pointerEvents="box-none">
-        <View
-          style={styles.actionButtons}
-          onTouchStart={() => {
-            menuTouchRef.current = true;
-          }}
-          onTouchEnd={() => {
-            setTimeout(() => (menuTouchRef.current = false), 0);
-          }}
-        >
-          <Ionicons
-            name="cloud-download-outline"
-            size={16}
-            color={Colors.neutral}
-          />
-          <Pressable
-            onPress={(e) => {
-              console.log("Options Pressed");
-              e.stopPropagation();
-              onOpenOptions?.();
+        {options && (
+          <View
+            style={styles.actionButtons}
+            onTouchStart={() => {
+              menuTouchRef.current = true;
             }}
-            onPressIn={(e) => e.stopPropagation()}
-            hitSlop={8}
-            style={{ padding: 4 }}
+            onTouchEnd={() => {
+              setTimeout(() => (menuTouchRef.current = false), 0);
+            }}
           >
-            <Ionicons name="ellipsis-vertical" size={16} color={Colors.text} />
-          </Pressable>
-        </View>
+            <Ionicons
+              name="cloud-download-outline"
+              size={16}
+              color={Colors.neutral}
+            />
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation();
+                onOpenOptions?.();
+              }}
+              onPressIn={(e) => e.stopPropagation()}
+              hitSlop={8}
+              style={{ padding: 4 }}
+            >
+              <Ionicons
+                name="ellipsis-vertical"
+                size={16}
+                color={Colors.text}
+              />
+            </Pressable>
+          </View>
+        )}
       </View>
     </Pressable>
   );

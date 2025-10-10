@@ -68,6 +68,7 @@ function LibraryPage() {
             }
             title="My Likes"
             viewType="likes"
+            options={false}
           />
           <LibraryPlaylistView
             title="All Tracks"
@@ -75,6 +76,7 @@ function LibraryPage() {
             handleOnPressPlaylist={() =>
               handleOnpressShowPlaylist("allTracks", "All Tracks")
             }
+            options={false}
           />
           <FlatList
             style={{ flex: 1 }}
