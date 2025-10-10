@@ -47,9 +47,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   );
   const { playlists } = usePlaylistsStore();
 
-  // add to playlist
+  // playlists setup
   const [showPlaylists, setShowPlaylists] = useState<boolean>();
   const [addToPlaylists, setAddToPlaylists] = useState<Array<number>>();
+
+  const { postSongToPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionsSheetTrackProps) => {
@@ -63,19 +65,10 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
     },
   }));
 
-  const handleAddToPlaylist = (playlist: Playlist) => {
-    setAddToPlaylists((prev) =>
-      prev ? [...prev, playlist.id] : [playlist.id]
-    );
-
-    console.log(
-      "Should add song: ",
-      sheetProps?.selectedOptionsTrack?.id,
-      " to playlist: ",
-      playlist.name,
-      " array ",
-      addToPlaylists
-    );
+  const handleAddToPlaylist = () => {
+    if (sheetProps?.selectedOptionsTrack && addToPlaylists) {
+      postSongToPlaylist(sheetProps.selectedOptionsTrack.id, addToPlaylists);
+    }
   };
 
   useEffect(() => {}, []);
@@ -109,7 +102,7 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
               <BottomSheetTopActionButtons
                 text="Add to playlist"
                 ref={modalRef}
-                handleChange={() => console.log(addToPlaylists)}
+                handleChange={handleAddToPlaylist}
               />
             </View>
           )}
@@ -148,7 +141,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
                 <SingleOption
                   text={item.name}
                   iconName="radio-button-off"
-                  onPress={() => handleAddToPlaylist(item)}
+                  onPress={() =>
+                    setAddToPlaylists((prev) =>
+                      prev ? [...prev, item.id] : [item.id]
+                    )
+                  }
                 />
               )}
             />

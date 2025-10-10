@@ -18,6 +18,10 @@ interface PlaylistsStore {
     playlistId: number,
     payload: { name?: string; description?: string | null }
   ) => Promise<void>;
+  postSongToPlaylist: (
+    songId: number,
+    indexOfPlaylists: Array<number>
+  ) => Promise<void>;
   deletePlaylist: (playlistId: number) => Promise<void>;
   setPlaylists: (p: ReadonlyArray<Playlist>) => void;
 }
@@ -124,6 +128,12 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
           } finally {
             set({ isFetching: false });
           }
+        },
+        postSongToPlaylist: async (
+          songId: number,
+          indexOfPlaylists: Array<number>
+        ) => {
+          console.log(songId, indexOfPlaylists);
         },
 
         deletePlaylist: async (playlistId) => {
