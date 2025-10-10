@@ -34,16 +34,18 @@ const LibraryPlaylistView = ({
     playlist: DEFAULT_ARTWORK_URI,
     default: DEFAULT_ARTWORK_URI,
   };
+  const isSystemRow = viewType === "likes" || viewType === "allTracks";
+  const iconUri = ICON_BY_VIEW[viewType] ?? ICON_BY_VIEW.default;
+
   const menuTouchRef = useRef(false);
   const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
   const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
 
   useEffect(() => {
-    if (playlistId !== undefined && fetchPlaylistTracks) {
+    if (!isSystemRow && playlistId !== undefined && fetchPlaylistTracks) {
       fetchPlaylistTracks(playlistId);
     }
-  }, [playlistId, fetchPlaylistTracks]);
-
+  }, [isSystemRow, playlistId, fetchPlaylistTracks]);
   return (
     <Pressable
       style={styles.container}
@@ -54,11 +56,16 @@ const LibraryPlaylistView = ({
     >
       <View style={styles.containerContent}>
         <View>
-          {/* <Image
-            style={styles.cover}
-            source={{ uri: ICON_BY_VIEW[viewType] ?? ICON_BY_VIEW.default }}
-          /> */}
-          <PlaylistCover style={styles.cover} tracks={playlistTracks ?? []} />
+          {isSystemRow ? (
+            <Image style={styles.cover} source={{ uri: iconUri }} />
+          ) : (playlistTracks?.length ?? 0) > 0 ? (
+            <PlaylistCover style={styles.cover} tracks={playlistTracks!} />
+          ) : (
+            <Image
+              style={styles.cover}
+              source={{ uri: ICON_BY_VIEW.playlist }}
+            />
+          )}
         </View>
         <View>
           <AppText
