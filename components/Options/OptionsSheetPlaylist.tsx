@@ -112,11 +112,11 @@ const OptionSheetPlaylist = forwardRef<OptionsSheetRef>((_, ref) => {
         <BottomSheetView style={styles.container}>
           <View style={styles.topActionButtons}>
             <Pressable onPress={handleCancel}>
-              <Text style={styles.deleteButton}>Cancel</Text>
+              <AppText style={styles.deleteButton}>Cancel</AppText>
             </Pressable>
             <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
             <Pressable onPress={handleChange}>
-              <Text style={styles.saveButton}>Save</Text>
+              <AppText style={styles.saveButton}>Save</AppText>
             </Pressable>
           </View>
           <View style={styles.content}>

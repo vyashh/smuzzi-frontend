@@ -18,5 +18,6 @@ export default AppText;
 const styles = StyleSheet.create({
   textColor: {
     color: "#fff",
+    fontFamily: "Inter",
   },
 });
