@@ -49,15 +49,22 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
   const [playlistId, setPlaylistId] = useState<number>();
   const [playlistName, setPlaylistName] = useState<string>("");
   const [playlistDescription, setPlaylistDescription] = useState<string>("");
+
+  // add to playlist
   const [showPlaylists, setShowPlaylists] = useState<boolean>();
+  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist>();
   const { patchPlaylist } = usePlaylistsStore();
 
   useImperativeHandle(ref, () => ({
     present: (props: OptionsSheetTrackProps) => {
       setSheetProps(props);
+      setShowPlaylists(false);
       modalRef.current?.present();
     },
-    dismiss: () => modalRef.current?.dismiss(),
+    dismiss: () => {
+      setShowPlaylists(false);
+      modalRef.current?.dismiss();
+    },
   }));
 
   const handleDelete = () => {
@@ -78,9 +85,13 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
     }
   };
 
-  const handleAddToPlaylist = () => {
-    setShowPlaylists(true);
-    console.log(showPlaylists);
+  const handleAddToPlaylist = (playlist: Playlist) => {
+    console.log(
+      "Should add song: ",
+      sheetProps?.selectedOptionsTrack?.id,
+      " to playlist: ",
+      playlist.name
+    );
   };
 
   const handleCancel = () => {
@@ -131,7 +142,7 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
                 iconColor={Colors.primary}
               />
               <SingleOption
-                onPress={handleAddToPlaylist}
+                onPress={() => setShowPlaylists(true)}
                 iconName="add-circle-outline"
                 text="Add to playlist"
               />
@@ -150,7 +161,11 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
               data={playlists}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <SingleOption text={item.name} iconName="radio-button-off" />
+                <SingleOption
+                  text={item.name}
+                  iconName="radio-button-off"
+                  onPress={() => handleAddToPlaylist(item)}
+                />
               )}
             />
           )}
