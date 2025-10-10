@@ -26,6 +26,7 @@ import { Ionicons } from "@expo/vector-icons";
 import InputField from "../InputField";
 import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import BottomSheetTopActionButtons from "@components/Buttons/BottomSheetTopActionButton";
 
 export type OptionsSheetRef = {
   present: (props: OptionSheetPlaylistProps) => void;
@@ -110,15 +111,10 @@ const OptionSheetPlaylist = forwardRef<OptionsSheetRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
-          <View style={styles.topActionButtons}>
-            <Pressable onPress={handleCancel}>
-              <AppText style={styles.deleteButton}>Cancel</AppText>
-            </Pressable>
-            <AppText style={{ fontWeight: "bold" }}>Edit details</AppText>
-            <Pressable onPress={handleChange}>
-              <AppText style={styles.saveButton}>Save</AppText>
-            </Pressable>
-          </View>
+          <BottomSheetTopActionButtons
+            ref={modalRef}
+            handleChange={handleChange}
+          />
           <View style={styles.content}>
             <View>
               <Image
@@ -163,18 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
     padding: 10,
   },
-  topActionButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  deleteButton: {
-    color: Colors.danger,
-    fontWeight: "bold",
-  },
-  saveButton: {
-    color: Colors.primary,
-    fontWeight: "bold",
-  },
+
   bottomActionButtons: {
     flexDirection: "row",
     alignItems: "center",
