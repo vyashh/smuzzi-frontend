@@ -7,13 +7,13 @@ import {
   View,
 } from "react-native";
 
-import { globalStyles } from "../../constants/global";
+import { globalStyles, HomeTile } from "../../constants/global";
 import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
 import Player from "../../components/Player";
 import { useActiveTrack } from "react-native-track-player";
 import { useHomePlaybackStore } from "utils/homePlaybackStore";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AppText from "@components/AppText";
 import { Song } from "types/song";
 
@@ -24,17 +24,21 @@ function Home() {
   const fetchHome = useHomePlaybackStore((state) => state.fetchHome);
   const tiles = useHomePlaybackStore((state) => state.tiles);
 
+  const renderTile = useCallback((tile: HomeTile) => {
+    switch (tile.type) {
+      case "recently_played":
+        // console.log(tile.items);
+        return <CarouselView data={tile.items} />;
+
+      default: {
+        return null;
+      }
+    }
+  }, []); // no deps; doesn’t capture `tiles`
+
   useEffect(() => {
     fetchHome();
   }, [fetchHome]);
-
-  useEffect(() => {
-    if (tiles) {
-      tiles.map((tile) => {
-        console.log(tile.title);
-      });
-    }
-  }, [tiles]);
 
   return (
     <ScrollView style={globalStyles.container}>
@@ -42,17 +46,12 @@ function Home() {
       <View>
         <HeaderTitle style={{ marginBottom: 30 }}>Hi {userName}!</HeaderTitle>
       </View>
-      <HeaderTitle type="subheader">Recently played</HeaderTitle>
+      {/* <HeaderTitle type="subheader">Recently played</HeaderTitle> */}
+      {tiles?.map((tile) => {
+        return <View>{renderTile(tile)}</View>;
+      })}
 
-      <View style={styles.recentlyPlayed}>
-        <CarouselView />
-        <CarouselView />
-        <CarouselView />
-        <CarouselView />
-        <CarouselView />
-        <CarouselView />
-        <CarouselView />
-      </View>
+      {/* <View style={styles.recentlyPlayed}></View>
       <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
         Most listened last week
       </HeaderTitle>
@@ -64,7 +63,7 @@ function Home() {
       </HeaderTitle>
       <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
         Newly added
-      </HeaderTitle>
+      </HeaderTitle> */}
       {activeTrack && <Player />}
     </ScrollView>
   );

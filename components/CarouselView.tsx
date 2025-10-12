@@ -1,29 +1,33 @@
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
+import { FlatList } from "react-native-gesture-handler";
+import { Song } from "types/song";
+import { useEffect } from "react";
 
 interface CarouselViewProps {
-  title?: string;
-  artist?: string;
-  coverUrl?: string;
+  data: Song[];
 }
 
-const CarouselView = ({ title, artist, coverUrl }: CarouselViewProps) => {
+const CarouselView = ({ data }: CarouselViewProps) => {
+  useEffect(() => console.log("props CarouselView():", data));
   return (
-    <View style={styles.container}>
-      <View>
-        <Image
-          style={styles.cover}
-          source={{ uri: coverUrl || "https://placehold.co/600x600.png" }}
-        />
-      </View>
-      <View style={styles.details}>
-        <AppText style={styles.detailsTitle}>{title || "Title"}</AppText>
-        <AppText>{artist || "Artist"}</AppText>
-      </View>
-    </View>
+    <FlatList
+      data={data}
+      keyExtractor={(song: Song) => String(song.id)}
+      renderItem={(tile) => {
+        return <AppText>{tile.item.artist}</AppText>;
+      }}
+    ></FlatList>
   );
 };
 
+// <View>
+//   <Image style={styles.cover} source={{ uri: coverUrl }} />
+// </View>
+// <View style={styles.details}>
+//   <AppText style={styles.detailsTitle}>{title || "Title"}</AppText>
+//   <AppText>{artist || "Artist"}</AppText>
+// </View>
 export default CarouselView;
 
 const styles = StyleSheet.create({
@@ -34,14 +38,14 @@ const styles = StyleSheet.create({
     marginRight: 100,
   },
   cover: {
-    width: 70,
-    height: 70,
+    width: 40,
+    height: 40,
     marginRight: 10,
     borderRadius: 8,
   },
   details: {},
   detailsTitle: {
-    fontSize: 18,
+    // fontSize: 18,
     fontWeight: "bold",
   },
 });
