@@ -34,7 +34,7 @@ function Home() {
       <View>
         <HeaderTitle style={{ marginBottom: 30 }}>Hi {userName}!</HeaderTitle>
       </View>
-      <HeaderTitle>Recently played</HeaderTitle>
+      <HeaderTitle type="subheader">Recently played</HeaderTitle>
 
       <View style={styles.quickPicksContainer}>
         <View>
@@ -56,12 +56,18 @@ function Home() {
           <CarouselView />
         </View>
       </View>
-      <HeaderTitle style={{ marginTop: 40 }}>
+      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
         Most listened last week
       </HeaderTitle>
-      <HeaderTitle style={{ marginTop: 40 }}>Continue listening</HeaderTitle>
-      <HeaderTitle style={{ marginTop: 40 }}>Favorites</HeaderTitle>
-      <HeaderTitle style={{ marginTop: 40 }}>Newly added</HeaderTitle>
+      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
+        Continue listening
+      </HeaderTitle>
+      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
+        Favorites
+      </HeaderTitle>
+      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
+        Newly added
+      </HeaderTitle>
       {activeTrack && <Player />}
     </ScrollView>
   );

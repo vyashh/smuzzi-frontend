@@ -1,6 +1,6 @@
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
 import AppText from "./AppText";
-import React from "react";
+import React, { useMemo } from "react";
 import { HeaderType } from "constants/global";
 
 interface HeaderTitleProps {
@@ -10,8 +10,19 @@ interface HeaderTitleProps {
 }
 
 const HeaderTitle = ({ children, style, type, ...props }: HeaderTitleProps) => {
+  const typeStyle = useMemo(() => {
+    switch (type) {
+      case "header":
+        return styles.header;
+      case "subheader":
+        return styles.subheader;
+      default:
+        return styles.header;
+    }
+  }, [type]);
+
   return (
-    <AppText {...props} style={[styles.text, style]}>
+    <AppText {...props} style={[typeStyle, style]}>
       {children}
     </AppText>
   );
@@ -20,8 +31,12 @@ const HeaderTitle = ({ children, style, type, ...props }: HeaderTitleProps) => {
 export default HeaderTitle;
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 35,
-    fontWeight: "bold",
+  header: {
+    fontSize: 32,
+    fontWeight: "700",
+  },
+  subheader: {
+    fontSize: 24,
+    fontWeight: "400",
   },
 });
