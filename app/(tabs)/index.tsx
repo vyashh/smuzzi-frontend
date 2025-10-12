@@ -1,6 +1,7 @@
 import {
   FlatList,
   ScrollView,
+  SectionList,
   StatusBar,
   StyleSheet,
   View,
@@ -13,6 +14,8 @@ import Player from "../../components/Player";
 import { useActiveTrack } from "react-native-track-player";
 import { useHomePlaybackStore } from "utils/homePlaybackStore";
 import { useEffect } from "react";
+import AppText from "@components/AppText";
+import { Song } from "types/song";
 
 function Home() {
   const userName = "Vyash";
@@ -23,9 +26,15 @@ function Home() {
 
   useEffect(() => {
     fetchHome();
-
-    tiles && console.log(tiles);
   }, [fetchHome]);
+
+  useEffect(() => {
+    if (tiles) {
+      tiles.map((tile) => {
+        console.log(tile.title);
+      });
+    }
+  }, [tiles]);
 
   return (
     <ScrollView style={globalStyles.container}>
@@ -35,25 +44,14 @@ function Home() {
       </View>
       <HeaderTitle type="subheader">Recently played</HeaderTitle>
 
-      <View style={styles.quickPicksContainer}>
-        <View>
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-        </View>
-        <View>
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-        </View>
-        <View>
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-          <CarouselView />
-        </View>
+      <View style={styles.recentlyPlayed}>
+        <CarouselView />
+        <CarouselView />
+        <CarouselView />
+        <CarouselView />
+        <CarouselView />
+        <CarouselView />
+        <CarouselView />
       </View>
       <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
         Most listened last week
@@ -78,7 +76,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 100,
   },
-  quickPicksContainer: {
+  recentlyPlayed: {
     flexDirection: "row",
     alignItems: "stretch",
     justifyContent: "space-between",

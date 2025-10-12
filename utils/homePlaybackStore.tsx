@@ -8,7 +8,7 @@ import { HomeTile } from "constants/global";
 interface LikesState {
   isFetching: boolean;
   error: string | null;
-  tiles: HomeTile | null;
+  tiles: ReadonlyArray<HomeTile> | null;
   fetchHome: () => Promise<void>;
   setStartPlay: () => Promise<void>;
   setEndPlay: () => Promise<void>;
@@ -35,7 +35,7 @@ export const useHomePlaybackStore: UseBoundStore<StoreApi<LikesState>> =
               },
             });
             set({
-              tiles: data,
+              tiles: data["tiles"],
               isFetching: false,
             });
           } catch (error: any) {
