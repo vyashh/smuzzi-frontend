@@ -41,14 +41,27 @@ function Home() {
   }, [fetchHome]);
 
   return (
-    <ScrollView style={globalStyles.container}>
+    <ScrollView
+      style={globalStyles.container}
+      nestedScrollEnabled
+      directionalLockEnabled
+    >
       <StatusBar barStyle="default" />
       <View>
         <HeaderTitle style={{ marginBottom: 30 }}>Hi {userName}!</HeaderTitle>
       </View>
       {/* <HeaderTitle type="subheader">Recently played</HeaderTitle> */}
-      {tiles?.map((tile) => {
-        return <View>{renderTile(tile)}</View>;
+      {tiles?.map((tile, index) => {
+        return (
+          <View key={index}>
+            <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
+              {tile.title}
+            </HeaderTitle>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {renderTile(tile)}
+            </ScrollView>
+          </View>
+        );
       })}
 
       {/* <View style={styles.recentlyPlayed}></View>

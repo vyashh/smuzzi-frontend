@@ -1,6 +1,5 @@
-import { Image, StyleSheet, View } from "react-native";
+import { FlatList, Image, ScrollView, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
-import { FlatList } from "react-native-gesture-handler";
 import { Song } from "types/song";
 import { useEffect } from "react";
 
@@ -13,21 +12,29 @@ const CarouselView = ({ data }: CarouselViewProps) => {
   return (
     <FlatList
       data={data}
-      keyExtractor={(song: Song) => String(song.id)}
+      keyExtractor={(_, i) => `col-${i}`}
+      showsHorizontalScrollIndicator={true}
+      numColumns={3}
       renderItem={(tile) => {
-        return <AppText>{tile.item.artist}</AppText>;
+        const song = tile.item;
+        return (
+          <View style={styles.container}>
+            <View>
+              <Image style={styles.cover} source={{ uri: song["cover_url"] }} />
+            </View>
+            <View style={styles.details}>
+              <AppText style={styles.detailsTitle}>
+                {song.title || "Title"}
+              </AppText>
+              <AppText>{song.artist || "Artist"}</AppText>
+            </View>
+          </View>
+        );
       }}
-    ></FlatList>
+    />
   );
 };
 
-// <View>
-//   <Image style={styles.cover} source={{ uri: coverUrl }} />
-// </View>
-// <View style={styles.details}>
-//   <AppText style={styles.detailsTitle}>{title || "Title"}</AppText>
-//   <AppText>{artist || "Artist"}</AppText>
-// </View>
 export default CarouselView;
 
 const styles = StyleSheet.create({
@@ -35,7 +42,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
-    marginRight: 100,
   },
   cover: {
     width: 40,
