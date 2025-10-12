@@ -1,32 +1,20 @@
 import {
   FlatList,
-  Image,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
-import { Colors } from "../../constants/colors";
-import { Link } from "expo-router";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 import { globalStyles } from "../../constants/global";
-import AppText from "../../components/AppText";
 import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
-import { useCallback, useMemo, useRef } from "react";
 import Player from "../../components/Player";
 import { useActiveTrack } from "react-native-track-player";
 
 function Home() {
   const userName = "Vyash";
   const activeTrack = useActiveTrack();
-
-  // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
 
   return (
     <ScrollView style={globalStyles.container}>
