@@ -11,10 +11,21 @@ import CarouselView from "../../components/CarouselView";
 import HeaderTitle from "../../components/HeaderTitle";
 import Player from "../../components/Player";
 import { useActiveTrack } from "react-native-track-player";
+import { useHomePlaybackStore } from "utils/homePlaybackStore";
+import { useEffect } from "react";
 
 function Home() {
   const userName = "Vyash";
   const activeTrack = useActiveTrack();
+
+  const fetchHome = useHomePlaybackStore((state) => state.fetchHome);
+  const tiles = useHomePlaybackStore((state) => state.tiles);
+
+  useEffect(() => {
+    fetchHome();
+
+    tiles && console.log(tiles);
+  }, [fetchHome]);
 
   return (
     <ScrollView style={globalStyles.container}>

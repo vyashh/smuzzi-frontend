@@ -3,25 +3,24 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuthStore } from "./authStore";
-import { Song, toSongs } from "types/song";
 import { HomeTile } from "constants/global";
 
 interface LikesState {
   isFetching: boolean;
   error: string | null;
-  homeData: HomeTile | null;
+  tiles: HomeTile | null;
   fetchHome: () => Promise<void>;
   setStartPlay: () => Promise<void>;
   setEndPlay: () => Promise<void>;
 }
 
-export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
+export const useHomePlaybackStore: UseBoundStore<StoreApi<LikesState>> =
   create<LikesState>()(
     persist<LikesState>(
       (set, get) => ({
         isFetching: false,
         error: null,
-        homeData: null,
+        tiles: null,
         fetchHome: async () => {
           if (get().isFetching) return;
 
@@ -36,7 +35,7 @@ export const useLikeStore: UseBoundStore<StoreApi<LikesState>> =
               },
             });
             set({
-              homeData: data,
+              tiles: data,
               isFetching: false,
             });
           } catch (error: any) {
