@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "./colors";
 import { Asset } from "expo-asset";
+import { Song } from "types/song";
 
 const globalStyles = StyleSheet.create({
   container: {
@@ -33,6 +34,12 @@ const ALL_TRACKS_ICON_URI = Asset.fromModule(
 type PlaylistType = "playlist" | "likes" | "allTracks";
 type OptionType = "playlist" | "track";
 type HeaderType = "header" | "subheader";
+type HomeTile =
+  | { type: "recently_played"; title: string; items: Song[] }
+  | { type: "most_listened_last_week"; title: string; items: Song[] }
+  | { type: "continue_listening"; title: string; items: Song[] }
+  | { type: "favorites_hub"; title: string; summary?: Song; items: Song[] }
+  | { type: "newly_added"; title: string; items: Song[] };
 
 export {
   globalStyles,
@@ -43,4 +50,5 @@ export {
   PlaylistType,
   OptionType,
   HeaderType,
+  HomeTile,
 };
