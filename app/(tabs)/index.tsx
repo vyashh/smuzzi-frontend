@@ -16,6 +16,7 @@ import { useHomePlaybackStore } from "utils/homePlaybackStore";
 import { useCallback, useEffect, useState } from "react";
 import AppText from "@components/AppText";
 import { Song } from "types/song";
+import Card from "@components/Card";
 
 function Home() {
   const userName = "Vyash";
@@ -29,6 +30,9 @@ function Home() {
       case "recently_played":
         // console.log(tile.items);
         return <CarouselView data={tile.items} />;
+      case "favorites_hub":
+        // console.log(tile.items);
+        return <Card data={tile.items} />;
 
       default: {
         return null;
@@ -48,13 +52,13 @@ function Home() {
     >
       <StatusBar barStyle="default" />
       <View>
-        <HeaderTitle style={{ marginBottom: 30 }}>Hi {userName}!</HeaderTitle>
+        <HeaderTitle>Hi {userName}!</HeaderTitle>
       </View>
       {/* <HeaderTitle type="subheader">Recently played</HeaderTitle> */}
       {tiles?.map((tile, index) => {
         return (
           <View key={index}>
-            <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
+            <HeaderTitle type="subheader" style={styles.viewContainer}>
               {tile.title}
             </HeaderTitle>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -64,20 +68,7 @@ function Home() {
         );
       })}
 
-      {/* <View style={styles.recentlyPlayed}></View>
-      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
-        Most listened last week
-      </HeaderTitle>
-      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
-        Continue listening
-      </HeaderTitle>
-      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
-        Favorites
-      </HeaderTitle>
-      <HeaderTitle type="subheader" style={{ marginTop: 40 }}>
-        Newly added
-      </HeaderTitle> */}
-      {activeTrack && <Player />}
+      {/* {activeTrack && <Player />} */}
     </ScrollView>
   );
 }
@@ -87,6 +78,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     marginTop: 100,
+  },
+  viewContainer: {
+    marginTop: 35,
   },
   recentlyPlayed: {
     flexDirection: "row",
