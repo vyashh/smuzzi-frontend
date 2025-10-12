@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -28,14 +29,12 @@ function Home() {
   }, []);
 
   return (
-    <View style={globalStyles.container}>
+    <ScrollView style={globalStyles.container}>
       <StatusBar barStyle="default" />
       <View>
-        <HeaderTitle style={{ fontSize: 50, marginBottom: 30 }}>
-          Hi {userName}!
-        </HeaderTitle>
+        <HeaderTitle style={{ marginBottom: 30 }}>Hi {userName}!</HeaderTitle>
       </View>
-      <HeaderTitle>Quick Picks</HeaderTitle>
+      <HeaderTitle>Recently played</HeaderTitle>
 
       <View style={styles.quickPicksContainer}>
         <View>
@@ -57,9 +56,14 @@ function Home() {
           <CarouselView />
         </View>
       </View>
-      <HeaderTitle style={{ marginTop: 40 }}>Recently added</HeaderTitle>
+      <HeaderTitle style={{ marginTop: 40 }}>
+        Most listened last week
+      </HeaderTitle>
+      <HeaderTitle style={{ marginTop: 40 }}>Continue listening</HeaderTitle>
+      <HeaderTitle style={{ marginTop: 40 }}>Favorites</HeaderTitle>
+      <HeaderTitle style={{ marginTop: 40 }}>Newly added</HeaderTitle>
       {activeTrack && <Player />}
-    </View>
+    </ScrollView>
   );
 }
 
