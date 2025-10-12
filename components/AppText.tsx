@@ -1,3 +1,4 @@
+import { Colors } from "constants/colors";
 import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
 
 interface AppTextProps {
@@ -17,7 +18,7 @@ export default AppText;
 
 const styles = StyleSheet.create({
   textColor: {
-    color: "#fff",
+    color: Colors.text,
     fontFamily: "Inter",
   },
 });

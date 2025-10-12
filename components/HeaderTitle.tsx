@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   subheader: {
-    fontSize: 24,
-    fontWeight: "400",
+    fontSize: 18,
+    fontWeight: "700",
   },
 });

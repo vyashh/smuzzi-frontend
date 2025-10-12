@@ -17,7 +17,7 @@ const Colors = {
   bg: "#101010",
   surface: "#1E1E1E",
   border: "#FFFB00",
-  text: "#e6e6e6ff",
+  text: "#d1d1d1ff",
   textMuted: "#9ca3af",
 };
 
