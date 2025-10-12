@@ -28,10 +28,14 @@ function Home() {
   const renderTile = useCallback((tile: HomeTile) => {
     switch (tile.type) {
       case "recently_played":
-        // console.log(tile.items);
         return <CarouselView data={tile.items} />;
+      case "continue_listening":
+        return <Card data={tile.items} />;
       case "favorites_hub":
-        // console.log(tile.items);
+        return <Card data={tile.items} />;
+      case "most_listened_last_week":
+        return <Card data={tile.items} />;
+      case "newly_added":
         return <Card data={tile.items} />;
 
       default: {
