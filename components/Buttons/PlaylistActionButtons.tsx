@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   quickActionsButtonContainer: {
-    padding: 10,
+    padding: 8,
     flexDirection: "row",
     alignItems: "center",
   },

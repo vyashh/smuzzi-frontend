@@ -4,7 +4,7 @@ import { Asset } from "expo-asset";
 
 const globalStyles = StyleSheet.create({
   container: {
-    paddingTop: 100,
+    paddingTop: 75,
     paddingLeft: 12,
     paddingRight: 12,
     backgroundColor: Colors.bg,

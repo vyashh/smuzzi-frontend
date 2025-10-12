@@ -23,13 +23,13 @@ function Home() {
   const activeTrack = useActiveTrack();
 
   // callbacks
-  const handleSheetChanges = useCallback((index) => {
+  const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
   return (
     <View style={globalStyles.container}>
-      <StatusBar barStyle="auto" />
+      <StatusBar barStyle="default" />
       <View>
         <HeaderTitle style={{ fontSize: 50, marginBottom: 30 }}>
           Hi {userName}!
@@ -65,7 +65,7 @@ function Home() {
 
 export default Home;
 
-const styles = new StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     marginTop: 100,
   },

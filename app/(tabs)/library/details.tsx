@@ -114,7 +114,7 @@ const playlist = () => {
   return (
     <BottomSheetModalProvider>
       <View style={[globalStyles.container]}>
-        <TopBar />
+        <TopBar showOptions={viewType === "playlist"} />
         <HeaderTitle>{title}</HeaderTitle>
         <View style={styles.trackDetails}>
           <AppText style={styles.tracks}>

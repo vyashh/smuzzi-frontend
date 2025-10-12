@@ -1,13 +1,19 @@
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 
-const CarouselView = ({ title, artist, cover }) => {
+interface CarouselViewProps {
+  title?: string;
+  artist?: string;
+  coverUrl?: string;
+}
+
+const CarouselView = ({ title, artist, coverUrl }: CarouselViewProps) => {
   return (
     <View style={styles.container}>
       <View>
         <Image
           style={styles.cover}
-          source={{ uri: cover || "https://placehold.co/600x600.png" }}
+          source={{ uri: coverUrl || "https://placehold.co/600x600.png" }}
         />
       </View>
       <View style={styles.details}>
@@ -20,7 +26,7 @@ const CarouselView = ({ title, artist, cover }) => {
 
 export default CarouselView;
 
-const styles = new StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
