@@ -1,5 +1,6 @@
 import {
   FlatList,
+  RefreshControl,
   ScrollView,
   SectionList,
   StatusBar,
@@ -23,6 +24,7 @@ function Home() {
   const activeTrack = useActiveTrack();
 
   const fetchHome = useHomePlaybackStore((state) => state.fetchHome);
+  const isFetching = useHomePlaybackStore((state) => state.isFetching);
   const tiles = useHomePlaybackStore((state) => state.tiles);
 
   const renderTile = useCallback((tile: HomeTile) => {
@@ -42,7 +44,7 @@ function Home() {
         return null;
       }
     }
-  }, []); // no deps; doesn’t capture `tiles`
+  }, []);
 
   useEffect(() => {
     fetchHome();
@@ -53,6 +55,9 @@ function Home() {
       style={globalStyles.container}
       nestedScrollEnabled
       directionalLockEnabled
+      refreshControl={
+        <RefreshControl refreshing={isFetching} onRefresh={fetchHome} />
+      }
     >
       <StatusBar barStyle="default" />
       <View>

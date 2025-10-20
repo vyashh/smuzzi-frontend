@@ -9,6 +9,7 @@ import { Song } from "types/song";
 import AppText from "./AppText";
 import { Colors } from "constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
+import { DEFAULT_ARTWORK_URI } from "constants/global";
 
 interface CardProps {
   data: Song[];
@@ -26,7 +27,7 @@ const Card = ({ data }: CardProps) => {
           <View style={styles.container}>
             <ImageBackground
               style={styles.image}
-              source={{ uri: song["cover_url"] }}
+              source={{ uri: song["cover_url"] || DEFAULT_ARTWORK_URI }}
               resizeMode="cover"
             >
               <LinearGradient
