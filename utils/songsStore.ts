@@ -11,6 +11,8 @@ interface SongsState {
   songs: Array<Song>;
   fetchSongs: () => Promise<void>;
   setSongs: (s: Array<Song>) => void;
+  setStartPlay: () => Promise<void>;
+  setEndPlay: () => Promise<void>;
   clear: () => void;
 }
 
@@ -49,6 +51,29 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
             set({ isFetching: false });
           }
         },
+        setStartPlay: async () => {
+          if (get().isFetching) return;
+
+          set({ isFetching: true, error: null });
+
+          const { serverUrl, accessToken } = useAuthStore.getState();
+
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/home`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            set({
+              isFetching: false,
+            });
+          } catch (error: any) {
+            set({ error: error, isFetching: false });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        setEndPlay: async () => {},
       }),
       {
         name: "songs-store-v2",

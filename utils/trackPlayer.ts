@@ -4,6 +4,7 @@ import type { Song } from "../types/song";
 import { useAuthStore } from "./authStore";
 import { shuffle } from "../helpers/misc";
 import { PlaylistType } from "constants/global";
+import { useSongsStore } from "./songsStore";
 
 const buildTrack = (
   song: Song,
@@ -40,6 +41,7 @@ export const loadPlay = async ({
   shuffleMode?: "keepSelectionFirst" | "randomStart";
 }) => {
   const { serverUrl, accessToken } = useAuthStore.getState();
+  const setPlayState = useSongsStore((state) => useSongsStore().setStartPlay());
 
   let ordered = list;
   if (shuffled) {

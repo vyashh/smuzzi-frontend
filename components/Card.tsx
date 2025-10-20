@@ -43,6 +43,13 @@ const Card = ({ data }: CardProps) => {
                 >
                   {song.artist || "Artist"}
                 </AppText>
+                <AppText
+                  style={styles.text}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {song.title || "Title"}
+                </AppText>
               </LinearGradient>
             </ImageBackground>
           </View>

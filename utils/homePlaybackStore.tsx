@@ -10,8 +10,6 @@ interface LikesState {
   error: string | null;
   tiles: ReadonlyArray<HomeTile> | null;
   fetchHome: () => Promise<void>;
-  setStartPlay: () => Promise<void>;
-  setEndPlay: () => Promise<void>;
 }
 
 export const useHomePlaybackStore: UseBoundStore<StoreApi<LikesState>> =
@@ -44,30 +42,6 @@ export const useHomePlaybackStore: UseBoundStore<StoreApi<LikesState>> =
             set({ isFetching: false });
           }
         },
-        setStartPlay: async () => {
-          if (get().isFetching) return;
-
-          set({ isFetching: true, error: null });
-
-          const { serverUrl, accessToken } = useAuthStore.getState();
-
-          try {
-            const { data } = await axios.get(`${serverUrl}/api/home`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            });
-            set({
-              tiles: data["tiles"],
-              isFetching: false,
-            });
-          } catch (error: any) {
-            set({ error: error, isFetching: false });
-          } finally {
-            set({ isFetching: false });
-          }
-        },
-        setEndPlay: async () => {},
       }),
       { name: "home-store-v1", storage: createJSONStorage(() => AsyncStorage) }
     )
