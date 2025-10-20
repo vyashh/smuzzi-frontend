@@ -3,14 +3,15 @@ import AppText from "./AppText";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/colors";
 import { DEFAULT_ARTWORK_URI, globalStyles } from "../constants/global";
-import TrackPlayer from "react-native-track-player";
+import TrackPlayer, { Track } from "react-native-track-player";
 import QueueView from "./QueueView";
 import SubTitle from "./SubTitle";
 import { useEffect, useState } from "react";
+import { Song } from "types/song";
 
 const Queue = () => {
-  const [queue, setQueue] = useState([]);
-  const [nowPlaying, setNowPlaying] = useState([]);
+  const [queue, setQueue] = useState<Array<Track>>();
+  const [nowPlaying, setNowPlaying] = useState<Array<Track>>([]);
 
   const getQueue = async () => {
     await TrackPlayer.getQueue().then((queue) => {

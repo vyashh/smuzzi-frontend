@@ -52,8 +52,6 @@ const playlist = () => {
     pid != null ? s.playlistTracksById[pid] : undefined
   );
 
-  const [selectedTrack, setSelectedTrack] = useState<Song>();
-
   const refreshing =
     viewType === "likes" ? isSongsFetching || isLikesFetching : isSongsFetching;
 
