@@ -83,9 +83,14 @@ function Home() {
           <View key={index} style={styles.viewContainer}>
             <View style={styles.header}>
               <HeaderTitle type="subheader">{tile.title}</HeaderTitle>
-              <AppText style={{ color: Colors.primary, fontWeight: "bold" }}>
-                See all
-              </AppText>
+              {tile.type !== "most_listened_last_week" &&
+                tile.type !== "recently_played" && (
+                  <AppText
+                    style={{ color: Colors.primary, fontWeight: "bold" }}
+                  >
+                    See all
+                  </AppText>
+                )}
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
