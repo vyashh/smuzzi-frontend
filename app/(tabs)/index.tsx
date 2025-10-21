@@ -20,6 +20,8 @@ import { Song } from "types/song";
 import Card from "@components/Card";
 import { loadPlay } from "utils/trackPlayer";
 import { useSongsStore } from "utils/songsStore";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "constants/colors";
 
 function Home() {
   const userName = "Vyash";
@@ -76,13 +78,14 @@ function Home() {
       <View>
         <HeaderTitle>Hi {userName}!</HeaderTitle>
       </View>
-      {/* <HeaderTitle type="subheader">Recently played</HeaderTitle> */}
       {tiles?.map((tile, index) => {
         return (
-          <View key={index}>
-            <HeaderTitle type="subheader" style={styles.viewContainer}>
-              {tile.title}
-            </HeaderTitle>
+          <View key={index} style={styles.viewContainer}>
+            <View style={styles.header}>
+              <HeaderTitle type="subheader">{tile.title}</HeaderTitle>
+              <AppText>See all</AppText>
+            </View>
+
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {renderTile(tile)}
             </ScrollView>
@@ -101,8 +104,11 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 100,
   },
-  viewContainer: {
-    marginTop: 35,
+  viewContainer: { marginTop: 35 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   recentlyPlayed: {
     flexDirection: "row",

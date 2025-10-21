@@ -11,6 +11,7 @@ import AppText from "./AppText";
 import { Colors } from "constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { DEFAULT_ARTWORK_URI } from "constants/global";
+import { Ionicons } from "@expo/vector-icons";
 
 interface CardProps {
   data: Song[];
