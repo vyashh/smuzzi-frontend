@@ -45,13 +45,13 @@ function Home() {
       case "recently_played":
         return <CarouselView data={tile.items} />;
       case "continue_listening":
-        return <Card data={tile.items} />;
+        return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "favorites_hub":
         return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "most_listened_last_week":
-        return <Card data={tile.items} />;
+        return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "newly_added":
-        return <Card data={tile.items} />;
+        return <Card handleTrackPress={handlePlay} data={tile.items} />;
 
       default: {
         return null;
