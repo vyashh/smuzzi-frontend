@@ -19,7 +19,9 @@ const Card = ({ data, handleTrackPress }: CardProps) => {
   return (
     <FlatList
       data={data}
-      keyExtractor={(s) => String(s.id)}
+      keyExtractor={(song, i) =>
+        String(song["track_id"] ?? song.id ?? i) + ":" + i
+      }
       numColumns={20}
       renderItem={(tile) => {
         const song = tile.item;

@@ -31,7 +31,9 @@ const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
   return (
     <FlatList
       data={data}
-      keyExtractor={(s) => String(s.id)} // prefer stable key [TSBP §Keys]
+      keyExtractor={(song, i) =>
+        String(song["track_id"] ?? song.id ?? i) + ":" + i
+      }
       numColumns={NUM_COLS}
       contentContainerStyle={{ padding: GAP, rowGap: GAP }}
       columnWrapperStyle={{ columnGap: GAP }}
