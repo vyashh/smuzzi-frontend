@@ -23,10 +23,23 @@ import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
 import Queue from "./Queue";
 import { DEFAULT_ARTWORK_URI } from "../constants/global";
+import { useSongsStore } from "utils/songsStore";
+import { registerTrackChangeStart } from "utils/trackPlayer";
 
 const Player = () => {
   const bottomSheetRef = useRef(null);
   const playerState = usePlaybackState();
+
+  const getPositionSec = async (): Promise<number> => {
+    try {
+      const { position } = await TrackPlayer.getProgress();
+      return Math.max(0, Math.floor(position ?? 0));
+    } catch {
+      return 0;
+    }
+  };
+
+  const { setEndPlay } = useSongsStore();
 
   const MINI_HEIGHT = 80;
   const snapPoints = useMemo(() => [MINI_HEIGHT, "100%"], []);
@@ -102,8 +115,11 @@ const Player = () => {
   const open = () => bottomSheetRef.current?.snapToIndex(1);
   const close = () => bottomSheetRef.current?.snapToIndex(0);
 
-  const handlePlayState = () => {
+  const handlePlayState = async () => {
     if (playerState.state === "playing") {
+      const position_end_sec = await getPositionSec();
+      await setEndPlay({ position_end_sec });
+
       TrackPlayer.pause();
     } else if (playerState.state === "paused") {
       TrackPlayer.play();
@@ -129,6 +145,10 @@ const Player = () => {
     });
   }, [activeTrack?.id]);
 
+  useEffect(() => {
+    const unsubscribe = registerTrackChangeStart();
+    return unsubscribe;
+  }, []);
   return (
     <BottomSheet
       ref={bottomSheetRef}

@@ -129,3 +129,21 @@ export const registerPlaybackListeners = () => {
     await useSongsStore.getState().setEndPlay({ position_end_sec });
   });
 };
+
+export const registerTrackChangeStart = () => {
+  const sub = TrackPlayer.addEventListener(
+    Event.PlaybackActiveTrackChanged,
+    async () => {
+      const active = await TrackPlayer.getActiveTrack();
+      if (!active?.id) return;
+
+      const { position } = await TrackPlayer.getProgress();
+      await useSongsStore.getState().setStartPlay({
+        track_id: Number(active.id),
+        position_start_sec: Math.max(0, Math.floor(position ?? 0)),
+        device: "web",
+      });
+    }
+  );
+  return () => sub.remove();
+};
