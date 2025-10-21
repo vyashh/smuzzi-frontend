@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Pressable,
   RefreshControl,
   ScrollView,
   SectionList,
@@ -22,6 +23,7 @@ import { loadPlay } from "utils/trackPlayer";
 import { useSongsStore } from "utils/songsStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
+import { router } from "expo-router";
 
 function Home() {
   const userName = "Vyash";
@@ -61,6 +63,27 @@ function Home() {
     }
   }, []);
 
+  const handleSeeAll = (tile: HomeTile) => {
+    console.log("handleOnPressShowPlaylist()");
+    switch (tile.type) {
+      case "favorites_hub":
+        router.push({
+          pathname: "/(tabs)/library/details",
+          params: { viewType: "likes", title: "Likes" },
+        });
+        break;
+      case "newly_added":
+        router.push({
+          pathname: "/(tabs)/library/details",
+          params: { viewType: "allTracks", title: "Library" },
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     fetchHome();
   }, [fetchHome]);
@@ -85,11 +108,13 @@ function Home() {
               <HeaderTitle type="subheader">{tile.title}</HeaderTitle>
               {tile.type !== "most_listened_last_week" &&
                 tile.type !== "recently_played" && (
-                  <AppText
-                    style={{ color: Colors.primary, fontWeight: "bold" }}
-                  >
-                    See all
-                  </AppText>
+                  <Pressable onPress={() => handleSeeAll(tile)}>
+                    <AppText
+                      style={{ color: Colors.primary, fontWeight: "bold" }}
+                    >
+                      See all
+                    </AppText>
+                  </Pressable>
                 )}
             </View>
 
