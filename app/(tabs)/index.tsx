@@ -53,13 +53,13 @@ function Home() {
   const renderTile = useCallback((tile: HomeTile) => {
     switch (tile.type) {
       case "recently_played":
-        return <CarouselView handleTrackPress={handlePlay} data={tile.items} />;
+        return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "continue_listening":
         return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "favorites_hub":
         return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "most_listened_last_week":
-        return <Card handleTrackPress={handlePlay} data={tile.items} />;
+        return <CarouselView handleTrackPress={handlePlay} data={tile.items} />;
       case "newly_added":
         return <Card handleTrackPress={handlePlay} data={tile.items} />;
 

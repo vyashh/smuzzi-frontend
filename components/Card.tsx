@@ -20,7 +20,7 @@ const Card = ({ data, handleTrackPress }: CardProps) => {
     <FlatList
       data={data}
       keyExtractor={(s) => String(s.id)}
-      numColumns={9}
+      numColumns={20}
       renderItem={(tile) => {
         const song = tile.item;
         return (

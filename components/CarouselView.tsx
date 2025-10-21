@@ -19,14 +19,14 @@ interface CarouselViewProps {
   handleTrackPress?: (songIndex: number) => void;
 }
 
-const NUM_COLS = 3;
-const GAP = 12;
-const SCREEN_W = Dimensions.get("window").width;
-const ITEM_W = Math.floor((SCREEN_W - GAP * (NUM_COLS + 1)) / NUM_COLS);
-
 const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
   const activeTrack = useActiveTrack();
   const [isPlaying, setIsPlaying] = useState<number>();
+
+  const NUM_COLS = data.length < 4 ? 3 : 2;
+  const GAP = 6;
+  const SCREEN_W = Dimensions.get("window").width;
+  const ITEM_W = Math.floor((SCREEN_W - GAP * (NUM_COLS + 1)) / NUM_COLS);
 
   return (
     <FlatList
@@ -47,7 +47,7 @@ const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
             onPress={() => handleTrackPress?.(song?.["track_id"])}
             style={[styles.container, { width: ITEM_W }]}
           >
-            <View style={[isActive && styles.activeTrackBorder]}>
+            <View>
               <Image style={styles.cover} source={{ uri: coverUrl }} />
             </View>
             <View style={styles.details}>
@@ -63,7 +63,7 @@ const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
               </AppText>
               <AppText
                 style={[
-                  styles.detailsTitle,
+                  styles.detailsArtist,
                   isActive && styles.activeTrackText,
                 ]}
                 numberOfLines={1}
@@ -97,6 +97,12 @@ const styles = StyleSheet.create({
   details: {},
   detailsTitle: {
     fontWeight: "bold",
+    fontSize: 12,
+  },
+  detailsArtist: {
+    fontWeight: "bold",
+    fontSize: 12,
+    opacity: 0.5,
   },
   activeTrackBorder: {
     borderColor: Colors.primary,
