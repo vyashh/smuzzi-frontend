@@ -132,7 +132,12 @@ const playlist = () => {
             <View style={{ padding: 12 }}>
               <Pressable
                 onPress={() =>
-                  loadPlay({ songIndex: index, list: displayedSongs ?? [] })
+                  loadPlay({
+                    songIndex: index,
+                    list: displayedSongs ?? [],
+                    context_id: viewType,
+                    context_type: "library",
+                  })
                 }
               >
                 <PlaylistView

@@ -4,14 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuthStore } from "./authStore";
 import { Song, toSongs } from "types/song";
-
-export type ContextType =
-  | "playlist"
-  | "folder"
-  | "mood"
-  | "album"
-  | "radio"
-  | "unknown";
+import { ContextType } from "types/playback";
 
 export interface PlayStart {
   track_id: number;

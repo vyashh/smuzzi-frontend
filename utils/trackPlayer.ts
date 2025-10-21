@@ -3,7 +3,8 @@ import type { Song } from "../types/song";
 import { useAuthStore } from "./authStore";
 import { shuffle } from "../helpers/misc";
 import { useSongsStore } from "./songsStore";
-import type { PlayStart, ContextType, PlayEndPayload } from "./songsStore";
+import type { PlayStart, PlayEndPayload } from "./songsStore";
+import { ContextType } from "types/playback";
 
 const buildTrack = (
   song: Song,
@@ -28,21 +29,7 @@ const buildTrack = (
     : { ...common, url: `${serverUrl}/api/stream/${song.id}` };
 };
 
-const allowed: ContextType[] = [
-  "playlist",
-  "folder",
-  "mood",
-  "album",
-  "radio",
-  "unknown",
-];
-const sanitizeContextType = (ct?: string): ContextType => {
-  if (!ct) return "unknown";
-  const lower = ct.toLowerCase();
-  if (allowed.includes(lower as ContextType)) return lower as ContextType;
-  if (lower === "library" || lower === "home") return "folder";
-  return "unknown";
-};
+const allowed: ContextType[] = ["playlist", "likes", "library", "unknown"];
 
 const getPositionSec = async (): Promise<number> => {
   try {
@@ -67,7 +54,7 @@ export const loadPlay = async ({
   shuffled?: boolean;
   list: ReadonlyArray<Song> | [];
   shuffleMode?: "keepSelectionFirst" | "randomStart";
-  context_type?: string;
+  context_type?: ContextType;
   context_id?: string;
   source_label?: string;
   device?: string;
@@ -97,7 +84,7 @@ export const loadPlay = async ({
 
     const startPayload: PlayStart = {
       track_id: Number(selectedSong.id),
-      context_type: sanitizeContextType(context_type),
+      context_type: context_type ?? "unknown",
       context_id: context_id ?? null,
       source_label: source_label ?? null,
       position_start_sec,
@@ -114,7 +101,7 @@ export const loadPlay = async ({
     const position_start_sec = await getPositionSec();
     const startPayload: PlayStart = {
       track_id: Number(first.id),
-      context_type: sanitizeContextType(context_type),
+      context_type: context_type,
       context_id: context_id ?? null,
       source_label: source_label ?? null,
       position_start_sec,

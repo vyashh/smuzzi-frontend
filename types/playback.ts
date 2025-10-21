@@ -1,10 +1,4 @@
-export type ContextType =
-  | "playlist"
-  | "folder"
-  | "mood"
-  | "album"
-  | "radio"
-  | "unknown";
+export type ContextType = "playlist" | "likes" | "library" | "unknown";
 
 export interface PlayStart {
   track_id: number;
@@ -12,7 +6,7 @@ export interface PlayStart {
   context_id?: string; // example => "pl:2", "home"
   source_label?: string; // example => "My cool playlist" aka the playlist name or "Library"
   position_start_sec: number;
-  device?: "web";
+  device?: "mobile";
 }
 
 export interface PlayEnd {
