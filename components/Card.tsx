@@ -1,17 +1,8 @@
-import {
-  FlatList,
-  Image,
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { FlatList, ImageBackground, Pressable, StyleSheet } from "react-native";
 import { Song } from "types/song";
 import AppText from "./AppText";
-import { Colors } from "constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { DEFAULT_ARTWORK_URI } from "constants/global";
-import { Ionicons } from "@expo/vector-icons";
 
 interface CardProps {
   data: Song[];

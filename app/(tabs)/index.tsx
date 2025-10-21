@@ -83,7 +83,9 @@ function Home() {
           <View key={index} style={styles.viewContainer}>
             <View style={styles.header}>
               <HeaderTitle type="subheader">{tile.title}</HeaderTitle>
-              <AppText>See all</AppText>
+              <AppText style={{ color: Colors.primary, fontWeight: "bold" }}>
+                See all
+              </AppText>
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
