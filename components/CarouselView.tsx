@@ -8,10 +8,11 @@ import {
 } from "react-native";
 import AppText from "./AppText";
 import { Song } from "types/song";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { DEFAULT_ARTWORK_URI } from "constants/global";
 import { useActiveTrack } from "react-native-track-player";
+import { Colors } from "constants/colors";
 
 interface CarouselViewProps {
   data: Song[];
@@ -25,8 +26,8 @@ const ITEM_W = Math.floor((SCREEN_W - GAP * (NUM_COLS + 1)) / NUM_COLS);
 
 const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
   const activeTrack = useActiveTrack();
+  const [isPlaying, setIsPlaying] = useState<number>();
 
-  useEffect(() => console.log("props CarouselView():", data));
   return (
     <FlatList
       data={data}
@@ -37,26 +38,37 @@ const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
       renderItem={(tile) => {
         const song = tile.item;
         const coverUrl = song?.["cover_url"] || DEFAULT_ARTWORK_URI;
-        const isPlaying = activeTrack?.mediaId;
-        const songs = tile;
-        console.log(isPlaying);
+        const activeId = String(activeTrack?.id ?? activeTrack?.mediaId ?? "");
+        const songId = String(song?.["track_id"] ?? song?.id ?? "");
+        const isActive = activeId === songId;
+
         return (
           <Pressable
             onPress={() => handleTrackPress?.(song?.["track_id"])}
             style={[styles.container, { width: ITEM_W }]}
           >
-            <View>
+            <View style={[isActive && styles.activeTrackBorder]}>
               <Image style={styles.cover} source={{ uri: coverUrl }} />
             </View>
             <View style={styles.details}>
               <AppText
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={styles.detailsTitle}
+                style={[
+                  styles.detailsTitle,
+                  isActive && styles.activeTrackText,
+                ]}
               >
                 {song.title || "Title"}
               </AppText>
-              <AppText numberOfLines={1} ellipsizeMode="tail">
+              <AppText
+                style={[
+                  styles.detailsTitle,
+                  isActive && styles.activeTrackText,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {song.artist || "Artist"}
               </AppText>
             </View>
@@ -84,10 +96,14 @@ const styles = StyleSheet.create({
   },
   details: {},
   detailsTitle: {
-    // fontSize: 18,
     fontWeight: "bold",
   },
-  isPlaying: {
-    borderColor: "red",
+  activeTrackBorder: {
+    borderColor: Colors.primary,
+    borderLeftWidth: 3,
+    borderRadius: 8,
+  },
+  activeTrackText: {
+    color: Colors.primary,
   },
 });
