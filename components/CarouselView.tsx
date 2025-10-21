@@ -38,7 +38,7 @@ const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
         const song = tile.item;
         const coverUrl = song?.["cover_url"] || DEFAULT_ARTWORK_URI;
         const isPlaying = activeTrack?.mediaId;
-
+        const songs = tile;
         console.log(isPlaying);
         return (
           <Pressable

@@ -36,9 +36,15 @@ function Home() {
   const tiles = useHomePlaybackStore((state) => state.tiles);
 
   const handlePlay = (songIndex: number) => {
+    if (!songs?.length) return;
+    const startIndex = songs.findIndex((song) => song.id === songIndex);
+    if (startIndex < 0) return;
+
+    const rotated = [...songs.slice(startIndex), ...songs.slice(0, startIndex)];
+
     loadPlay({
-      songIndex: songIndex,
-      list: songs ?? [],
+      songIndex: 0,
+      list: rotated,
       context_id: "home",
       context_type: "library",
     });
