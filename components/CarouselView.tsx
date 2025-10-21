@@ -1,11 +1,21 @@
-import { FlatList, Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import AppText from "./AppText";
 import { Song } from "types/song";
 import { useEffect } from "react";
 import { Dimensions } from "react-native";
+import { DEFAULT_ARTWORK_URI } from "constants/global";
+import { useActiveTrack } from "react-native-track-player";
 
 interface CarouselViewProps {
   data: Song[];
+  handleTrackPress?: (songIndex: number) => void;
 }
 
 const NUM_COLS = 3;
@@ -13,7 +23,9 @@ const GAP = 12;
 const SCREEN_W = Dimensions.get("window").width;
 const ITEM_W = Math.floor((SCREEN_W - GAP * (NUM_COLS + 1)) / NUM_COLS);
 
-const CarouselView = ({ data }: CarouselViewProps) => {
+const CarouselView = ({ data, handleTrackPress }: CarouselViewProps) => {
+  const activeTrack = useActiveTrack();
+
   useEffect(() => console.log("props CarouselView():", data));
   return (
     <FlatList
@@ -24,11 +36,17 @@ const CarouselView = ({ data }: CarouselViewProps) => {
       columnWrapperStyle={{ columnGap: GAP }}
       renderItem={(tile) => {
         const song = tile.item;
+        const coverUrl = song?.["cover_url"] || DEFAULT_ARTWORK_URI;
+        const isPlaying = activeTrack?.mediaId;
+
+        console.log(isPlaying);
         return (
-          <View style={[styles.container, { width: ITEM_W }]}>
-            {" "}
+          <Pressable
+            onPress={() => handleTrackPress?.(song?.["track_id"])}
+            style={[styles.container, { width: ITEM_W }]}
+          >
             <View>
-              <Image style={styles.cover} source={{ uri: song["cover_url"] }} />
+              <Image style={styles.cover} source={{ uri: coverUrl }} />
             </View>
             <View style={styles.details}>
               <AppText
@@ -42,7 +60,7 @@ const CarouselView = ({ data }: CarouselViewProps) => {
                 {song.artist || "Artist"}
               </AppText>
             </View>
-          </View>
+          </Pressable>
         );
       }}
     />
@@ -68,5 +86,8 @@ const styles = StyleSheet.create({
   detailsTitle: {
     // fontSize: 18,
     fontWeight: "bold",
+  },
+  isPlaying: {
+    borderColor: "red",
   },
 });
