@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Pressable,
   StyleSheet,
   View,
 } from "react-native";
@@ -13,9 +14,10 @@ import { DEFAULT_ARTWORK_URI } from "constants/global";
 
 interface CardProps {
   data: Song[];
+  handleTrackPress?: (songIndex: number) => void;
 }
 
-const Card = ({ data }: CardProps) => {
+const Card = ({ data, handleTrackPress }: CardProps) => {
   return (
     <FlatList
       data={data}
@@ -24,7 +26,10 @@ const Card = ({ data }: CardProps) => {
       renderItem={(tile) => {
         const song = tile.item;
         return (
-          <View style={styles.container}>
+          <Pressable
+            onPress={() => handleTrackPress?.(song["track_id"])}
+            style={styles.container}
+          >
             <ImageBackground
               style={styles.image}
               source={{ uri: song["cover_url"] || DEFAULT_ARTWORK_URI }}
@@ -52,7 +57,7 @@ const Card = ({ data }: CardProps) => {
                 </AppText>
               </LinearGradient>
             </ImageBackground>
-          </View>
+          </Pressable>
         );
       }}
     />

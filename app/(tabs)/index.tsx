@@ -18,14 +18,27 @@ import { useCallback, useEffect, useState } from "react";
 import AppText from "@components/AppText";
 import { Song } from "types/song";
 import Card from "@components/Card";
+import { loadPlay } from "utils/trackPlayer";
+import { useSongsStore } from "utils/songsStore";
 
 function Home() {
   const userName = "Vyash";
   const activeTrack = useActiveTrack();
 
+  const { songs } = useSongsStore();
+
   const fetchHome = useHomePlaybackStore((state) => state.fetchHome);
   const isFetching = useHomePlaybackStore((state) => state.isFetching);
   const tiles = useHomePlaybackStore((state) => state.tiles);
+
+  const handlePlay = (songIndex: number) => {
+    loadPlay({
+      songIndex: songIndex,
+      list: songs ?? [],
+      context_id: "home",
+      context_type: "library",
+    });
+  };
 
   const renderTile = useCallback((tile: HomeTile) => {
     switch (tile.type) {
@@ -34,7 +47,7 @@ function Home() {
       case "continue_listening":
         return <Card data={tile.items} />;
       case "favorites_hub":
-        return <Card data={tile.items} />;
+        return <Card handleTrackPress={handlePlay} data={tile.items} />;
       case "most_listened_last_week":
         return <Card data={tile.items} />;
       case "newly_added":
