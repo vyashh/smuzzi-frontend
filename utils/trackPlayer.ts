@@ -73,8 +73,15 @@ export const loadPlay = async ({
     ordered = shuffle(list.slice());
     songIndex = Math.floor(Math.random() * ordered.length);
   }
+  console.log(ordered.length);
 
-  const tracks = ordered.map((s) => buildTrack(s, serverUrl, accessToken));
+  ordered = ordered.slice(songIndex);
+  songIndex = 0;
+
+  console.log(ordered.length);
+
+  let tracks = ordered.map((s) => buildTrack(s, serverUrl, accessToken));
+
   await TrackPlayer.reset();
 
   try {
