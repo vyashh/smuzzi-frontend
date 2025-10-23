@@ -1,14 +1,34 @@
 import { StyleSheet, View } from "react-native";
-import AppText from "./AppText";
+import { Colors } from "constants/colors";
+import InputField from "./InputField";
+import { useState } from "react";
+import SubTitle from "./SubTitle";
 
-const SearchBar = () => {
+const Search = () => {
+  const [searchValue, setSearchValue] = useState<string>();
   return (
     <View>
-      <AppText>Search</AppText>
+      <InputField
+        style={styles.inputField}
+        placeholder="What do you want to listen to?"
+        value={searchValue}
+        onChangeText={setSearchValue}
+      />
+      <SubTitle>Recent Searches</SubTitle>
     </View>
   );
 };
 
-export default SearchBar;
+export default Search;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: Colors.surface,
+  },
+  inputField: {
+    height: 50,
+    marginBottom: 20,
+  },
+});

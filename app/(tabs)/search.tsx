@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
+import SearchBar from "@components/SearchBar";
 
 const SearchPage = () => {
   return (
     <View style={globalStyles.container}>
-      <Text style={[styles.text, { fontWeight: "bold" }]}>SearchPage </Text>
+      <SearchBar />
     </View>
   );
 };
