@@ -1,10 +1,11 @@
-import { StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import InputField from "./InputField";
 import { useEffect, useState } from "react";
 import SubTitle from "./SubTitle";
 import { useSongsStore } from "utils/songsStore";
 import { Song } from "types/song";
+import PlaylistView from "./PlaylistView";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -43,6 +44,17 @@ const Search = () => {
         onChangeText={setSearchValue}
       />
       <SubTitle>Recent Searches</SubTitle>
+      <FlatList
+        data={searchResults}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <PlaylistView
+            artist={item.artist ?? ""}
+            cover={item.coverUrl ?? ""}
+            title={item.title ?? item.filename}
+          />
+        )}
+      />
     </View>
   );
 };
