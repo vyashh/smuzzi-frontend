@@ -17,7 +17,6 @@ import TrackPlayer, {
   useActiveTrack,
   usePlaybackState,
 } from "react-native-track-player";
-import { Asset } from "expo-asset";
 
 import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
@@ -126,7 +125,7 @@ const Player = () => {
     }
   };
 
-  const changeSong = (action) => {
+  const changeSong = (action: string) => {
     if (action === "prev") {
       TrackPlayer.skipToPrevious();
     } else {

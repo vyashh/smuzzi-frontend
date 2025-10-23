@@ -1,15 +1,17 @@
-// components/Queue.tsx
-// Converted to TypeScript. Uses Track from RNTP instead of Song because getQueue()/getActiveTrack() return Track. [TSBP §2]
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import TrackPlayer, { Track } from "react-native-track-player";
+import TrackPlayer, {
+  Event,
+  Track,
+  useTrackPlayerEvents,
+} from "react-native-track-player";
 
 import SubTitle from "../SubTitle";
 import QueueView from "./QueueView";
 import { Colors } from "../../constants/colors";
 import { DEFAULT_ARTWORK_URI } from "../../constants/global";
 
-const Queue: React.FC = () => {
+const Queue = () => {
   const [queue, setQueue] = useState<Track[]>([]);
   const [nowPlaying, setNowPlaying] = useState<Track | null>(null);
 
@@ -23,10 +25,18 @@ const Queue: React.FC = () => {
     setNowPlaying(track!);
   };
 
+  useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async (e) => {
+    if (e.type === Event.PlaybackActiveTrackChanged && e.index != null) {
+      await TrackPlayer.remove(0);
+      getQueue();
+      getCurrentTrack();
+    }
+  });
+
   useEffect(() => {
     // initial load
-    void getQueue();
-    void getCurrentTrack();
+    getQueue();
+    getCurrentTrack();
   }, []);
 
   return (
@@ -41,7 +51,7 @@ const Queue: React.FC = () => {
         renderItem={({ item }) => (
           <View style={{ padding: 12 }}>
             <QueueView
-              id={String(item.id)}
+              id={item.id}
               artist={item.artist ?? ""}
               title={item.title ?? ""}
               cover={
