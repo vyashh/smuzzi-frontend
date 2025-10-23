@@ -25,6 +25,11 @@ const Queue = () => {
     setNowPlaying(track!);
   };
 
+  const handleQueueChange = async (songIndex: number) => {
+    const newQueue = queue.slice(songIndex);
+    await TrackPlayer.setQueue(newQueue);
+  };
+
   useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async (e) => {
     if (e.type === Event.PlaybackActiveTrackChanged) {
       if (e.lastIndex != null) {
@@ -54,13 +59,13 @@ const Queue = () => {
           <View style={{ padding: 12 }}>
             <QueueView
               index={index}
-              id={item.id}
               artist={item.artist ?? ""}
               title={item.title ?? ""}
               cover={
                 (item.artwork as string | undefined) ?? DEFAULT_ARTWORK_URI
               }
               playing={Boolean(nowPlaying && nowPlaying.id === item.id)}
+              handleQueueChange={handleQueueChange}
             />
           </View>
         )}

@@ -6,26 +6,27 @@ import TrackPlayer from "react-native-track-player";
 
 interface QueueViewProps {
   index: number;
-  id: number;
   title: string;
   artist: string;
   cover: string;
   playing: boolean;
+  handleQueueChange: (songIndex: number) => void;
 }
 
 const QueueView = ({
   index,
-  id,
   title,
   artist,
   cover,
   playing = false,
+  handleQueueChange,
 }: QueueViewProps) => {
   const handleTrackSelection = async () => {
     const activeIndex = await TrackPlayer.getActiveTrackIndex(); // v3
     if (activeIndex === index) return;
     await TrackPlayer.skip(index);
     await TrackPlayer.play();
+    handleQueueChange(index);
   };
 
   return (
