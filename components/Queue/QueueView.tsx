@@ -5,12 +5,26 @@ import { Colors } from "../../constants/colors";
 import TrackPlayer from "react-native-track-player";
 import { useEffect, useState } from "react";
 
-const QueueView = ({ title, artist, cover, id, playing = false }) => {
+interface QueueViewProps {
+  title: string;
+  artist: string;
+  cover: string;
+  id: number;
+  playing: boolean;
+}
+
+const QueueView = ({
+  title,
+  artist,
+  cover,
+  id,
+  playing = false,
+}: QueueViewProps) => {
   const [currentTrackId, setCurrentTrackId] = useState([]);
 
   const getCurrentTrackId = async () => {
     await TrackPlayer.getActiveTrack().then((track) => {
-      setCurrentTrackId(track.id);
+      setCurrentTrackId(track?.id);
     });
   };
 
@@ -56,7 +70,7 @@ const QueueView = ({ title, artist, cover, id, playing = false }) => {
 
 export default QueueView;
 
-const styles = new StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
