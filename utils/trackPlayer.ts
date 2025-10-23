@@ -40,6 +40,8 @@ const getPositionSec = async (): Promise<number> => {
   }
 };
 
+let isQueueLoading = false;
+
 export const loadPlay = async ({
   songIndex = 0,
   shuffled = false,

@@ -21,7 +21,7 @@ import { Asset } from "expo-asset";
 
 import PlayerMini from "./PlayerMini";
 import PlayerFull from "./PlayerFull";
-import Queue from "./Queue";
+import Queue from "./Queue/Queue";
 import { DEFAULT_ARTWORK_URI } from "../constants/global";
 import { useSongsStore } from "utils/songsStore";
 import { registerTrackChangeStart } from "utils/trackPlayer";

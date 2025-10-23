@@ -14,7 +14,7 @@ import AppText from "./AppText";
 import PlayerProgressBar from "./PlayerProgressBar";
 import LikeButton from "./LikeButton";
 import { Colors } from "../constants/colors";
-import Queue from "./Queue";
+import Queue from "./Queue/Queue";
 
 const PlayerFull = ({
   meta,

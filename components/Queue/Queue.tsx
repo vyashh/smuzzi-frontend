@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import TrackPlayer, { Track } from "react-native-track-player";
 
-import SubTitle from "./SubTitle";
+import SubTitle from "../SubTitle";
 import QueueView from "./QueueView";
-import { Colors } from "../constants/colors";
-import { DEFAULT_ARTWORK_URI } from "../constants/global";
+import { Colors } from "../../constants/colors";
+import { DEFAULT_ARTWORK_URI } from "../../constants/global";
 
 const Queue: React.FC = () => {
   const [queue, setQueue] = useState<Track[]>([]);

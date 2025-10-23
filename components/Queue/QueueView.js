@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View } from "react-native";
-import AppText from "./AppText";
+import AppText from "../AppText";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Colors } from "../constants/colors";
+import { Colors } from "../../constants/colors";
 import TrackPlayer from "react-native-track-player";
 import { useEffect, useState } from "react";
 
