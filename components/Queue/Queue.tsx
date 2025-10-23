@@ -43,7 +43,12 @@ const Queue = () => {
     }
   });
 
-  const renderItem = ({ item, getIndex, drag }: RenderItemParams<Track>) => {
+  const renderItem = ({
+    item,
+    getIndex,
+    drag,
+    isActive,
+  }: RenderItemParams<Track>) => {
     const idx = getIndex?.();
     const index =
       typeof idx === "number" ? idx : queue.findIndex((q) => q.id === item.id);
@@ -57,6 +62,7 @@ const Queue = () => {
           playing={Boolean(nowPlaying && nowPlaying.id === item.id)}
           handleQueueChange={handleQueueChange}
           onLongPress={drag}
+          dragging={isActive}
         />
       </View>
     );

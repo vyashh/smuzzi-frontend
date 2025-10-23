@@ -12,6 +12,7 @@ interface QueueViewProps {
   playing: boolean;
   handleQueueChange: (songIndex: number) => void;
   onLongPress?: () => void;
+  dragging: boolean;
 }
 
 const QueueView = ({
@@ -22,6 +23,7 @@ const QueueView = ({
   playing = false,
   handleQueueChange,
   onLongPress,
+  dragging,
 }: QueueViewProps) => {
   const handleTrackSelection = async () => {
     const activeIndex = await TrackPlayer.getActiveTrackIndex(); // v3
@@ -33,7 +35,7 @@ const QueueView = ({
 
   return (
     <Pressable
-      style={[styles.container]}
+      style={[styles.container, dragging && styles.dragging]}
       onPress={handleTrackSelection}
       onLongPress={onLongPress}
     >
@@ -96,5 +98,11 @@ const styles = StyleSheet.create({
   },
   activeTrack: {
     color: Colors.primary,
+  },
+  dragging: {
+    borderColor: "#272727cc",
+    borderTopWidth: 2,
+    borderBottomWidth: 2,
+    paddingVertical: 10,
   },
 });
