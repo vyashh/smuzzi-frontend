@@ -1,39 +1,35 @@
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import AppText from "../AppText";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Colors } from "../../constants/colors";
 import TrackPlayer from "react-native-track-player";
-import { useEffect, useState } from "react";
 
 interface QueueViewProps {
+  index: number;
+  id: number;
   title: string;
   artist: string;
   cover: string;
-  id: number;
   playing: boolean;
 }
 
 const QueueView = ({
+  index,
+  id,
   title,
   artist,
   cover,
-  id,
   playing = false,
 }: QueueViewProps) => {
-  const [currentTrackId, setCurrentTrackId] = useState([]);
-
-  const getCurrentTrackId = async () => {
-    await TrackPlayer.getActiveTrack().then((track) => {
-      setCurrentTrackId(track?.id);
-    });
+  const handleTrackSelection = async () => {
+    const activeIndex = await TrackPlayer.getActiveTrackIndex(); // v3
+    if (activeIndex === index) return;
+    await TrackPlayer.skip(index);
+    await TrackPlayer.play();
   };
 
-  useEffect(() => {
-    getCurrentTrackId();
-  }, [currentTrackId, getCurrentTrackId]);
-
   return (
-    <View style={[styles.container]}>
+    <Pressable style={[styles.container]} onPress={handleTrackSelection}>
       <View>
         <Image style={styles.cover} source={{ uri: cover }} />
       </View>
@@ -41,7 +37,7 @@ const QueueView = ({
         <AppText
           style={[
             styles.detailsTitle,
-            { width: "250" },
+            { width: 250 },
             playing && styles.activeTrack,
           ]}
           ellipsizeMode="tail"
@@ -51,7 +47,7 @@ const QueueView = ({
         </AppText>
         <View>
           <AppText
-            style={[{ width: "250" }, playing && styles.activeTrack]}
+            style={[{ width: 250 }, playing && styles.activeTrack]}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -64,7 +60,7 @@ const QueueView = ({
           <Ionicons name="menu-outline" size={32} color={Colors.textMuted} />
         )}
       </View>
-    </View>
+    </Pressable>
   );
 };
 

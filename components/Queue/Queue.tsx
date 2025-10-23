@@ -26,10 +26,12 @@ const Queue = () => {
   };
 
   useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], async (e) => {
-    if (e.type === Event.PlaybackActiveTrackChanged && e.index != null) {
-      await TrackPlayer.remove(0);
-      getQueue();
-      getCurrentTrack();
+    if (e.type === Event.PlaybackActiveTrackChanged) {
+      if (e.lastIndex != null) {
+        await TrackPlayer.remove(e.lastIndex);
+      }
+      void getQueue();
+      void getCurrentTrack();
     }
   });
 
@@ -45,12 +47,13 @@ const Queue = () => {
         <SubTitle>Queue</SubTitle>
       </View>
 
-      <FlatList<Track>
+      <FlatList
         data={queue}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={{ padding: 12 }}>
             <QueueView
+              index={index}
               id={item.id}
               artist={item.artist ?? ""}
               title={item.title ?? ""}
