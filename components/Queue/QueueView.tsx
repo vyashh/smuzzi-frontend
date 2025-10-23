@@ -100,9 +100,10 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   dragging: {
-    borderColor: "#272727cc",
-    borderTopWidth: 2,
-    borderBottomWidth: 2,
-    paddingVertical: 10,
+    // borderColor: "#272727cc",
+    // borderTopWidth: 2,
+    // borderBottomWidth: 2,
+    // paddingVertical: 10,
+    opacity: 0.7,
   },
 });

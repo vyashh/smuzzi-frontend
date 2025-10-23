@@ -2,13 +2,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 
-function SearchPage() {
+const SearchPage = () => {
   return (
     <View style={globalStyles.container}>
       <Text style={[styles.text, { fontWeight: "bold" }]}>SearchPage </Text>
     </View>
   );
-}
+};
 
 export default SearchPage;
 
