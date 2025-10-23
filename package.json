@@ -48,6 +48,8 @@
     "react-native": "0.81.4",
     "react-native-actions-sheet": "^0.9.7",
     "react-native-awesome-slider": "^0.1.16",
+    "react-native-draggable-flatlist": "^4.0.3",
+    "react-native-draglist": "^3.10.0",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-reanimated": "~4.1.0",
     "react-native-reanimated-slider": "^2.0.0",

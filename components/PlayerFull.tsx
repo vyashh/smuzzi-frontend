@@ -15,6 +15,18 @@ import PlayerProgressBar from "./PlayerProgressBar";
 import LikeButton from "./LikeButton";
 import { Colors } from "../constants/colors";
 import Queue from "./Queue/Queue";
+import { Song } from "types/song";
+import { PlaybackState } from "react-native-track-player";
+
+interface PlayerFullProps {
+  meta: any;
+  playerState: PlaybackState;
+  onTogglePlay: () => void;
+  onChangeSong: () => void;
+  onClose: () => void;
+  animatedStyles: any;
+  onOpenQueue: React.RefObject<null>;
+}
 
 const PlayerFull = ({
   meta,
@@ -24,7 +36,7 @@ const PlayerFull = ({
   onClose,
   animatedStyles,
   onOpenQueue,
-}) => {
+}: PlayerFullProps) => {
   const { fullStyle, backdropStyle } = animatedStyles;
   return (
     <ImageBackground
