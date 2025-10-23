@@ -10,6 +10,9 @@ import SubTitle from "../SubTitle";
 import QueueView from "./QueueView";
 import { Colors } from "../../constants/colors";
 import { DEFAULT_ARTWORK_URI } from "../../constants/global";
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 
 const Queue = () => {
   const [queue, setQueue] = useState<Track[]>([]);
@@ -40,6 +43,25 @@ const Queue = () => {
     }
   });
 
+  const renderItem = ({ item, getIndex, drag }: RenderItemParams<Track>) => {
+    const idx = getIndex?.();
+    const index =
+      typeof idx === "number" ? idx : queue.findIndex((q) => q.id === item.id);
+    return (
+      <View style={{ padding: 12 }}>
+        <QueueView
+          index={index}
+          artist={item.artist ?? ""}
+          title={item.title ?? ""}
+          cover={(item.artwork as string | undefined) ?? DEFAULT_ARTWORK_URI}
+          playing={Boolean(nowPlaying && nowPlaying.id === item.id)}
+          handleQueueChange={handleQueueChange}
+          onLongPress={drag}
+        />
+      </View>
+    );
+  };
+
   useEffect(() => {
     // initial load
     getQueue();
@@ -52,23 +74,17 @@ const Queue = () => {
         <SubTitle>Queue</SubTitle>
       </View>
 
-      <FlatList
+      <DraggableFlatList
         data={queue}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item, index }) => (
-          <View style={{ padding: 12 }}>
-            <QueueView
-              index={index}
-              artist={item.artist ?? ""}
-              title={item.title ?? ""}
-              cover={
-                (item.artwork as string | undefined) ?? DEFAULT_ARTWORK_URI
-              }
-              playing={Boolean(nowPlaying && nowPlaying.id === item.id)}
-              handleQueueChange={handleQueueChange}
-            />
-          </View>
-        )}
+        renderItem={renderItem}
+        activationDistance={10}
+        onDragEnd={async ({ data, from, to }) => {
+          setQueue(data);
+          if (from !== to) {
+            await TrackPlayer.move(from, to);
+          }
+        }}
       />
     </View>
   );

@@ -11,6 +11,7 @@ interface QueueViewProps {
   cover: string;
   playing: boolean;
   handleQueueChange: (songIndex: number) => void;
+  onLongPress?: () => void;
 }
 
 const QueueView = ({
@@ -20,6 +21,7 @@ const QueueView = ({
   cover,
   playing = false,
   handleQueueChange,
+  onLongPress,
 }: QueueViewProps) => {
   const handleTrackSelection = async () => {
     const activeIndex = await TrackPlayer.getActiveTrackIndex(); // v3
@@ -30,7 +32,11 @@ const QueueView = ({
   };
 
   return (
-    <Pressable style={[styles.container]} onPress={handleTrackSelection}>
+    <Pressable
+      style={[styles.container]}
+      onPress={handleTrackSelection}
+      onLongPress={onLongPress}
+    >
       <View>
         <Image style={styles.cover} source={{ uri: cover }} />
       </View>
