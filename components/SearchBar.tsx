@@ -1,7 +1,7 @@
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import InputField from "./InputField";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SubTitle from "./SubTitle";
 import { Song } from "types/song";
 import PlaylistView from "./PlaylistView";
@@ -9,13 +9,15 @@ import { loadPlay } from "utils/trackPlayer";
 import Player from "./Player";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useActiveTrack } from "react-native-track-player";
+import { Playlist } from "types/playlist";
 
 interface SearchProps {
   resultsText?: string;
-  searchList: Song[] | null;
+  searchSongs?: Song[] | null;
+  searchPlaylist?: Playlist[] | null;
 }
 
-const Search = ({ resultsText, searchList }: SearchProps) => {
+const Search = ({ resultsText, searchSongs, searchPlaylist }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Song[] | undefined>(
     undefined
@@ -25,14 +27,14 @@ const Search = ({ resultsText, searchList }: SearchProps) => {
   const activeTrack = useActiveTrack();
 
   const handleTrackSelection = async (item: Song) => {
-    const songIndex = searchList?.findIndex((song) => song.id === item.id);
+    const songIndex = searchSongs?.findIndex((song) => song.id === item.id);
 
     if (songIndex && songIndex < 0) return;
 
-    searchList &&
+    searchSongs &&
       (await loadPlay({
         songIndex,
-        list: searchList,
+        list: searchSongs,
         context_id: "search",
         context_type: "unknown",
       }));
@@ -40,27 +42,24 @@ const Search = ({ resultsText, searchList }: SearchProps) => {
     setSongId(item.id);
   };
 
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
     const q = searchValue.trim().toLowerCase();
     if (!q) {
       setSearchResults([]);
       return;
     }
 
-    const id = setTimeout(() => {
-      const res = searchList?.filter((song: Song) => {
-        const fields = [
-          song.title ?? "",
-          song.artist ?? "",
-          song.filename ?? "",
-        ];
-        return fields.some((fields) => fields.toLowerCase().includes(q));
-      });
+    const res = searchSongs?.filter((song: Song) => {
+      const fields = [song.title ?? "", song.artist ?? "", song.filename ?? ""];
+      return fields.some((fields) => fields.toLowerCase().includes(q));
+    });
 
-      setSearchResults(res);
-    }, 200);
-    return () => clearTimeout(id);
-  }, [searchValue, searchList]);
+    setSearchResults(res);
+  }, [searchValue, searchSongs, searchPlaylist]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
 
   return (
     <BottomSheetModalProvider>

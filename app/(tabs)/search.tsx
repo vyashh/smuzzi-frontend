@@ -8,7 +8,7 @@ const SearchPage = () => {
   const { songs } = useSongsStore();
   return (
     <View style={globalStyles.container}>
-      <SearchBar searchList={songs} resultsText="Recent searches" />
+      <SearchBar searchSongs={songs} resultsText="Recent searches" />
     </View>
   );
 };

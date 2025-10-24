@@ -62,7 +62,7 @@ function LibraryPage() {
         <Pressable onPress={handleOnpressCreatePlaylist}>
           <CreatePlaylist />
         </Pressable>
-        <Search searchList={playlists} />
+        <Search searchPlaylist={playlists} />
         <View style={styles.playlists}>
           <LibraryPlaylistView
             handleOnPressPlaylist={() =>
