@@ -8,6 +8,7 @@ import AppText from "@components/AppText";
 import Card from "@components/Card";
 import SubTitle from "@components/SubTitle";
 import SettingsItem from "@components/SettingsItem";
+import ProfileCard from "@components/ProfileCard";
 
 function ProfilePage() {
   const { logOut } = useAuthStore();
@@ -19,7 +20,8 @@ function ProfilePage() {
 
   return (
     <View style={globalStyles.container}>
-      <HeaderTitle>ProfilePage</HeaderTitle>
+      <HeaderTitle>Profile</HeaderTitle>
+      <ProfileCard displayName="Vyash Bhawan" tracksCount={48} />
       <View style={styles.categories}>
         <SubTitle>Account</SubTitle>
         <SettingsItem icon="pencil-outline" title="Edit Account Details" />

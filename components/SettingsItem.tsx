@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
@@ -14,7 +14,14 @@ interface SettingsItemProps {
 
 const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? Colors.surface : Colors.bg,
+        },
+        styles.container,
+      ]}
+    >
       <Ionicons
         style={styles.icon}
         name={icon}
@@ -22,7 +29,7 @@ const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
         color={Colors.primary}
       />
       <AppText style={styles.text}>{title}</AppText>
-    </View>
+    </Pressable>
   );
 };
 
@@ -41,5 +48,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.surface,
     borderBottomWidth: 1,
     paddingVertical: 15,
+    fontWeight: "bold",
   },
 });
