@@ -129,7 +129,7 @@ const playlist = () => {
           onRefresh={handleRefresh}
           keyExtractor={(item: Song) => String(item.id)}
           renderItem={({ item, index }) => (
-            <View style={{ padding: 12 }}>
+            <View style={{ paddingVertical: 12 }}>
               <Pressable
                 onPress={() =>
                   loadPlay({

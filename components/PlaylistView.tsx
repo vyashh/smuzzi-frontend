@@ -8,6 +8,7 @@ interface PlaylistViewProps {
   artist: string;
   cover: string;
   onOpenOptions?: () => void;
+  active?: boolean;
 }
 
 const PlaylistView = ({
@@ -15,7 +16,9 @@ const PlaylistView = ({
   artist,
   cover,
   onOpenOptions,
+  active,
 }: PlaylistViewProps) => {
+  console.log(active);
   return (
     <View style={styles.container}>
       <View>
@@ -23,14 +26,14 @@ const PlaylistView = ({
       </View>
       <View style={[styles.details, { flex: 2 }]}>
         <AppText
-          style={[styles.detailsTitle, { width: "250" }]}
+          style={[styles.detailsTitle, { width: 250 }, active && styles.active]}
           numberOfLines={1}
         >
           {title}
         </AppText>
         <View>
           <AppText
-            style={{ width: 300 }}
+            style={[{ width: 300 }, active && styles.active]}
             ellipsizeMode={"tail"}
             numberOfLines={1}
           >
@@ -90,5 +93,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     width: "100%",
     height: "auto",
+  },
+  active: {
+    color: Colors.primary,
   },
 });

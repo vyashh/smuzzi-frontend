@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import InputField from "./InputField";
 import { useEffect, useState } from "react";
@@ -6,11 +6,28 @@ import SubTitle from "./SubTitle";
 import { useSongsStore } from "utils/songsStore";
 import { Song } from "types/song";
 import PlaylistView from "./PlaylistView";
+import { loadPlay } from "utils/trackPlayer";
+import Player from "./Player";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useActiveTrack } from "react-native-track-player";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { songs } = useSongsStore();
   const [searchResults, setSearchResults] = useState<Song[]>([]);
+  const [songId, setSongId] = useState<number>();
+
+  const activeTrack = useActiveTrack();
+
+  const handleTrackSelection = (item: Song) => {
+    loadPlay({
+      songIndex: item.id,
+      list: songs,
+      context_id: "search",
+      context_type: "unknown",
+    });
+    setSongId(item.id);
+  };
 
   useEffect(() => {
     const q = searchValue.trim().toLowerCase();
@@ -28,15 +45,14 @@ const Search = () => {
         ];
         return fields.some((fields) => fields.toLowerCase().includes(q));
       });
-      setSearchResults(res);
-      console.log(res);
-    }, 200);
 
+      setSearchResults(res);
+    }, 200);
     return () => clearTimeout(id);
   }, [searchValue, songs]);
 
   return (
-    <View>
+    <BottomSheetModalProvider>
       <InputField
         style={styles.inputField}
         placeholder="What do you want to listen to?"
@@ -48,14 +64,21 @@ const Search = () => {
         data={searchResults}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <PlaylistView
-            artist={item.artist ?? ""}
-            cover={item.coverUrl ?? ""}
-            title={item.title ?? item.filename}
-          />
+          <Pressable
+            style={styles.searchItem}
+            onPress={() => handleTrackSelection(item)}
+          >
+            <PlaylistView
+              active={songId === item.id}
+              artist={item.artist ?? ""}
+              cover={item.coverUrl ?? ""}
+              title={item.title ?? item.filename}
+            />
+          </Pressable>
         )}
       />
-    </View>
+      {activeTrack && <Player />}
+    </BottomSheetModalProvider>
   );
 };
 
@@ -70,5 +93,8 @@ const styles = StyleSheet.create({
   inputField: {
     height: 50,
     marginBottom: 20,
+  },
+  searchItem: {
+    paddingVertical: 12,
   },
 });
