@@ -165,8 +165,18 @@ const Search = ({
         )}
         {searchResultsPlaylists.length === 0 &&
           searchResultsSongs.length === 0 && (
-            <View style={{ flex: 1 }}>
-              <AppText>No results</AppText>
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <AppText
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                Nothing matched your search.
+              </AppText>
             </View>
           )}
       </View>

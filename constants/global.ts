@@ -30,6 +30,9 @@ const ALL_TRACKS_ICON_URI = Asset.fromModule(
   require("../assets/all-tracks-icon.png")
 ).uri;
 
+const NO_RESULTS_URI = Asset.fromModule(
+  require("../assets/no_results.png")
+).uri;
 // types
 type PlaylistType = "playlist" | "likes" | "allTracks";
 type OptionType = "playlist" | "track";
@@ -47,6 +50,7 @@ export {
   LIKES_ICON_URI,
   ALL_TRACKS_ICON_URI,
   EDIT_ARTWORK_URI,
+  NO_RESULTS_URI,
   PlaylistType,
   OptionType,
   HeaderType,
