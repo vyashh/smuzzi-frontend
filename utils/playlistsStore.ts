@@ -9,7 +9,7 @@ import { Playlist, toPlaylists } from "types/playlist";
 interface PlaylistsStore {
   isFetching: boolean;
   error: string | null;
-  playlists: ReadonlyArray<Playlist>;
+  playlists: Playlist[];
   playlistTracks: ReadonlyArray<Song> | null;
   fetchPlaylists: () => Promise<void>;
   fetchPlaylistTracks: (playlistId: number) => Promise<void>;
