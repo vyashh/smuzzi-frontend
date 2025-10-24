@@ -6,7 +6,7 @@ import SearchBar from "@components/SearchBar";
 const SearchPage = () => {
   return (
     <View style={globalStyles.container}>
-      <SearchBar />
+      <SearchBar resultsText="Recent searches" />
     </View>
   );
 };

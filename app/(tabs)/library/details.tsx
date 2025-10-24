@@ -28,6 +28,7 @@ import OptionsSheetPlaylist, {
 } from "@components/Options/OptionsSheetTrack";
 import PlaylistActionButtons from "@components/Buttons/PlaylistActionButtons";
 import OptionSheetTrack from "@components/Options/OptionsSheetTrack";
+import Search from "@components/SearchBar";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{

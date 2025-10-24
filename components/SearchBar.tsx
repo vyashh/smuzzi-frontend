@@ -11,7 +11,11 @@ import Player from "./Player";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useActiveTrack } from "react-native-track-player";
 
-const Search = () => {
+interface SearchProps {
+  resultsText?: string;
+}
+
+const Search = ({ resultsText }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { songs } = useSongsStore();
   const [searchResults, setSearchResults] = useState<Song[]>([]);
@@ -64,7 +68,7 @@ const Search = () => {
         value={searchValue}
         onChangeText={setSearchValue}
       />
-      <SubTitle>Recent Searches</SubTitle>
+      {resultsText && <SubTitle>{resultsText}</SubTitle>}
       <FlatList
         data={searchResults}
         keyExtractor={(item) => String(item.id)}
