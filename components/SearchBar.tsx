@@ -1,7 +1,13 @@
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import InputField from "./InputField";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import SubTitle from "./SubTitle";
 import { Song } from "types/song";
 import PlaylistView from "./PlaylistView";
@@ -10,16 +16,21 @@ import Player from "./Player";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useActiveTrack } from "react-native-track-player";
 import { Playlist } from "types/playlist";
-import playlist from "app/playlist/playlist";
 import LibraryPlaylistView from "./LibraryPlaylistView";
 
 interface SearchProps {
   resultsText?: string;
   searchSongs?: Song[] | null;
   searchPlaylist?: Playlist[] | null;
+  setOnFocus: Dispatch<SetStateAction<boolean>>;
 }
 
-const Search = ({ resultsText, searchSongs, searchPlaylist }: SearchProps) => {
+const Search = ({
+  resultsText,
+  searchSongs,
+  searchPlaylist,
+  setOnFocus,
+}: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchResultsSongs, setSearchResultsSongs] = useState<
     Song[] | undefined
@@ -75,7 +86,7 @@ const Search = ({ resultsText, searchSongs, searchPlaylist }: SearchProps) => {
         : [];
       setSearchResultsPlaylists(res);
     }
-  }, [searchValue, searchSongs, searchPlaylist]);
+  }, [searchValue, searchSongs, searchPlaylist, setOnFocus]);
 
   useEffect(() => {
     handleSearch();
@@ -88,44 +99,49 @@ const Search = ({ resultsText, searchSongs, searchPlaylist }: SearchProps) => {
         placeholder="What do you want to listen to?"
         value={searchValue}
         onChangeText={setSearchValue}
+        setOnFocus={() => setOnFocus(true)}
       />
       {resultsText && <SubTitle>{resultsText}</SubTitle>}
-      {searchSongs && (
-        <FlatList
-          data={searchResultsSongs}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.searchItem}
-              onPress={() => handleTrackSelection(item)}
-            >
-              <PlaylistView
-                active={songId === item.id}
-                artist={item.artist ?? ""}
-                cover={item.coverUrl ?? ""}
-                title={item.title ?? item.filename}
-              />
-            </Pressable>
+      {searchValue && (
+        <View>
+          {searchSongs && (
+            <FlatList
+              data={searchResultsSongs}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={styles.searchItem}
+                  onPress={() => handleTrackSelection(item)}
+                >
+                  <PlaylistView
+                    active={songId === item.id}
+                    artist={item.artist ?? ""}
+                    cover={item.coverUrl ?? ""}
+                    title={item.title ?? item.filename}
+                  />
+                </Pressable>
+              )}
+            />
           )}
-        />
-      )}
-      {searchPlaylist && (
-        <FlatList
-          data={searchResultsPlaylists}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.searchItem}
-              onPress={() => console.log("item")}
-            >
-              <LibraryPlaylistView
-                // active={songId === item.id}
-                viewType="playlist"
-                title={item.name}
-              />
-            </Pressable>
+          {searchPlaylist && (
+            <FlatList
+              data={searchResultsPlaylists}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={styles.searchItem}
+                  onPress={() => console.log("item")}
+                >
+                  <LibraryPlaylistView
+                    // active={songId === item.id}
+                    viewType="playlist"
+                    title={item.name}
+                  />
+                </Pressable>
+              )}
+            />
           )}
-        />
+        </View>
       )}
       {activeTrack && <Player />}
     </BottomSheetModalProvider>

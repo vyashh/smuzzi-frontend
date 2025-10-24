@@ -19,8 +19,7 @@ function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
   const fetchPlaylists = usePlaylistsStore((state) => state.fetchPlaylists);
   useState<Playlist | null>(null);
-  const fetchPlaylistTracks = usePlaylistsStore((s) => s.fetchPlaylistTracks);
-  const playlistTracks = usePlaylistsStore((s) => s.playlistTracks);
+  const [searchFocus, setSearchFocus] = useState<boolean>(false);
 
   const activeTrack = useActiveTrack();
 
@@ -53,7 +52,8 @@ function LibraryPage() {
 
   useEffect(() => {
     fetchPlaylists();
-  }, [fetchPlaylists]);
+    console.log(searchFocus);
+  }, [fetchPlaylists, searchFocus]);
 
   return (
     <BottomSheetModalProvider>
@@ -62,46 +62,48 @@ function LibraryPage() {
         <Pressable onPress={handleOnpressCreatePlaylist}>
           <CreatePlaylist />
         </Pressable>
-        <Search searchPlaylist={playlists} />
-        <View style={styles.playlists}>
-          <LibraryPlaylistView
-            handleOnPressPlaylist={() =>
-              handleOnpressShowPlaylist("likes", "Likes")
-            }
-            title="My Likes"
-            viewType="likes"
-            options={false}
-          />
-          <LibraryPlaylistView
-            title="All Tracks"
-            viewType="allTracks"
-            handleOnPressPlaylist={() =>
-              handleOnpressShowPlaylist("allTracks", "All Tracks")
-            }
-            options={false}
-          />
-          <FlatList
-            style={{ flex: 1 }}
-            data={playlists}
-            keyExtractor={(item) => String(item.id)}
-            renderItem={({ item }) => (
-              <LibraryPlaylistView
-                title={item.name || "Playlist"}
-                viewType="playlist"
-                playlistId={item.id}
-                handleOnPressPlaylist={() =>
-                  handleOnpressShowPlaylist(
-                    "playlist",
-                    item.name || "Playlist",
-                    item.id
-                  )
-                }
-                onOpenOptions={() => handleOnOpenOptions(item)}
-              />
-            )}
-          />
-          <OptionsSheetPlaylist ref={optionsRef} />
-        </View>
+        <Search setOnFocus={setSearchFocus} searchPlaylist={playlists} />
+        {!searchFocus && (
+          <View style={styles.playlists}>
+            <LibraryPlaylistView
+              handleOnPressPlaylist={() =>
+                handleOnpressShowPlaylist("likes", "Likes")
+              }
+              title="My Likes"
+              viewType="likes"
+              options={false}
+            />
+            <LibraryPlaylistView
+              title="All Tracks"
+              viewType="allTracks"
+              handleOnPressPlaylist={() =>
+                handleOnpressShowPlaylist("allTracks", "All Tracks")
+              }
+              options={false}
+            />
+            <FlatList
+              style={{ flex: 1 }}
+              data={playlists}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item }) => (
+                <LibraryPlaylistView
+                  title={item.name || "Playlist"}
+                  viewType="playlist"
+                  playlistId={item.id}
+                  handleOnPressPlaylist={() =>
+                    handleOnpressShowPlaylist(
+                      "playlist",
+                      item.name || "Playlist",
+                      item.id
+                    )
+                  }
+                  onOpenOptions={() => handleOnOpenOptions(item)}
+                />
+              )}
+            />
+            <OptionsSheetPlaylist ref={optionsRef} />
+          </View>
+        )}
 
         {activeTrack && <Player />}
       </View>

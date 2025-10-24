@@ -1,5 +1,6 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Colors } from "constants/colors";
+import { Dispatch, SetStateAction } from "react";
 import { StyleProp, TextStyle } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -9,6 +10,7 @@ interface InputFieldProps {
   value?: string;
   onChangeText?: (text: string) => void;
   useBottomSheetInput?: boolean;
+  setOnFocus?: Dispatch<SetStateAction<boolean>>;
 }
 
 const InputField = ({
@@ -17,6 +19,7 @@ const InputField = ({
   onChangeText,
   useBottomSheetInput,
   style,
+  setOnFocus,
 }: InputFieldProps) => {
   const TextInputComponentType = useBottomSheetInput
     ? BottomSheetTextInput
@@ -28,7 +31,12 @@ const InputField = ({
       placeholder={placeholder}
       placeholderTextColor={Colors.textMuted}
       value={value}
-      onChangeText={onChangeText}
+      onChangeText={(text) => {
+        onChangeText?.(text);
+        setOnFocus?.(text.trim().length > 0);
+      }}
+      onFocus={() => setOnFocus?.(true)}
+      onBlur={() => setOnFocus?.(false)}
     />
   );
 };
