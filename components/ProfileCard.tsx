@@ -21,7 +21,6 @@ const ProfileCard = ({ displayName, tracksCount }: ProfileCardProps) => {
       <View style={styles.detailsUser}>
         <AppText style={styles.displayName}>{displayName}</AppText>
         <View style={styles.detailsTracks}>
-          {/* <Ionicons name="musical-notes" size={20} color={Colors.primary} /> */}
           <AppText style={styles.detailsTracksCounter}>
             {tracksCount} Tracks
           </AppText>
@@ -53,6 +52,6 @@ const styles = StyleSheet.create({
   },
   detailsTracksCounter: {
     // marginLeft: 10,
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
 });

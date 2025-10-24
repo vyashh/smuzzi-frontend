@@ -22,6 +22,7 @@ const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
         },
         styles.container,
       ]}
+      onPress={pressHandler}
     >
       <Ionicons
         style={styles.icon}
@@ -49,6 +50,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.surface,
     borderBottomWidth: 1,
     paddingVertical: 15,
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
 });
