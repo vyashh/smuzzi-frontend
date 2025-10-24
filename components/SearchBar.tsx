@@ -3,7 +3,6 @@ import { Colors } from "constants/colors";
 import InputField from "./InputField";
 import { useEffect, useState } from "react";
 import SubTitle from "./SubTitle";
-import { useSongsStore } from "utils/songsStore";
 import { Song } from "types/song";
 import PlaylistView from "./PlaylistView";
 import { loadPlay } from "utils/trackPlayer";
@@ -13,27 +12,30 @@ import { useActiveTrack } from "react-native-track-player";
 
 interface SearchProps {
   resultsText?: string;
+  searchList: Song[] | null;
 }
 
-const Search = ({ resultsText }: SearchProps) => {
+const Search = ({ resultsText, searchList }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const { songs } = useSongsStore();
-  const [searchResults, setSearchResults] = useState<Song[]>([]);
+  const [searchResults, setSearchResults] = useState<Song[] | undefined>(
+    undefined
+  );
   const [songId, setSongId] = useState<number>();
 
   const activeTrack = useActiveTrack();
 
   const handleTrackSelection = async (item: Song) => {
-    const songIndex = songs.findIndex((song) => song.id === item.id);
+    const songIndex = searchList?.findIndex((song) => song.id === item.id);
 
-    if (songIndex < 0) return;
+    if (songIndex && songIndex < 0) return;
 
-    await loadPlay({
-      songIndex,
-      list: songs,
-      context_id: "search",
-      context_type: "unknown",
-    });
+    searchList &&
+      (await loadPlay({
+        songIndex,
+        list: searchList,
+        context_id: "search",
+        context_type: "unknown",
+      }));
 
     setSongId(item.id);
   };
@@ -46,7 +48,7 @@ const Search = ({ resultsText }: SearchProps) => {
     }
 
     const id = setTimeout(() => {
-      const res = songs.filter((song: Song) => {
+      const res = searchList?.filter((song: Song) => {
         const fields = [
           song.title ?? "",
           song.artist ?? "",
@@ -58,7 +60,7 @@ const Search = ({ resultsText }: SearchProps) => {
       setSearchResults(res);
     }, 200);
     return () => clearTimeout(id);
-  }, [searchValue, songs]);
+  }, [searchValue, searchList]);
 
   return (
     <BottomSheetModalProvider>

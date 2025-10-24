@@ -2,11 +2,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
+import { useSongsStore } from "utils/songsStore";
 
 const SearchPage = () => {
+  const { songs } = useSongsStore();
   return (
     <View style={globalStyles.container}>
-      <SearchBar resultsText="Recent searches" />
+      <SearchBar searchList={songs} resultsText="Recent searches" />
     </View>
   );
 };

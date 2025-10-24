@@ -13,6 +13,7 @@ import OptionsSheetPlaylist, {
 } from "@components/Options/OptionsSheetPlaylist";
 import { Playlist } from "types/playlist";
 import { useActiveTrack } from "react-native-track-player";
+import Search from "@components/SearchBar";
 
 function LibraryPage() {
   const playlists = usePlaylistsStore((state) => state.playlists);
@@ -61,6 +62,7 @@ function LibraryPage() {
         <Pressable onPress={handleOnpressCreatePlaylist}>
           <CreatePlaylist />
         </Pressable>
+        <Search searchList={playlists} />
         <View style={styles.playlists}>
           <LibraryPlaylistView
             handleOnPressPlaylist={() =>
