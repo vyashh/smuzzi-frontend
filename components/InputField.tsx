@@ -1,7 +1,8 @@
+import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Colors } from "constants/colors";
 import { Dispatch, SetStateAction } from "react";
-import { StyleProp, TextStyle } from "react-native";
+import { Pressable, StyleProp, TextStyle } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 
 interface InputFieldProps {
@@ -23,25 +24,46 @@ const InputField = ({
     ? BottomSheetTextInput
     : TextInput;
 
+  const clearSearchValue = () => {
+    onChangeText && onChangeText("");
+  };
+
   return (
-    <TextInputComponentType
-      style={[styles.input, style]}
-      placeholder={placeholder}
-      placeholderTextColor={Colors.textMuted}
-      value={value}
-      onChangeText={onChangeText}
-    />
+    <View style={styles.container}>
+      <TextInputComponentType
+        style={[styles.input, style]}
+        placeholder={placeholder}
+        placeholderTextColor={Colors.textMuted}
+        value={value}
+        onChangeText={onChangeText}
+      />
+      {value && value?.length >= 0 ? (
+        <Pressable onPress={clearSearchValue}>
+          <Ionicons name="close-outline" size={24} color={Colors.neutral} />
+        </Pressable>
+      ) : (
+        <Pressable onPress={() => console.log("clear searchValue")}>
+          <Ionicons name="search-outline" size={24} color={Colors.neutral} />
+        </Pressable>
+      )}
+    </View>
   );
 };
 
 export default InputField;
 
 const styles = StyleSheet.create({
-  input: {
+  container: {
     backgroundColor: Colors.surface,
-    height: 40,
-    paddingLeft: 8,
-    color: Colors.text,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
+    paddingVertical: 10,
     borderRadius: 8,
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    color: Colors.text,
   },
 });

@@ -106,7 +106,6 @@ const Search = ({
     <BottomSheetModalProvider>
       <View style={[{ flex: 1, paddingTop: 0 }, !searchValue && { flex: 0 }]}>
         <InputField
-          style={styles.inputField}
           placeholder={placeholder}
           value={searchValue}
           onChangeText={onChange}
@@ -193,10 +192,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     backgroundColor: Colors.surface,
-  },
-  inputField: {
-    height: 50,
-    marginBottom: 20,
   },
   searchItem: {
     paddingVertical: 12,
