@@ -18,12 +18,14 @@ import { useActiveTrack } from "react-native-track-player";
 import { Playlist } from "types/playlist";
 import LibraryPlaylistView from "./LibraryPlaylistView";
 import { globalStyles } from "constants/global";
+import AppText from "./AppText";
 
 interface SearchProps {
   resultsText?: string;
   searchSongs?: Song[] | null;
   searchPlaylist?: Playlist[] | null;
   setOnFocus: Dispatch<SetStateAction<boolean>>;
+  placeholder?: string;
 }
 
 const Search = ({
@@ -31,14 +33,13 @@ const Search = ({
   searchSongs,
   searchPlaylist,
   setOnFocus,
+  placeholder,
 }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchResultsSongs, setSearchResultsSongs] = useState<
-    Song[] | undefined
-  >(undefined);
+  const [searchResultsSongs, setSearchResultsSongs] = useState<Song[]>([]);
   const [searchResultsPlaylists, setSearchResultsPlaylists] = useState<
-    Playlist[] | undefined
-  >(undefined);
+    Playlist[]
+  >([]);
   const [songId, setSongId] = useState<number>();
 
   const activeTrack = useActiveTrack();
@@ -83,7 +84,9 @@ const Search = ({
           })
         : [];
       setSearchResultsSongs(res);
-    } else if (searchPlaylist) {
+    } else setSearchResultsSongs([]);
+
+    if (searchPlaylist) {
       const res = searchPlaylist
         ? searchPlaylist?.filter((playlist: Playlist) => {
             const fields = [playlist.name ?? "", playlist.description ?? ""];
@@ -92,8 +95,8 @@ const Search = ({
         : [];
       setSearchResultsPlaylists(res);
       console.log(res);
-    }
-  }, [searchValue, searchSongs, searchPlaylist, setOnFocus]);
+    } else setSearchResultsPlaylists([]);
+  }, [searchValue, searchSongs, searchPlaylist]);
 
   useEffect(() => {
     handleSearch();
@@ -104,10 +107,11 @@ const Search = ({
       <View style={[{ flex: 1, paddingTop: 0 }, !searchValue && { flex: 0 }]}>
         <InputField
           style={styles.inputField}
-          placeholder="What do you want to listen to?"
+          placeholder={placeholder}
           value={searchValue}
           onChangeText={onChange}
         />
+        {resultsText && <SubTitle>{resultsText}</SubTitle>}
         {searchValue !== "" && (
           <View style={{ flex: 1, width: "100%" }}>
             {searchPlaylist && (
@@ -159,6 +163,12 @@ const Search = ({
             )}
           </View>
         )}
+        {searchResultsPlaylists.length === 0 &&
+          searchResultsSongs.length === 0 && (
+            <View style={{ flex: 1 }}>
+              <AppText>No results</AppText>
+            </View>
+          )}
       </View>
 
       {activeTrack && <Player />}

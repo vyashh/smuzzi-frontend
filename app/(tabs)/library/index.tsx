@@ -62,7 +62,11 @@ function LibraryPage() {
         <Pressable onPress={handleOnpressCreatePlaylist}>
           <CreatePlaylist />
         </Pressable>
-        <Search setOnFocus={setSearchFocus} searchPlaylist={playlists} />
+        <Search
+          setOnFocus={setSearchFocus}
+          searchPlaylist={playlists}
+          placeholder="Search Playlists"
+        />
         {!searchFocus && (
           <View style={styles.playlists}>
             <LibraryPlaylistView

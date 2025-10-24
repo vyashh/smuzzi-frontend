@@ -8,7 +8,12 @@ const SearchPage = () => {
   const { songs } = useSongsStore();
   return (
     <View style={globalStyles.container}>
-      <SearchBar searchSongs={songs} resultsText="Recent searches" />
+      <SearchBar
+        setOnFocus={() => null}
+        searchSongs={songs}
+        resultsText="Recent searches"
+        placeholder="What do you want to listen to?"
+      />
     </View>
   );
 };
