@@ -104,9 +104,8 @@ function LibraryPage() {
             <OptionsSheetPlaylist ref={optionsRef} />
           </View>
         )}
-
-        {activeTrack && <Player />}
       </View>
+      {activeTrack && <Player />}
     </BottomSheetModalProvider>
   );
 }
