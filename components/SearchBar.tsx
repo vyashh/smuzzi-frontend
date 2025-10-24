@@ -58,6 +58,11 @@ const Search = ({
     setSongId(item.id);
   };
 
+  const onChange = (text: string) => {
+    setSearchValue(text);
+    setOnFocus(text.trim().length > 0);
+  };
+
   const handleSearch = useCallback(() => {
     const q = searchValue.trim().toLowerCase();
     if (!q) {
@@ -98,8 +103,7 @@ const Search = ({
         style={styles.inputField}
         placeholder="What do you want to listen to?"
         value={searchValue}
-        onChangeText={setSearchValue}
-        setOnFocus={() => setOnFocus(true)}
+        onChangeText={onChange}
       />
       {resultsText && <SubTitle>{resultsText}</SubTitle>}
       {searchValue && (
