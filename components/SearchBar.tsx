@@ -104,13 +104,20 @@ const Search = ({
 
   return (
     <BottomSheetModalProvider>
-      <View style={[{ flex: 1, paddingTop: 0 }, !searchValue && { flex: 0 }]}>
+      <View
+        style={[
+          { flex: 1, paddingTop: 0, paddingBottom: 5 },
+          !searchValue && { flex: 0 },
+        ]}
+      >
         <InputField
           placeholder={placeholder}
           value={searchValue}
           onChangeText={onChange}
         />
-        {resultsText && <SubTitle>{resultsText}</SubTitle>}
+        {resultsText && (
+          <SubTitle style={styles.subtitle}>{resultsText}</SubTitle>
+        )}
         {searchValue !== "" && (
           <View style={{ flex: 1, width: "100%" }}>
             {searchPlaylist && (
@@ -192,6 +199,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     backgroundColor: Colors.surface,
+  },
+  subtitle: {
+    marginTop: 10,
   },
   searchItem: {
     paddingVertical: 12,
