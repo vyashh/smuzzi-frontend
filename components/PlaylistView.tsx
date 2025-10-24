@@ -18,7 +18,6 @@ const PlaylistView = ({
   onOpenOptions,
   active,
 }: PlaylistViewProps) => {
-  console.log(active);
   return (
     <View style={styles.container}>
       <View>

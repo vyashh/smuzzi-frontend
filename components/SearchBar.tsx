@@ -19,13 +19,18 @@ const Search = () => {
 
   const activeTrack = useActiveTrack();
 
-  const handleTrackSelection = (item: Song) => {
-    loadPlay({
-      songIndex: item.id,
+  const handleTrackSelection = async (item: Song) => {
+    const songIndex = songs.findIndex((song) => song.id === item.id);
+
+    if (songIndex < 0) return;
+
+    await loadPlay({
+      songIndex,
       list: songs,
       context_id: "search",
       context_type: "unknown",
     });
+
     setSongId(item.id);
   };
 
