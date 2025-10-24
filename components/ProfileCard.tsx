@@ -1,4 +1,4 @@
-import { DEFAULT_ARTWORK_URI } from "constants/global";
+import { DEFAULT_ARTWORK_URI, DEFAULT_AVATAR } from "constants/global";
 import { Image, StyleSheet, View } from "react-native";
 import AppText from "./AppText";
 import { Colors } from "constants/colors";
@@ -13,7 +13,7 @@ const ProfileCard = ({ displayName, tracksCount }: ProfileCardProps) => {
   return (
     <View style={styles.details}>
       <Image
-        source={{ uri: DEFAULT_ARTWORK_URI }}
+        source={{ uri: DEFAULT_AVATAR }}
         borderRadius={360}
         width={50}
         height={50}

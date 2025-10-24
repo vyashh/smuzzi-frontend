@@ -18,6 +18,7 @@ const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
       style={({ pressed }) => [
         {
           backgroundColor: pressed ? Colors.surface : Colors.bg,
+          borderRadius: 8,
         },
         styles.container,
       ]}
