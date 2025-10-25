@@ -1,4 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -7,7 +13,6 @@ import {
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
-import AppText from "./AppText";
 import InputField from "./InputField";
 
 export type ChangePasswordSheetRef = {
@@ -17,6 +22,8 @@ export type ChangePasswordSheetRef = {
 
 const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [repeatNewPassword, setRepeatNewPassword] = useState<string>("");
 
   useImperativeHandle(ref, () => ({
     present: () => {
@@ -31,7 +38,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   return (
     <BottomSheetModal
       ref={modalRef}
-      snapPoints={["40%"]}
+      snapPoints={["20%"]}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
@@ -55,7 +62,10 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
         <BottomSheetView style={styles.container}>
           <BottomSheetTopActionButtons ref={modalRef} text="Enter Password" />
           <View>
-            <InputField></InputField>
+            <InputField
+              value={newPassword}
+              onChangeText={setNewPassword}
+            ></InputField>
             <InputField></InputField>
           </View>
         </BottomSheetView>

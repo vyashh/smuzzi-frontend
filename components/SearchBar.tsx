@@ -26,6 +26,7 @@ interface SearchProps {
   searchPlaylist?: Playlist[] | null;
   setOnFocus: Dispatch<SetStateAction<boolean>>;
   placeholder?: string;
+  showSearchIcon?: boolean;
 }
 
 const Search = ({
@@ -34,6 +35,7 @@ const Search = ({
   searchPlaylist,
   setOnFocus,
   placeholder,
+  showSearchIcon = false,
 }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchResultsSongs, setSearchResultsSongs] = useState<Song[]>([]);
@@ -114,6 +116,7 @@ const Search = ({
           placeholder={placeholder}
           value={searchValue}
           onChangeText={onChange}
+          showSearchIcon={showSearchIcon}
         />
         {resultsText && (
           <SubTitle style={styles.subtitle}>{resultsText}</SubTitle>

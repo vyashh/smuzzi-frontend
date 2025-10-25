@@ -66,6 +66,7 @@ function LibraryPage() {
           setOnFocus={setSearchFocus}
           searchPlaylist={playlists}
           placeholder="Search Playlists"
+          showSearchIcon={true}
         />
         {!searchFocus && (
           <View style={styles.playlists}>

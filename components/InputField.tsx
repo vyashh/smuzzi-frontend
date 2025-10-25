@@ -11,6 +11,7 @@ interface InputFieldProps {
   value?: string;
   onChangeText?: (text: string) => void;
   useBottomSheetInput?: boolean;
+  showSearchIcon?: boolean;
 }
 
 const InputField = ({
@@ -19,6 +20,7 @@ const InputField = ({
   onChangeText,
   useBottomSheetInput,
   style,
+  showSearchIcon = false,
 }: InputFieldProps) => {
   const TextInputComponentType = useBottomSheetInput
     ? BottomSheetTextInput
@@ -37,11 +39,13 @@ const InputField = ({
         value={value}
         onChangeText={onChangeText}
       />
-      {value && value?.length >= 0 ? (
+      {value && value?.length >= 0 && (
         <Pressable onPress={clearSearchValue}>
           <Ionicons name="close-outline" size={24} color={Colors.neutral} />
         </Pressable>
-      ) : (
+      )}
+
+      {showSearchIcon && (
         <Pressable onPress={() => console.log("clear searchValue")}>
           <Ionicons name="search-outline" size={24} color={Colors.neutral} />
         </Pressable>
