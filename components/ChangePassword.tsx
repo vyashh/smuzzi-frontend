@@ -6,6 +6,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
+import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
 import AppText from "./AppText";
 
 export type ChangePasswordSheetRef = {
@@ -14,7 +15,7 @@ export type ChangePasswordSheetRef = {
 };
 
 const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
-  const modalRef = useRef<ChangePasswordSheetRef>(null);
+  const modalRef = useRef<BottomSheetModal>(null);
 
   useImperativeHandle(ref, () => ({
     present: () => {
@@ -51,12 +52,9 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
-          <View style={{ marginBottom: 20 }}>
-            <AppText>Hoi</AppText>
-          </View>
+          <BottomSheetTopActionButtons ref={modalRef} text="Enter Password" />
         </BottomSheetView>
       </KeyboardAvoidingView>
-      <ChangePassword ref={modalRef} />
     </BottomSheetModal>
   );
 });

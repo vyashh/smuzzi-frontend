@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 interface BottomSheetTopActionButtons {
   ref: React.RefObject<BottomSheetModal | null>;
-  handleChange: () => void;
+  handleChange?: () => void;
   text: string;
 }
 
@@ -16,6 +16,7 @@ const BottomSheetTopActionButtons = ({
   text,
 }: BottomSheetTopActionButtons) => {
   const handleCancel = () => {
+    console.log("closing modal");
     ref.current?.dismiss();
   };
 
