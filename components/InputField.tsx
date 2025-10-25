@@ -12,6 +12,7 @@ interface InputFieldProps {
   onChangeText?: (text: string) => void;
   useBottomSheetInput?: boolean;
   showSearchIcon?: boolean;
+  isPassword?: boolean;
 }
 
 const InputField = ({
@@ -21,6 +22,7 @@ const InputField = ({
   useBottomSheetInput,
   style,
   showSearchIcon = false,
+  isPassword = false,
 }: InputFieldProps) => {
   const TextInputComponentType = useBottomSheetInput
     ? BottomSheetTextInput
@@ -38,6 +40,9 @@ const InputField = ({
         placeholderTextColor={Colors.textMuted}
         value={value}
         onChangeText={onChangeText}
+        spellCheck={false}
+        secureTextEntry={isPassword}
+        textContentType={isPassword ? "password" : "none"}
       />
       {value && value?.length >= 0 && (
         <Pressable onPress={clearSearchValue}>
@@ -69,5 +74,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: Colors.text,
+    height: 25,
   },
 });

@@ -60,13 +60,23 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
-          <BottomSheetTopActionButtons ref={modalRef} text="Enter Password" />
-          <View>
-            <InputField
-              value={newPassword}
-              onChangeText={setNewPassword}
-            ></InputField>
-            <InputField></InputField>
+          <BottomSheetTopActionButtons ref={modalRef} text="Change Password" />
+          <View style={styles.content}>
+            <View style={styles.input}>
+              <InputField
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder="Enter new password"
+                isPassword
+              />
+            </View>
+            <View style={styles.input}>
+              <InputField
+                value={repeatNewPassword}
+                onChangeText={setRepeatNewPassword}
+                placeholder="Repeat new password"
+              />
+            </View>
           </View>
         </BottomSheetView>
       </KeyboardAvoidingView>
@@ -84,5 +94,11 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: "row",
     paddingVertical: 10,
+  },
+  content: {
+    marginVertical: 10,
+  },
+  input: {
+    paddingBottom: 10,
   },
 });

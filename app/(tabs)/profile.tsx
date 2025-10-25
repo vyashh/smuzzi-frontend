@@ -106,6 +106,12 @@ function ProfilePage() {
             isLoading={isFetching}
           />
           <SettingsItem
+            pressHandler={scanLibrary}
+            icon="dice-outline"
+            title="Enable Super Shuffle"
+            isLoading={isFetching}
+          />
+          <SettingsItem
             pressHandler={logOutProcedure}
             icon="pencil-outline"
             title="Change Server"
