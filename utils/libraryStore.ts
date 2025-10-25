@@ -22,7 +22,7 @@ export const useLibraryStore: UseBoundStore<StoreApi<LibraryState>> =
         fetchLibrary: async () => {
           if (get().isFetching) return;
 
-          set({ isFetching: true, error: null });
+          set({ isFetching: true, error: null, status: null });
 
           const { serverUrl, accessToken } = useAuthStore.getState();
 
@@ -36,17 +36,17 @@ export const useLibraryStore: UseBoundStore<StoreApi<LibraryState>> =
                 },
               }
             );
-
+            const newStatus = { message: data?.message, added: data?.added };
             set({
-              status: { message: data?.message, added: data?.added },
+              status: newStatus,
               isFetching: false,
             });
+            console.log(newStatus);
           } catch (error: any) {
             set({ error: error, isFetching: false });
           } finally {
             set({
               isFetching: false,
-              status: { message: "", added: 0 },
             });
           }
         },

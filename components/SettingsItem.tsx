@@ -32,7 +32,7 @@ const SettingsItem = ({
     >
       {isLoading ? (
         <LoaderKitView
-          style={{ width: 25, height: 25 }}
+          style={{ width: 30, height: 30 }}
           name={"BallScale"}
           animationSpeedMultiplier={1}
           color={Colors.primary}

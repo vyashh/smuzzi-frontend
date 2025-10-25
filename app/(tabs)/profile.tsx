@@ -10,10 +10,12 @@ import ProfileCard from "@components/ProfileCard";
 import { useToast } from "react-native-toast-notifications";
 import { useLibraryStore } from "utils/libraryStore";
 import { useEffect } from "react";
+import { useSongsStore } from "utils/songsStore";
 
 function ProfilePage() {
   const { logOut } = useAuthStore();
-  const { isFetching, status } = useLibraryStore();
+  const { songs } = useSongsStore();
+  const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
   const toast = useToast();
 
@@ -22,8 +24,8 @@ function ProfilePage() {
     logOut();
   };
 
-  const scanLibrary = () => {
-    console.log("scan librart");
+  const scanLibrary = async () => {
+    console.log("scan library");
     toast.show("Scan started on server", {
       type: "normal",
       normalColor: Colors.primaryDarker,
@@ -34,15 +36,25 @@ function ProfilePage() {
     });
 
     try {
-      fetchLibrary().then(() => {
-        toast.show(`Scanning finished: ${status?.added} tracks added`, {
-          type: "success",
-          successColor: Colors.success,
-          textStyle: { color: Colors.surface },
+      await fetchLibrary();
+
+      const { status, error } = useLibraryStore.getState();
+
+      if (error) {
+        toast.show(`Failed to scan server: ${error}`, {
+          type: "danger",
           placement: "top",
-          duration: 3000,
-          animationType: "slide-in",
         });
+        return;
+      }
+
+      toast.show(`Scanning finished: ${status?.added} tracks added`, {
+        type: "success",
+        successColor: Colors.success,
+        textStyle: { color: Colors.surface },
+        placement: "top",
+        duration: 3000,
+        animationType: "slide-in",
       });
     } catch (error) {
       toast.show(`Failed to scan server: ${error}`, {
@@ -61,7 +73,7 @@ function ProfilePage() {
   return (
     <View style={globalStyles.container}>
       <HeaderTitle>Profile</HeaderTitle>
-      <ProfileCard displayName="Vyash Bhawan" tracksCount={48} />
+      <ProfileCard displayName="Vyash Bhawan" tracksCount={songs.length} />
       <View style={styles.categories}>
         <SubTitle>Account</SubTitle>
         <SettingsItem icon="pencil-outline" title="Edit Account Details" />
