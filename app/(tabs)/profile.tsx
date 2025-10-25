@@ -73,6 +73,7 @@ function ProfilePage() {
           pressHandler={scanLibrary}
           icon="scan-sharp"
           title="Scan Library"
+          isLoading={isFetching}
         />
         <SettingsItem
           pressHandler={logOutProcedure}

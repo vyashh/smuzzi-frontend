@@ -3,16 +3,22 @@ import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
 import { ComponentProps } from "react";
-
+import { LoaderKitView } from "react-native-loader-kit";
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 interface SettingsItemProps {
   title: string;
   icon: IoniconName;
   pressHandler?: () => void;
+  isLoading?: boolean;
 }
 
-const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
+const SettingsItem = ({
+  title,
+  icon,
+  pressHandler,
+  isLoading,
+}: SettingsItemProps) => {
   return (
     <Pressable
       style={({ pressed }) => [
@@ -24,12 +30,21 @@ const SettingsItem = ({ title, icon, pressHandler }: SettingsItemProps) => {
       ]}
       onPress={pressHandler}
     >
-      <Ionicons
-        style={styles.icon}
-        name={icon}
-        size={20}
-        color={Colors.primary}
-      />
+      {isLoading ? (
+        <LoaderKitView
+          style={{ width: 25, height: 25 }}
+          name={"BallScale"}
+          animationSpeedMultiplier={1}
+          color={Colors.primary}
+        />
+      ) : (
+        <Ionicons
+          style={styles.icon}
+          name={icon}
+          size={20}
+          color={Colors.primary}
+        />
+      )}
       <AppText style={styles.text}>{title}</AppText>
     </Pressable>
   );
