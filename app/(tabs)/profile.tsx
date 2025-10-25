@@ -9,15 +9,26 @@ import SettingsItem from "@components/SettingsItem";
 import ProfileCard from "@components/ProfileCard";
 import { useToast } from "react-native-toast-notifications";
 import { useLibraryStore } from "utils/libraryStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSongsStore } from "utils/songsStore";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import ChangePassword, {
+  ChangePasswordSheetRef,
+} from "@components/ChangePassword";
 
 function ProfilePage() {
   const { logOut } = useAuthStore();
-  const { songs } = useSongsStore();
+  const { songs, fetchSongs } = useSongsStore();
   const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
+
   const toast = useToast();
+
+  const changePasswordRef = useRef<ChangePasswordSheetRef>(null);
+
+  const handleOnOpenOptions = () => {
+    changePasswordRef.current?.present();
+  };
 
   const logOutProcedure = async () => {
     await TrackPlayer.stop();
@@ -56,6 +67,8 @@ function ProfilePage() {
         duration: 3000,
         animationType: "slide-in",
       });
+
+      await fetchSongs();
     } catch (error) {
       toast.show(`Failed to scan server: ${error}`, {
         type: "danger",
@@ -71,34 +84,41 @@ function ProfilePage() {
   useEffect(() => {}, []);
 
   return (
-    <View style={globalStyles.container}>
-      <HeaderTitle>Profile</HeaderTitle>
-      <ProfileCard displayName="Vyash Bhawan" tracksCount={songs.length} />
-      <View style={styles.categories}>
-        <SubTitle>Account</SubTitle>
-        <SettingsItem icon="pencil-outline" title="Edit Account Details" />
-        <SettingsItem icon="eye-outline" title="Change Password" />
+    <BottomSheetModalProvider>
+      <View style={globalStyles.container}>
+        <HeaderTitle>Profile</HeaderTitle>
+        <ProfileCard displayName="Vyash Bhawan" tracksCount={songs.length} />
+        <View style={styles.categories}>
+          <SubTitle>Account</SubTitle>
+          <SettingsItem icon="pencil-outline" title="Edit Account Details" />
+          <SettingsItem
+            pressHandler={handleOnOpenOptions}
+            icon="eye-outline"
+            title="Change Password"
+          />
+        </View>
+        <View style={styles.categories}>
+          <SubTitle>System Settings</SubTitle>
+          <SettingsItem
+            pressHandler={scanLibrary}
+            icon="scan-sharp"
+            title="Scan Library"
+            isLoading={isFetching}
+          />
+          <SettingsItem
+            pressHandler={logOutProcedure}
+            icon="pencil-outline"
+            title="Change Server"
+          />
+          <SettingsItem
+            pressHandler={logOutProcedure}
+            icon="exit-outline"
+            title="Logout"
+          />
+        </View>
       </View>
-      <View style={styles.categories}>
-        <SubTitle>System Settings</SubTitle>
-        <SettingsItem
-          pressHandler={scanLibrary}
-          icon="scan-sharp"
-          title="Scan Library"
-          isLoading={isFetching}
-        />
-        <SettingsItem
-          pressHandler={logOutProcedure}
-          icon="pencil-outline"
-          title="Change Server"
-        />
-        <SettingsItem
-          pressHandler={logOutProcedure}
-          icon="exit-outline"
-          title="Logout"
-        />
-      </View>
-    </View>
+      <ChangePassword ref={changePasswordRef} />
+    </BottomSheetModalProvider>
   );
 }
 

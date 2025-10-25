@@ -10,22 +10,14 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import AppText from "../AppText";
 import {
   FlatList,
-  Image,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { Colors } from "constants/colors";
-import { Playlist } from "types/playlist";
-import { Ionicons } from "@expo/vector-icons";
-import InputField from "../InputField";
-import { EDIT_ARTWORK_URI, OptionType } from "constants/global";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import { Song } from "types/song";
 import SingleOption from "./SingleOption";
