@@ -19,7 +19,7 @@ const TabsLayout = () => {
           },
           tabBarActiveTintColor: Colors.primary,
           tabBarIcon: ({ focused, color, size }) => {
-            return <Ionicons name="home" size={size} color={color} />;
+            return <Ionicons name="home-outline" size={size} color={color} />;
           },
         }}
       />
@@ -33,7 +33,7 @@ const TabsLayout = () => {
           },
           tabBarActiveTintColor: Colors.primary,
           tabBarIcon: ({ focused, color, size }) => {
-            return <Ionicons name="search" size={size} color={color} />;
+            return <Ionicons name="search-outline" size={size} color={color} />;
           },
           tabBarActiveTintColor: Colors.primary,
         }}
@@ -48,7 +48,7 @@ const TabsLayout = () => {
           },
           tabBarActiveTintColor: Colors.primary,
           tabBarIcon: ({ focused, color, size }) => {
-            return <Ionicons name="albums" size={size} color={color} />;
+            return <Ionicons name="albums-outline" size={size} color={color} />;
           },
           tabBarActiveTintColor: Colors.primary,
         }}
@@ -63,7 +63,7 @@ const TabsLayout = () => {
           },
           tabBarActiveTintColor: Colors.primary,
           tabBarIcon: ({ focused, color, size }) => {
-            return <Ionicons name="person" size={size} color={color} />;
+            return <Ionicons name="person-outline" size={size} color={color} />;
           },
           tabBarActiveTintColor: Colors.primary,
         }}

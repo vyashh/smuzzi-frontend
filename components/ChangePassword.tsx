@@ -8,6 +8,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
 import AppText from "./AppText";
+import InputField from "./InputField";
 
 export type ChangePasswordSheetRef = {
   present: () => void;
@@ -53,6 +54,10 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
       >
         <BottomSheetView style={styles.container}>
           <BottomSheetTopActionButtons ref={modalRef} text="Enter Password" />
+          <View>
+            <InputField></InputField>
+            <InputField></InputField>
+          </View>
         </BottomSheetView>
       </KeyboardAvoidingView>
     </BottomSheetModal>
