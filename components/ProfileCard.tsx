@@ -5,7 +5,7 @@ import { Colors } from "constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 
 interface ProfileCardProps {
-  displayName: string;
+  displayName?: string;
   tracksCount: number;
 }
 

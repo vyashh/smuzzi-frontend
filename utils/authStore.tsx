@@ -2,14 +2,15 @@ import { create, StoreApi, UseBoundStore } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosError } from "axios";
+import { toUser, User } from "types/user";
 
 export interface AuthStoreState {
   isLoggedIn: boolean;
   shouldCreateAccount: boolean;
   accessToken: string;
   username: string;
-  displayName;
   password: string;
+  user: User | null;
 
   serverSelected: boolean;
   serverUrl: string;
@@ -20,7 +21,7 @@ export interface AuthStoreState {
   logIn: () => Promise<void>;
   logOut: () => void;
 
-  getUserData: () => void;
+  getUserData: () => Promise<void>;
 
   error: string | null;
 }
@@ -38,7 +39,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
         shouldCreateAccount: false,
         accessToken: "",
         username: "vyash",
-        displayName: "",
+        user: null,
         password: "password",
 
         serverSelected: false,
@@ -84,14 +85,17 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
             serverSelected: false,
           })),
         getUserData: async () => {
-          const { serverUrl } = get();
+          const { serverUrl, accessToken } = get();
           try {
-            const { data } = await axios.get(`${serverUrl}/api/login`);
+            const { data } = await axios.get(`${serverUrl}/api/users/me`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
 
             set((state) => ({
               ...state,
-              isLoggedIn: true,
-              accessToken: data?.access_token ?? "",
+              user: toUser(data),
               error: null,
             }));
           } catch (e: unknown) {
@@ -101,8 +105,8 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
                 : e instanceof Error
                 ? e.message
                 : "Login failed";
-            set({ isLoggedIn: false, error: `loginError: ${message}` });
-            console.log(`loginError: ${message}`);
+            set((s) => ({ ...s, error: `getUserDataError: ${message}` }));
+            console.log(`getUserDataError: ${message}`);
           }
         },
       }),

@@ -17,10 +17,11 @@ import ChangePassword, {
 } from "@components/ChangePassword";
 
 function ProfilePage() {
-  const { logOut } = useAuthStore();
+  const { logOut, user } = useAuthStore();
   const { songs, fetchSongs } = useSongsStore();
   const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
+  const getUserData = useAuthStore((store) => store.getUserData);
 
   const toast = useToast();
 
@@ -81,13 +82,24 @@ function ProfilePage() {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getUserData();
+  }, [getUserData]);
+
+  useEffect(() => {
+    if (user) {
+      console.log("user", user);
+    }
+  }, [user]);
 
   return (
     <BottomSheetModalProvider>
       <View style={globalStyles.container}>
         <HeaderTitle>Profile</HeaderTitle>
-        <ProfileCard displayName="Vyash Bhawan" tracksCount={songs.length} />
+        <ProfileCard
+          displayName={user?.displayName}
+          tracksCount={songs.length}
+        />
         <View style={styles.categories}>
           <SubTitle>Account</SubTitle>
           <SettingsItem icon="pencil-outline" title="Edit Account Details" />
