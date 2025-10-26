@@ -17,11 +17,10 @@ import ChangePassword, {
 } from "@components/ChangePassword";
 
 function ProfilePage() {
-  const { logOut, user } = useAuthStore();
+  const { logOut, user, getUserData } = useAuthStore();
   const { songs, fetchSongs } = useSongsStore();
   const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
-  const getUserData = useAuthStore((store) => store.getUserData);
 
   const toast = useToast();
 

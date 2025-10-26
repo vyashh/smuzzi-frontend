@@ -28,7 +28,7 @@ export interface AuthStoreState {
 
 type AuthPersisted = Pick<
   AuthStoreState,
-  "isLoggedIn" | "accessToken" | "serverUrl" | "serverSelected"
+  "isLoggedIn" | "accessToken" | "serverUrl" | "serverSelected" | "user"
 >;
 
 export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
@@ -119,6 +119,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
           accessToken: state.accessToken,
           serverUrl: state.serverUrl,
           serverSelected: state.serverSelected,
+          user: state.user,
         }),
       }
     )
