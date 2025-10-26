@@ -8,6 +8,7 @@ export interface AuthStoreState {
   shouldCreateAccount: boolean;
   accessToken: string;
   username: string;
+  displayName;
   password: string;
 
   serverSelected: boolean;
@@ -15,8 +16,11 @@ export interface AuthStoreState {
 
   setServerUrl: (url: string) => void;
   selectServer: () => void;
+
   logIn: () => Promise<void>;
   logOut: () => void;
+
+  getUserData: () => void;
 
   error: string | null;
 }
@@ -30,11 +34,11 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
   create<AuthStoreState>()(
     persist(
       (set, get) => ({
-        // defaults
         isLoggedIn: false,
         shouldCreateAccount: false,
         accessToken: "",
         username: "vyash",
+        displayName: "",
         password: "password",
 
         serverSelected: false,
@@ -79,7 +83,30 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
             serverUrl: "",
             serverSelected: false,
           })),
+        getUserData: async () => {
+          const { serverUrl } = get();
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/login`);
+
+            set((state) => ({
+              ...state,
+              isLoggedIn: true,
+              accessToken: data?.access_token ?? "",
+              error: null,
+            }));
+          } catch (e: unknown) {
+            const message =
+              e instanceof AxiosError
+                ? e.message
+                : e instanceof Error
+                ? e.message
+                : "Login failed";
+            set({ isLoggedIn: false, error: `loginError: ${message}` });
+            console.log(`loginError: ${message}`);
+          }
+        },
       }),
+
       {
         name: "auth-store-v1",
         storage: createJSONStorage(() => AsyncStorage),
