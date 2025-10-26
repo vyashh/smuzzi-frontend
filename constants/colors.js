@@ -1,6 +1,7 @@
 const Colors = {
   // Brand
   primary: "#D4ADFC",
+  primaryDarkerDarker: "#1D267D",
   primaryDarker: "#5C469C",
   primaryDark: "#0C134F",
   primaryHover: "#b163ffff",

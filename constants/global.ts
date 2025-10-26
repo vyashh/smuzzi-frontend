@@ -38,6 +38,8 @@ const DEFAULT_AVATAR = Asset.fromModule(
   require("../assets/default_avatar.png")
 ).uri;
 
+const SMUZZI_LOGO = Asset.fromModule(require("../assets/smuzzi-logo.png")).uri;
+
 // types
 type PlaylistType = "playlist" | "likes" | "allTracks";
 type OptionType = "playlist" | "track";
@@ -57,6 +59,7 @@ export {
   EDIT_ARTWORK_URI,
   NO_RESULTS_URI,
   DEFAULT_AVATAR,
+  SMUZZI_LOGO,
   PlaylistType,
   OptionType,
   HeaderType,

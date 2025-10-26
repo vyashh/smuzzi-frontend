@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Colors } from "constants/colors";
-import { Dispatch, SetStateAction } from "react";
 import { Pressable, StyleProp, TextStyle } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -33,9 +32,9 @@ const InputField = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <TextInputComponentType
-        style={[styles.input, style]}
+        style={styles.input}
         placeholder={placeholder}
         placeholderTextColor={Colors.textMuted}
         value={value}
