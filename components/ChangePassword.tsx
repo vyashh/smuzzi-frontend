@@ -16,6 +16,7 @@ import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
 import InputField from "./InputField";
 import { useAuthStore } from "utils/authStore";
 import { isPasswordValid } from "helpers/misc";
+import { useAppToast } from "utils/toast";
 
 export type ChangePasswordSheetRef = {
   present: () => void;
@@ -27,6 +28,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [repeatNewPassword, setRepeatNewPassword] = useState<string>("");
   const { isFetching, setUserPassword } = useAuthStore();
+  const { info, success, error } = useAppToast();
 
   useImperativeHandle(ref, () => ({
     present: () => {
@@ -38,13 +40,24 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   }));
 
   const handleChangePassword = async () => {
-    if (isPasswordValid(newPassword) && newPassword === repeatNewPassword) {
-      await setUserPassword(newPassword).then(() => {
+    const valid = isPasswordValid(newPassword);
+
+    console.log(valid);
+    if (valid && newPassword === repeatNewPassword) {
+      try {
+        await setUserPassword(newPassword);
         modalRef.current?.dismiss();
         setNewPassword("");
         setRepeatNewPassword("");
-      });
+        success("New password has been set.");
+      } catch {
+        error("Failed to set password. Please try again.");
+      }
+    } else {
+      error("Password is not valid. Please try again.");
     }
+
+    console.log("wrong password");
   };
 
   useEffect(() => {}, []);
@@ -84,7 +97,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
                 value={newPassword}
                 onChangeText={setNewPassword}
                 placeholder="Enter new password"
-                isPassword
+                // isPassword
               />
             </View>
             <View style={styles.input}>
@@ -92,7 +105,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
                 value={repeatNewPassword}
                 onChangeText={setRepeatNewPassword}
                 placeholder="Repeat new password"
-                isPassword
+                // isPassword
               />
             </View>
           </View>

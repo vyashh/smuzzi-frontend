@@ -44,7 +44,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
         accessToken: "",
         username: "vyash",
         user: null,
-        password: "password",
+        password: "Vyash2009",
 
         serverSelected: false,
         serverUrl: "Enter server url",
@@ -133,6 +133,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
             set({
               isFetching: false,
               error: null,
+              password: newPassword,
             });
             set({ isFetching: false, error: null });
           } catch (e: unknown) {
