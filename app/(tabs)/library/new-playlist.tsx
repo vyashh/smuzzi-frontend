@@ -1,5 +1,5 @@
 import AppText from "@components/AppText";
-import Button from "@components/Button";
+import Button from "@components/Buttons/Button";
 import TopBar from "@components/TopBar";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
