@@ -15,6 +15,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ChangePassword, {
   ChangePasswordSheetRef,
 } from "@components/ChangePassword";
+import { useAppToast } from "utils/toast";
 
 function ProfilePage() {
   const { logOut, user, getUserData } = useAuthStore();
@@ -22,7 +23,7 @@ function ProfilePage() {
   const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
 
-  const toast = useToast();
+  const { successToast, errorToast, infoToast } = useAppToast();
 
   const changePasswordRef = useRef<ChangePasswordSheetRef>(null);
 
@@ -37,14 +38,7 @@ function ProfilePage() {
 
   const scanLibrary = async () => {
     console.log("scan library");
-    toast.show("Scan started on server", {
-      type: "normal",
-      normalColor: Colors.primaryDarker,
-      textStyle: { color: "white" },
-      placement: "top",
-      duration: 3000,
-      animationType: "slide-in",
-    });
+    infoToast("Scan started on server");
 
     try {
       await fetchLibrary();
@@ -52,32 +46,15 @@ function ProfilePage() {
       const { status, error } = useLibraryStore.getState();
 
       if (error) {
-        toast.show(`Failed to scan server: ${error}`, {
-          type: "danger",
-          placement: "top",
-        });
+        errorToast(`Failed to scan server: ${error}`);
         return;
       }
 
-      toast.show(`Scanning finished: ${status?.added} tracks added`, {
-        type: "success",
-        successColor: Colors.success,
-        textStyle: { color: Colors.surface },
-        placement: "top",
-        duration: 3000,
-        animationType: "slide-in",
-      });
+      successToast(`Scanning finished: ${status?.added} tracks added`);
 
       await fetchSongs();
     } catch (error) {
-      toast.show(`Failed to scan server: ${error}`, {
-        type: "danger",
-        dangerColor: Colors.danger,
-        textStyle: { color: "white" },
-        placement: "top",
-        duration: 3000,
-        animationType: "slide-in",
-      });
+      errorToast(`Failed to scan server: ${error}`);
     }
   };
 

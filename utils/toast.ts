@@ -15,21 +15,21 @@ export const useAppToast = () => {
     toast.show(message, { ...base, ...opts });
 
   return {
-    info: (message: string, opts?: ToastOptions) =>
+    infoToast: (message: string, opts?: ToastOptions) =>
       show(message, {
         type: "normal",
         normalColor: Colors.primaryDarker,
         textStyle: { color: "white" },
         ...opts,
       }),
-    success: (message: string, opts?: ToastOptions) =>
+    successToast: (message: string, opts?: ToastOptions) =>
       show(message, {
         type: "success",
         successColor: Colors.success,
         textStyle: { color: Colors.surface },
         ...opts,
       }),
-    error: (message: string, opts?: ToastOptions) =>
+    errorToast: (message: string, opts?: ToastOptions) =>
       show(message, {
         type: "danger",
         dangerColor: Colors.danger,

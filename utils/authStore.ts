@@ -44,7 +44,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
         accessToken: "",
         username: "vyash",
         user: null,
-        password: "Vyash2009",
+        password: "HsLeiden2025!",
 
         serverSelected: false,
         serverUrl: "Enter server url",

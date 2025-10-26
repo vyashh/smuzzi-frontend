@@ -28,7 +28,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [repeatNewPassword, setRepeatNewPassword] = useState<string>("");
   const { isFetching, setUserPassword } = useAuthStore();
-  const { info, success, error } = useAppToast();
+  const { successToast, errorToast } = useAppToast();
 
   useImperativeHandle(ref, () => ({
     present: () => {
@@ -49,12 +49,12 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
         modalRef.current?.dismiss();
         setNewPassword("");
         setRepeatNewPassword("");
-        success("New password has been set.");
+        successToast("New password has been set.");
       } catch {
-        error("Failed to set password. Please try again.");
+        errorToast("Failed to set password. Please try again.");
       }
     } else {
-      error("Password is not valid. Please try again.");
+      errorToast("Password is not valid. Please try again.");
     }
 
     console.log("wrong password");
