@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { toUser, User } from "types/user";
 
 export interface AuthStoreState {
+  isFetching: boolean;
   isLoggedIn: boolean;
   shouldCreateAccount: boolean;
   accessToken: string;
@@ -23,6 +24,8 @@ export interface AuthStoreState {
 
   getUserData: () => Promise<void>;
 
+  setUserPassword: (newPassword: string) => Promise<void>;
+
   error: string | null;
 }
 
@@ -35,6 +38,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
   create<AuthStoreState>()(
     persist(
       (set, get) => ({
+        isFetching: false,
         isLoggedIn: false,
         shouldCreateAccount: false,
         accessToken: "",
@@ -86,6 +90,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
           })),
         getUserData: async () => {
           const { serverUrl, accessToken } = get();
+
           try {
             const { data } = await axios.get(`${serverUrl}/api/users/me`, {
               headers: {
@@ -107,6 +112,39 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
                 : "Login failed";
             set((s) => ({ ...s, error: `getUserDataError: ${message}` }));
             console.log(`getUserDataError: ${message}`);
+          }
+        },
+        setUserPassword: async (newPassword: string) => {
+          set({ isFetching: true, error: null });
+
+          const { serverUrl, accessToken, password } = get();
+
+          const req = { current_password: password, new_password: newPassword };
+
+          try {
+            await axios.patch(`${serverUrl}/api/users/me/password`, req, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+
+            set({
+              isFetching: false,
+              error: null,
+            });
+            set({ isFetching: false, error: null });
+          } catch (e: unknown) {
+            const message =
+              e instanceof AxiosError
+                ? e.message
+                : e instanceof Error
+                ? e.message
+                : "Failed to update password. Please try again.";
+            set({
+              isFetching: false,
+              error: `Failed to set password: ${message}`,
+            });
+            console.log(`setUserPassword(): ${message}`);
           }
         },
       }),
