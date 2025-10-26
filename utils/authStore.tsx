@@ -121,6 +121,8 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
 
           const req = { current_password: password, new_password: newPassword };
 
+          console.log(req);
+
           try {
             await axios.patch(`${serverUrl}/api/users/me/password`, req, {
               headers: {

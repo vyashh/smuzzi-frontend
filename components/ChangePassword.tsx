@@ -14,6 +14,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { Colors } from "constants/colors";
 import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
 import InputField from "./InputField";
+import { useAuthStore } from "utils/authStore";
 
 export type ChangePasswordSheetRef = {
   present: () => void;
@@ -24,6 +25,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
   const modalRef = useRef<BottomSheetModal>(null);
   const [newPassword, setNewPassword] = useState<string>("");
   const [repeatNewPassword, setRepeatNewPassword] = useState<string>("");
+  const { isFetching, setUserPassword } = useAuthStore();
 
   useImperativeHandle(ref, () => ({
     present: () => {
@@ -33,6 +35,12 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
       modalRef.current?.dismiss();
     },
   }));
+
+  const handleChangePassword = () => {
+    newPassword === repeatNewPassword
+      ? setUserPassword(newPassword)
+      : console.log("no match");
+  };
 
   useEffect(() => {}, []);
   return (
@@ -60,7 +68,11 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
         style={{ flex: 1 }}
       >
         <BottomSheetView style={styles.container}>
-          <BottomSheetTopActionButtons ref={modalRef} text="Change Password" />
+          <BottomSheetTopActionButtons
+            ref={modalRef}
+            text="Change Password"
+            handleChange={handleChangePassword}
+          />
           <View style={styles.content}>
             <View style={styles.input}>
               <InputField
@@ -75,6 +87,7 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
                 value={repeatNewPassword}
                 onChangeText={setRepeatNewPassword}
                 placeholder="Repeat new password"
+                isPassword
               />
             </View>
           </View>
