@@ -1,4 +1,6 @@
-export const formatSecondsToMinutes = (seconds) => {
+import { Song } from "types/song";
+
+export const formatSecondsToMinutes = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
 
@@ -8,7 +10,7 @@ export const formatSecondsToMinutes = (seconds) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
-export const shuffle = (array) => {
+export const shuffle = (array: Song[]) => {
   let currentIndex = array.length;
 
   // While there remain elements to shuffle...
