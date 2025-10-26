@@ -28,3 +28,13 @@ export const shuffle = (array: Song[]) => {
 
   return array;
 };
+
+export const isPasswordValid = (newPassword: string) => {
+  const valid =
+    newPassword.length >= 8 &&
+    /[A-Z]/.test(newPassword) &&
+    /[a-z]/.test(newPassword) &&
+    /\d/.test(newPassword);
+
+  return valid;
+};

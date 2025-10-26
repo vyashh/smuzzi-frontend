@@ -15,6 +15,7 @@ import { Colors } from "constants/colors";
 import BottomSheetTopActionButtons from "./Buttons/BottomSheetTopActionButton";
 import InputField from "./InputField";
 import { useAuthStore } from "utils/authStore";
+import { isPasswordValid } from "helpers/misc";
 
 export type ChangePasswordSheetRef = {
   present: () => void;
@@ -36,10 +37,14 @@ const ChangePassword = forwardRef<ChangePasswordSheetRef>((_, ref) => {
     },
   }));
 
-  const handleChangePassword = () => {
-    newPassword === repeatNewPassword
-      ? setUserPassword(newPassword)
-      : console.log("no match");
+  const handleChangePassword = async () => {
+    if (isPasswordValid(newPassword) && newPassword === repeatNewPassword) {
+      await setUserPassword(newPassword).then(() => {
+        modalRef.current?.dismiss();
+        setNewPassword("");
+        setRepeatNewPassword("");
+      });
+    }
   };
 
   useEffect(() => {}, []);
