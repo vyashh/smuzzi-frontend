@@ -1,7 +1,6 @@
 import AppText from "@components/AppText";
 import Button from "@components/Buttons/Button";
 import TopBar from "@components/TopBar";
-import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "constants/colors";
 import { globalStyles } from "constants/global";
 import { router } from "expo-router";
@@ -10,22 +9,32 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { usePlaylistsStore } from "utils/playlistsStore";
+import { useAppToast } from "utils/toast";
 
 const NewPlaylistPage = () => {
+  const { error } = usePlaylistsStore();
+  const { successToast, errorToast, infoToast } = useAppToast();
   const [playlistName, setPlaylistName] = useState<string>("");
   const postPlaylist = usePlaylistsStore((s) => s.postPlaylist);
 
   const handleCreatePlaylist = async () => {
-    await postPlaylist(playlistName).then(() => {
+    if (playlistName.length <= 0) {
+      return infoToast("You're more creative than that!");
+    }
+    try {
+      postPlaylist(playlistName);
+    } catch {
+      error && errorToast(error);
+    } finally {
+      successToast(`Playlist created: ${playlistName}`);
       router.back();
-    });
+    }
   };
 
   return (
