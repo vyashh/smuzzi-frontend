@@ -42,6 +42,7 @@ const InputField = ({
         spellCheck={false}
         secureTextEntry={isPassword}
         textContentType={isPassword ? "password" : "none"}
+        autoCapitalize={"none"}
       />
       {value && value?.length >= 0 && (
         <Pressable onPress={clearSearchValue}>

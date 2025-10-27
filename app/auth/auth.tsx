@@ -3,6 +3,7 @@ import Button from "@components/Buttons/Button";
 import InputField from "@components/InputField";
 import { Colors } from "constants/colors";
 import { globalStyles, SMUZZI_LOGO } from "constants/global";
+import { isUrlValid } from "helpers/misc";
 import { useEffect, useState } from "react";
 import { Pressable, View, StyleSheet, Image } from "react-native";
 import { useAuthStore } from "utils/authStore";
@@ -17,20 +18,27 @@ const AuthPage = () => {
     logIn,
     isFetching,
     setUserPassword,
+    error,
   } = useAuthStore();
   const [mode, setMode] = useState<Mode>(serverSelected ? "signin" : "server");
   const [url, setUrl] = useState<string>(serverUrl || "");
   const [userName, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [repeatPassword, setRepeatPassword] = useState<string>("");
+  const [alert, setAlert] = useState<string | null>("");
 
   const handleServerSelect = () => {
-    try {
-      setServerUrl(url);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setMode("signin");
+    setAlert("");
+    if (isUrlValid(url)) {
+      try {
+        setServerUrl(url);
+      } catch {
+        setAlert(error);
+      } finally {
+        setMode("signin");
+      }
+    } else {
+      setAlert("URL is not valid.");
     }
   };
 
@@ -49,7 +57,6 @@ const AuthPage = () => {
       {mode === "server" && (
         <View style={styles.content}>
           <AppText style={styles.title}>Select your server</AppText>
-          {!!error && <AppText style={styles.error}>{error}</AppText>}
           <InputField
             placeholder="Enter your server URL"
             value={url}
@@ -61,6 +68,7 @@ const AuthPage = () => {
             pressHandler={handleServerSelect}
             style={styles.button}
           />
+          {!!alert && <AppText style={styles.alert}>{alert}</AppText>}
         </View>
       )}
 
@@ -102,7 +110,13 @@ const AuthPage = () => {
           />
 
           {mode === "signup" && (
-            <InputField placeholder="Confirm password" isPassword />
+            <InputField
+              placeholder="Confirm password"
+              value={repeatPassword}
+              onChangeText={setRepeatPassword}
+              isPassword
+              style={styles.inputField}
+            />
           )}
           <Pressable
             onPress={() => setMode("server")}
@@ -126,6 +140,7 @@ const AuthPage = () => {
                 : "Have an account? Sign in"}
             </AppText>
           </Pressable> */}
+          <AppText>{error}</AppText>
         </View>
       )}
     </View>
@@ -150,8 +165,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 12,
   },
-  error: {
+  alert: {
+    margin: 18,
     color: Colors.danger,
+    textAlign: "center",
   },
   inputField: {
     backgroundColor: Colors.primaryDarkerDarker,
