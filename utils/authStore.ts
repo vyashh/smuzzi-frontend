@@ -7,7 +7,6 @@ import { toUser, User } from "types/user";
 export interface AuthStoreState {
   isFetching: boolean;
   isLoggedIn: boolean;
-  shouldCreateAccount: boolean;
   accessToken: string;
   username: string;
   password: string;
@@ -19,6 +18,7 @@ export interface AuthStoreState {
   setServerUrl: (url: string) => void;
   selectServer: () => void;
 
+  signUp: () => Promise<void>;
   logIn: () => Promise<void>;
   logOut: () => void;
 
@@ -40,7 +40,6 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
       (set, get) => ({
         isFetching: false,
         isLoggedIn: false,
-        shouldCreateAccount: false,
         accessToken: "",
         username: "vyash",
         user: null,
@@ -55,11 +54,38 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
 
         error: null,
 
+        signUp: async () => {
+          console.log("signUp AuthStore();");
+          const { serverUrl, username, password, logIn, getUserData } = get();
+          set({ isFetching: true, error: null });
+
+          try {
+            await axios.post(`${serverUrl}/api/register`, {
+              username,
+              password,
+            });
+
+            await logIn();
+
+            await getUserData();
+          } catch (e: unknown) {
+            const message =
+              e instanceof AxiosError
+                ? e.message
+                : e instanceof Error
+                ? e.message
+                : "Sign up failed";
+            set({ isLoggedIn: false, error: `signupError: ${message}` });
+            console.log(`signupError: ${message}`);
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+
         logIn: async () => {
           const { serverUrl, username, password } = get();
 
           try {
-            console.log(username, password);
             const { data } = await axios.post(`${serverUrl}/api/login`, {
               username,
               password,

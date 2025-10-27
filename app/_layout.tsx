@@ -75,9 +75,6 @@ const RootLayout = () => {
             <Stack.Protected guard={serverSelected && !isLoggedIn}>
               <Stack.Screen name="auth/auth" />
             </Stack.Protected>
-            {/* <Stack.Protected guard={serverSelected && shouldCreateAccount}>
-              <Stack.Screen name="auth/sign-up" />
-            </Stack.Protected> */}
           </Stack>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>

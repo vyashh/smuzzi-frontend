@@ -3,7 +3,7 @@ import Button from "@components/Buttons/Button";
 import InputField from "@components/InputField";
 import { Colors } from "constants/colors";
 import { globalStyles, SMUZZI_LOGO } from "constants/global";
-import { isUrlValid } from "helpers/misc";
+import { isPasswordValid, isUrlValid } from "helpers/misc";
 import { useEffect, useState } from "react";
 import { Pressable, View, StyleSheet, Image } from "react-native";
 import { useAuthStore } from "utils/authStore";
@@ -17,8 +17,8 @@ const AuthPage = () => {
     setServerUrl,
     logIn,
     isFetching,
-    setUserPassword,
     error,
+    signUp,
   } = useAuthStore();
   const [mode, setMode] = useState<Mode>(serverSelected ? "signin" : "server");
   const [url, setUrl] = useState<string>(serverUrl || "");
@@ -63,6 +63,24 @@ const AuthPage = () => {
       } catch {
         setAlert(error || "Failed to sign in. Please try again.");
       }
+    }
+
+    if (mode === "signup") {
+      if (!userName.trim() || !password || !repeatPassword) {
+        return setAlert("All fields are required.");
+      }
+      if (password !== repeatPassword) {
+        return setAlert("Passwords do not match.");
+      }
+      if (password.length < 8) {
+        return setAlert("Password must be at least 8 characters.");
+      }
+      if (!isPasswordValid(password)) {
+        return setAlert("Password is not strong.");
+      }
+      useAuthStore.setState({ username: userName.trim(), password });
+      await signUp();
+      return;
     }
   };
 
