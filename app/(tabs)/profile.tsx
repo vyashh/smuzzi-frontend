@@ -84,7 +84,7 @@ function ProfilePage() {
         <View style={styles.categories}>
           <SubTitle>Account</SubTitle>
           <SettingsItem
-            icon="pencil-outline"
+            icon="swap-horizontal"
             title="Change Display Name"
             pressHandler={changeDisplayName}
           />

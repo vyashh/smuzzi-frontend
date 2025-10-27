@@ -48,11 +48,14 @@ const NewPlaylistPage = () => {
               returnKeyType="done"
               onSubmitEditing={handleCreatePlaylist}
               autoFocus
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
-            <Pressable onPress={handleCreatePlaylist}>
-              <Button>Create</Button>
-            </Pressable>
+            <Button
+              title="Create Playlist"
+              pressHandler={handleCreatePlaylist}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
