@@ -45,13 +45,13 @@ const InputField = ({
       />
       {value && value?.length >= 0 && (
         <Pressable onPress={clearSearchValue}>
-          <Ionicons name="close-outline" size={24} color={Colors.neutral} />
+          <Ionicons name="close-outline" size={16} color={Colors.neutral} />
         </Pressable>
       )}
 
       {showSearchIcon && !value?.length && (
         <Pressable onPress={() => console.log("clear searchValue")}>
-          <Ionicons name="search-outline" size={24} color={Colors.neutral} />
+          <Ionicons name="search-outline" size={16} color={Colors.neutral} />
         </Pressable>
       )}
     </View>
