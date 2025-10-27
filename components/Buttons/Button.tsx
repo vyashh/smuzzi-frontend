@@ -5,20 +5,30 @@ import { Colors } from "constants/colors";
 interface ButtonProps {
   style?: object;
   title: string;
+  disabled?: boolean;
   pressHandler: () => void;
 }
 
-const Button = ({ style, title, pressHandler }: ButtonProps) => {
+const Button = ({
+  style,
+  title,
+  pressHandler,
+  disabled = false,
+}: ButtonProps) => {
   return (
     <Pressable
+      disabled={disabled}
       onPress={pressHandler}
       style={({ pressed }) => [
-        {
-          backgroundColor: pressed
-            ? Colors.primaryDarkerDarker
-            : Colors.primaryDarker,
-        },
         styles.container,
+        disabled
+          ? styles.disabled
+          : {
+              backgroundColor: pressed
+                ? Colors.primaryDarkerDarker
+                : Colors.primaryDarker,
+            },
+        style,
       ]}
     >
       <AppText style={styles.text}>{title}</AppText>
@@ -34,6 +44,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 8,
     alignItems: "center",
+  },
+  disabled: {
+    backgroundColor: Colors.surface,
+    opacity: 0.6,
   },
   text: {
     fontWeight: "bold",

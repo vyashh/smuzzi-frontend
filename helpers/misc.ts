@@ -38,3 +38,8 @@ export const isPasswordValid = (newPassword: string) => {
 
   return valid;
 };
+
+export const isUrlValid = (text: string) => {
+  const valid = /^https?:\/\/\S+$/.test(text);
+  return valid;
+};
