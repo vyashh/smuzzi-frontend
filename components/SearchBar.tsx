@@ -65,6 +65,7 @@ const Search = ({
   const onChange = (text: string) => {
     setSearchValue(text);
     setOnFocus(text.trim().length > 0);
+    console.log(text.length);
   };
 
   const handleSearch = useCallback(() => {

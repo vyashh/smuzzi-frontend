@@ -49,7 +49,7 @@ const InputField = ({
         </Pressable>
       )}
 
-      {showSearchIcon && (
+      {showSearchIcon && !value?.length && (
         <Pressable onPress={() => console.log("clear searchValue")}>
           <Ionicons name="search-outline" size={24} color={Colors.neutral} />
         </Pressable>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: Colors.text,
-    height: 25,
+    // height: 25,zxc
+    // fontSize: 25,
   },
 });
