@@ -54,8 +54,13 @@ const AuthPage = () => {
             placeholder="Enter your server URL"
             value={url}
             onChangeText={setUrl}
+            style={styles.inputField}
           />
-          <Button title="Continue" pressHandler={handleServerSelect} />
+          <Button
+            title="Continue"
+            pressHandler={handleServerSelect}
+            style={styles.button}
+          />
         </View>
       )}
 
@@ -86,24 +91,32 @@ const AuthPage = () => {
             placeholder="Username"
             value={userName}
             onChangeText={setUserName}
+            style={styles.inputField}
           />
           <InputField
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
             isPassword
+            style={styles.inputField}
           />
 
           {mode === "signup" && (
             <InputField placeholder="Confirm password" isPassword />
           )}
-
+          <Pressable
+            onPress={() => setMode("server")}
+            style={styles.changeServer}
+          >
+            <AppText style={styles.changeServerText}>Change server</AppText>
+          </Pressable>
           <Button
             title={mode === "signin" ? "Sign in" : "Create account"}
             pressHandler={() => console.log("")}
+            style={styles.button}
           />
 
-          <Pressable
+          {/* <Pressable
             onPress={() => setMode(mode === "signin" ? "signup" : "signin")}
             style={styles.switchLink}
           >
@@ -112,14 +125,7 @@ const AuthPage = () => {
                 ? "No account? Create one"
                 : "Have an account? Sign in"}
             </AppText>
-          </Pressable>
-
-          <Pressable
-            onPress={() => setMode("server")}
-            style={styles.changeServer}
-          >
-            <AppText style={styles.changeServerText}>Change server</AppText>
-          </Pressable>
+          </Pressable> */}
         </View>
       )}
     </View>
@@ -158,6 +164,9 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     padding: 8,
+  },
+  button: {
+    marginTop: 18,
   },
   inActive: {
     opacity: 0.5,
