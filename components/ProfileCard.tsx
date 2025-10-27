@@ -6,10 +6,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 interface ProfileCardProps {
   displayName?: string;
+  username?: string;
   tracksCount: number;
 }
 
-const ProfileCard = ({ displayName, tracksCount }: ProfileCardProps) => {
+const ProfileCard = ({
+  displayName,
+  tracksCount,
+  username,
+}: ProfileCardProps) => {
   return (
     <View style={styles.details}>
       <Image
@@ -18,8 +23,9 @@ const ProfileCard = ({ displayName, tracksCount }: ProfileCardProps) => {
         width={50}
         height={50}
       />
-      <View style={styles.detailsUser}>
+      <View style={[styles.detailsUser, , { gap: 4, padding: 4 }]}>
         <AppText style={styles.displayName}>{displayName}</AppText>
+        <AppText>{username}</AppText>
         <View style={styles.detailsTracks}>
           <AppText style={styles.detailsTracksCounter}>
             {tracksCount} Tracks
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
   displayName: {
     fontWeight: "bold",
     fontSize: 18,
-    marginBottom: 5,
+    // marginBottom: 5,
   },
   detailsUser: {
     marginLeft: 20,

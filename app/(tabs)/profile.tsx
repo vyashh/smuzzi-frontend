@@ -58,6 +58,10 @@ function ProfilePage() {
     }
   };
 
+  const changeDisplayName = () => {
+    infoToast("to be implemented.");
+  };
+
   useEffect(() => {
     getUserData();
   }, [getUserData]);
@@ -73,12 +77,17 @@ function ProfilePage() {
       <View style={globalStyles.container}>
         <HeaderTitle>Profile</HeaderTitle>
         <ProfileCard
-          displayName={user?.displayName}
+          displayName={user?.displayName || "No Name"}
           tracksCount={songs.length}
+          username={user?.username}
         />
         <View style={styles.categories}>
           <SubTitle>Account</SubTitle>
-          <SettingsItem icon="pencil-outline" title="Edit Account Details" />
+          <SettingsItem
+            icon="pencil-outline"
+            title="Change Display Name"
+            pressHandler={changeDisplayName}
+          />
           <SettingsItem
             pressHandler={handleOnOpenOptions}
             icon="eye-outline"
@@ -91,12 +100,6 @@ function ProfilePage() {
             pressHandler={scanLibrary}
             icon="scan-sharp"
             title="Scan Library"
-            isLoading={isFetching}
-          />
-          <SettingsItem
-            pressHandler={scanLibrary}
-            icon="dice-outline"
-            title="Enable Super Shuffle"
             isLoading={isFetching}
           />
           <SettingsItem
