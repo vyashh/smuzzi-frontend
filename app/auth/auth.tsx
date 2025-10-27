@@ -14,9 +14,9 @@ const AuthPage = () => {
     serverSelected,
     serverUrl,
     setServerUrl,
-    selectServer,
     logIn,
     isFetching,
+    setUserPassword,
   } = useAuthStore();
   const [mode, setMode] = useState<Mode>(serverSelected ? "signin" : "server");
   const [url, setUrl] = useState<string>(serverUrl || "");
@@ -24,18 +24,18 @@ const AuthPage = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const submit = async () => {
+  const handleServerSelect = () => {
     try {
-      if (mode === "signin") {
-        await logIn();
-      } else {
-      }
+      setServerUrl(url);
+    } catch (error) {
+      console.log(error);
     } finally {
+      setMode("signin");
     }
   };
 
   useEffect(() => {
-    setMode(serverSelected ? "server" : "server");
+    setMode(serverSelected ? "signin" : "server");
   }, [serverSelected]);
 
   return (
@@ -55,7 +55,71 @@ const AuthPage = () => {
             value={url}
             onChangeText={setUrl}
           />
-          <Button title="Continue" pressHandler={submit} />
+          <Button title="Continue" pressHandler={handleServerSelect} />
+        </View>
+      )}
+
+      {mode !== "server" && (
+        <View style={styles.content}>
+          <View style={styles.toggleRow}>
+            <Pressable
+              onPress={() => setMode("signin")}
+              style={[
+                styles.toggleButton,
+                mode !== "signin" && styles.inActive,
+              ]}
+            >
+              <AppText>Sign in</AppText>
+            </Pressable>
+            <Pressable
+              onPress={() => setMode("signup")}
+              style={[
+                styles.toggleButton,
+                mode !== "signup" && styles.inActive,
+              ]}
+            >
+              <AppText>Create account</AppText>
+            </Pressable>
+          </View>
+
+          <InputField
+            placeholder="Username"
+            value={userName}
+            onChangeText={setUserName}
+          />
+          <InputField
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            isPassword
+          />
+
+          {mode === "signup" && (
+            <InputField placeholder="Confirm password" isPassword />
+          )}
+
+          <Button
+            title={mode === "signin" ? "Sign in" : "Create account"}
+            pressHandler={() => console.log("")}
+          />
+
+          <Pressable
+            onPress={() => setMode(mode === "signin" ? "signup" : "signin")}
+            style={styles.switchLink}
+          >
+            <AppText>
+              {mode === "signin"
+                ? "No account? Create one"
+                : "Have an account? Sign in"}
+            </AppText>
+          </Pressable>
+
+          <Pressable
+            onPress={() => setMode("server")}
+            style={styles.changeServer}
+          >
+            <AppText style={styles.changeServerText}>Change server</AppText>
+          </Pressable>
         </View>
       )}
     </View>
@@ -98,6 +162,14 @@ const styles = StyleSheet.create({
   inActive: {
     opacity: 0.5,
   },
+  changeServer: {
+    alignSelf: "center",
+    marginTop: 8,
+  },
+  changeServerText: {
+    opacity: 0.6,
+  },
+
   switchLink: {
     alignSelf: "center",
     marginTop: 12,
