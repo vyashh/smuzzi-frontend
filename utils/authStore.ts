@@ -57,7 +57,9 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
 
         logIn: async () => {
           const { serverUrl, username, password } = get();
+
           try {
+            console.log(username, password);
             const { data } = await axios.post(`${serverUrl}/api/login`, {
               username,
               password,

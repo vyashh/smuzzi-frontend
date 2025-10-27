@@ -42,6 +42,30 @@ const AuthPage = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    setAlert("");
+
+    if (mode === "signin") {
+      if (!userName.trim() || !password) {
+        return setAlert("Username and password are required.");
+      }
+      if (password === repeatPassword) {
+        return setAlert("Passwords are not the same.");
+      }
+      try {
+        console.log("trying to login");
+        setServerUrl(url.trim());
+        useAuthStore.setState({
+          username: userName.trim(),
+          password,
+        });
+        await logIn();
+      } catch {
+        setAlert(error || "Failed to sign in. Please try again.");
+      }
+    }
+  };
+
   useEffect(() => {
     setMode(serverSelected ? "signin" : "server");
   }, [serverSelected]);
@@ -126,7 +150,7 @@ const AuthPage = () => {
           </Pressable>
           <Button
             title={mode === "signin" ? "Sign in" : "Create account"}
-            pressHandler={() => console.log("")}
+            pressHandler={handleSubmit}
             style={styles.button}
           />
 
@@ -140,7 +164,9 @@ const AuthPage = () => {
                 : "Have an account? Sign in"}
             </AppText>
           </Pressable> */}
-          <AppText>{error}</AppText>
+          <View>
+            {!!alert && <AppText style={styles.alert}>{alert}</AppText>}
+          </View>
         </View>
       )}
     </View>

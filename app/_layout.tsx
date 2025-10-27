@@ -72,10 +72,8 @@ const RootLayout = () => {
             <Stack.Protected guard={!serverSelected}>
               <Stack.Screen name="auth/server-select" />
             </Stack.Protected>
-            <Stack.Protected
-              guard={serverSelected && !isLoggedIn && shouldCreateAccount}
-            >
-              <Stack.Screen name="auth/authpage" />
+            <Stack.Protected guard={serverSelected && !isLoggedIn}>
+              <Stack.Screen name="auth/auth" />
             </Stack.Protected>
             {/* <Stack.Protected guard={serverSelected && shouldCreateAccount}>
               <Stack.Screen name="auth/sign-up" />
