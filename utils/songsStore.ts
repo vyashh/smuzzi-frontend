@@ -132,6 +132,11 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
           state.isFetching = false;
           state.error = null;
           state.currentPlayEventId = null;
+          if (state.nextCursor === undefined) state.nextCursor = null;
+          if (state.hasMore === undefined) state.hasMore = true;
+          if (state.pageSize === undefined) state.pageSize = 100;
+          if (state.lastQuery === undefined) state.lastQuery = "";
+          if (state.sort === undefined) state.sort = "created_desc";
         },
       }
     )
