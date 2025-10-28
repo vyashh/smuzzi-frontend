@@ -97,6 +97,13 @@ const playlist = () => {
     });
   };
 
+  const listData = useMemo(() => {
+    const seen = new Set<number>();
+    return (displayedSongs ?? []).filter(
+      (s) => !seen.has(s.id) && (seen.add(s.id), true)
+    );
+  }, [displayedSongs]);
+
   useEffect(() => {
     fetchSongs();
     if (viewType === "likes") fetchLikes();
@@ -124,8 +131,9 @@ const playlist = () => {
           <AppText> Tracks</AppText>
         </View>
         <PlaylistActionButtons displayedSongs={displayedSongs} />
+
         <FlatList<Song>
-          data={displayedSongs}
+          data={listData}
           refreshing={refreshing}
           onRefresh={handleRefresh}
           keyExtractor={(item: Song) => String(item.id)}
