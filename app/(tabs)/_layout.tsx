@@ -3,10 +3,6 @@ import { Colors } from "../../constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const TabsLayout = () => {
-  const tabStyling = {
-    backgroundColor: Colors.bg,
-  };
-
   return (
     <Tabs>
       <Tabs.Screen
@@ -18,7 +14,7 @@ const TabsLayout = () => {
             backgroundColor: Colors.bg,
           },
           tabBarActiveTintColor: Colors.primary,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ color, size }) => {
             return <Ionicons name="home-outline" size={size} color={color} />;
           },
         }}
@@ -32,10 +28,9 @@ const TabsLayout = () => {
             backgroundColor: Colors.bg,
           },
           tabBarActiveTintColor: Colors.primary,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ color, size }) => {
             return <Ionicons name="search-outline" size={size} color={color} />;
           },
-          tabBarActiveTintColor: Colors.primary,
         }}
       />
       <Tabs.Screen
@@ -47,10 +42,9 @@ const TabsLayout = () => {
             backgroundColor: Colors.bg,
           },
           tabBarActiveTintColor: Colors.primary,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ color, size }) => {
             return <Ionicons name="albums-outline" size={size} color={color} />;
           },
-          tabBarActiveTintColor: Colors.primary,
         }}
       />
       <Tabs.Screen
@@ -62,10 +56,9 @@ const TabsLayout = () => {
             backgroundColor: Colors.bg,
           },
           tabBarActiveTintColor: Colors.primary,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ color, size }) => {
             return <Ionicons name="person-outline" size={size} color={color} />;
           },
-          tabBarActiveTintColor: Colors.primary,
         }}
       />
     </Tabs>
