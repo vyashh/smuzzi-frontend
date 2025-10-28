@@ -38,9 +38,7 @@ const InputField = ({
     onChangeText && onChangeText("");
   };
 
-  useEffect(() => {
-    // isPassword && setShowPassword(true);
-  });
+  useEffect(() => {});
 
   return (
     <View style={[styles.container, style]}>
@@ -70,6 +68,11 @@ const InputField = ({
             <Ionicons name="close-outline" size={16} color={Colors.neutral} />
           </Pressable>
         )
+      )}
+      {showSearchIcon && value?.length === 0 && (
+        <Pressable onPress={clearSearchValue}>
+          <Ionicons name="search-outline" size={16} color={Colors.neutral} />
+        </Pressable>
       )}
     </View>
   );

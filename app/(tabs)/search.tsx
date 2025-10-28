@@ -13,6 +13,7 @@ const SearchPage = () => {
         searchSongs={songs}
         resultsText="Recent searches"
         placeholder="What do you want to listen to?"
+        showSearchIcon
       />
     </View>
   );
