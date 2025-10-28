@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Colors } from "constants/colors";
+import { useEffect, useState } from "react";
 import { Pressable, StyleProp, TextStyle } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -27,9 +28,19 @@ const InputField = ({
     ? BottomSheetTextInput
     : TextInput;
 
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const clearSearchValue = () => {
     onChangeText && onChangeText("");
   };
+
+  useEffect(() => {
+    // isPassword && setShowPassword(true);
+  });
 
   return (
     <View style={[styles.container, style]}>
@@ -40,20 +51,25 @@ const InputField = ({
         value={value}
         onChangeText={onChangeText}
         spellCheck={false}
-        secureTextEntry={isPassword}
-        textContentType={isPassword ? "password" : "none"}
+        secureTextEntry={showPassword}
+        textContentType={showPassword ? "password" : "none"}
         autoCapitalize={"none"}
       />
-      {value && value?.length >= 0 && (
-        <Pressable onPress={clearSearchValue}>
-          <Ionicons name="close-outline" size={16} color={Colors.neutral} />
+      {isPassword ? (
+        <Pressable onPress={handleShowPassword}>
+          <Ionicons
+            name={showPassword ? "eye-outline" : "eye-off-outline"}
+            size={16}
+            color={Colors.neutral}
+          />
         </Pressable>
-      )}
-
-      {showSearchIcon && !value?.length && (
-        <Pressable onPress={() => console.log("clear searchValue")}>
-          <Ionicons name="search-outline" size={16} color={Colors.neutral} />
-        </Pressable>
+      ) : (
+        value &&
+        value.length >= 0 && (
+          <Pressable onPress={clearSearchValue}>
+            <Ionicons name="close-outline" size={16} color={Colors.neutral} />
+          </Pressable>
+        )
       )}
     </View>
   );
