@@ -25,6 +25,13 @@ interface SongsState {
   error: string | null;
   songs: Array<Song>;
   currentPlayEventId: number | null;
+
+  nextCursor: number | null;
+  hasMore: boolean;
+  pageSize: number;
+  lastQuery: string;
+  sort: "created_desc" | "created_asc" | "title_asc";
+
   fetchSongs: () => Promise<void>;
   setSongs: (s: Array<Song>) => void;
   clear: () => void;
@@ -40,8 +47,22 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         error: null,
         songs: [] as Array<Song>,
         currentPlayEventId: null,
+        nextCursor: null,
+        hasMore: true,
+        pageSize: 100,
+        lastQuery: "",
+        sort: "created_desc",
         setSongs: (s) => set({ songs: s }),
-        clear: () => set({ songs: [], error: null, currentPlayEventId: null }),
+        clear: () =>
+          set({
+            songs: [],
+            error: null,
+            currentPlayEventId: null,
+            nextCursor: null,
+            hasMore: true,
+            lastQuery: "",
+            sort: "created_desc",
+          }),
         fetchSongs: async () => {
           if (get().isFetching) return;
           set({ isFetching: true, error: null });
@@ -98,7 +119,14 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
       {
         name: "songs-store-v2",
         storage: createJSONStorage(() => AsyncStorage),
-        partialize: (s) => ({ songs: s.songs } as unknown as SongsState),
+        partialize: (s) =>
+          ({
+            songs: s.songs.slice(0, 200),
+            pageSize: s.pageSize,
+            sort: s.sort,
+            lastQuery: s.lastQuery,
+          } as unknown as SongsState),
+
         onRehydrateStorage: () => (state) => {
           if (!state) return;
           state.isFetching = false;
