@@ -49,14 +49,15 @@ const InputField = ({
         value={value}
         onChangeText={onChangeText}
         spellCheck={false}
-        secureTextEntry={showPassword}
-        textContentType={showPassword ? "password" : "none"}
+        autoCorrect={false}
+        secureTextEntry={isPassword && !showPassword}
+        textContentType={isPassword ? "password" : "none"}
         autoCapitalize={"none"}
       />
       {isPassword ? (
         <Pressable onPress={handleShowPassword}>
           <Ionicons
-            name={showPassword ? "eye-outline" : "eye-off-outline"}
+            name={showPassword ? "eye-off-outline" : "eye-outline"}
             size={16}
             color={Colors.neutral}
           />
