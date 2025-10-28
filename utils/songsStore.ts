@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuthStore } from "./authStore";
 import { Song, toSongs } from "types/song";
 import { ContextType } from "types/playback";
+import { extractItemsAndCursor } from "helpers/misc";
 
 export interface PlayStart {
   track_id: number;
@@ -31,6 +32,7 @@ interface SongsState {
   pageSize: number;
   lastQuery: string;
   sort: "created_desc" | "created_asc" | "title_asc";
+  total: number | null;
 
   fetchSongs: () => Promise<void>;
   setSongs: (s: Array<Song>) => void;
@@ -52,6 +54,7 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         pageSize: 100,
         lastQuery: "",
         sort: "created_desc",
+        total: null,
         setSongs: (s) => set({ songs: s }),
         clear: () =>
           set({
@@ -66,12 +69,21 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         fetchSongs: async () => {
           if (get().isFetching) return;
           set({ isFetching: true, error: null });
+
           const { serverUrl, accessToken } = useAuthStore.getState();
           try {
+            const { pageSize, lastQuery, sort } = get();
             const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: { limit: pageSize, q: lastQuery || undefined, sort },
               headers: { Authorization: `Bearer ${accessToken}` },
             });
-            set({ songs: toSongs(data) });
+            const { items, nextCursor, total } = extractItemsAndCursor(data);
+            set({
+              songs: toSongs(items),
+              nextCursor,
+              total,
+              hasMore: Boolean(nextCursor),
+            });
           } catch (err: unknown) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message });
@@ -117,7 +129,7 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         },
       }),
       {
-        name: "songs-store-v2",
+        name: "songs-store-v3",
         storage: createJSONStorage(() => AsyncStorage),
         partialize: (s) =>
           ({
@@ -129,9 +141,10 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
 
         onRehydrateStorage: () => (state) => {
           if (!state) return;
-          state.isFetching = false;
-          state.error = null;
-          state.currentPlayEventId = null;
+          if (state.isFetching === undefined) state.isFetching = false;
+          if (state.error === undefined) state.error = null;
+          if (state.currentPlayEventId === undefined)
+            state.currentPlayEventId = null;
           if (state.nextCursor === undefined) state.nextCursor = null;
           if (state.hasMore === undefined) state.hasMore = true;
           if (state.pageSize === undefined) state.pageSize = 100;

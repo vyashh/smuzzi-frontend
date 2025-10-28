@@ -43,3 +43,12 @@ export const isUrlValid = (text: string) => {
   const valid = /^https?:\/\/\S+$/.test(text);
   return valid;
 };
+
+export const extractItemsAndCursor = (data: any) => {
+  if (Array.isArray(data)) return { items: data, nextCursor: null };
+  return {
+    items: data?.items ?? [],
+    nextCursor: data?.nextCursor ?? null,
+    total: data?.total ?? null,
+  };
+};
