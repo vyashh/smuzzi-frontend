@@ -3,9 +3,12 @@ import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
+import { useState } from "react";
 
 const SearchPage = () => {
   const { songs } = useSongsStore();
+  const [query, setQuery] = useState("");
+
   return (
     <View style={globalStyles.container}>
       <SearchBar

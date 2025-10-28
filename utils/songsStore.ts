@@ -7,6 +7,8 @@ import { Song, toSongs } from "types/song";
 import { ContextType } from "types/playback";
 import { extractItemsAndCursor } from "helpers/misc";
 
+let activeCtrl: AbortController | null = null;
+
 export interface PlayStart {
   track_id: number;
   context_type?: ContextType;
@@ -35,7 +37,7 @@ interface SongsState {
   total: number | null;
 
   fetchSongs: () => Promise<void>;
-  setSongs: (s: Array<Song>) => void;
+  searchSongs: (q: string) => Promise<void>;
   clear: () => void;
   setStartPlay: (payload: PlayStart) => Promise<number>;
   setEndPlay: (payload?: PlayEndPayload) => Promise<void>;
@@ -57,7 +59,6 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         lastQuery: "",
         sort: "created_desc",
         total: null,
-        setSongs: (s) => set({ songs: s }),
         clear: () =>
           set({
             songs: [],
@@ -93,6 +94,48 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
             });
             console.log(nextCursor);
           } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        searchSongs: async (raw: string) => {
+          const q = raw.trim();
+          const { pageSize, sort } = get();
+
+          // cancel previous in-flight
+          if (activeCtrl) activeCtrl.abort();
+          activeCtrl = new AbortController();
+
+          set({
+            isFetching: true,
+            error: null,
+            lastQuery: q,
+            nextCursor: null,
+            hasMore: true,
+          });
+
+          const { serverUrl, accessToken } = useAuthStore.getState();
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: {
+                limit: pageSize,
+                cursor: null,
+                q: q || undefined,
+                sort,
+              },
+              headers: { Authorization: `Bearer ${accessToken}` },
+              signal: activeCtrl.signal as any,
+            });
+            const { items, nextCursor } = extractItemsAndCursor(data);
+            set({
+              songs: toSongs(items),
+              nextCursor,
+              hasMore: Boolean(nextCursor),
+            });
+          } catch (err: any) {
+            if (err?.name === "CanceledError") return;
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message });
           } finally {
