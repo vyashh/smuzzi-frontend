@@ -1,9 +1,20 @@
 import React from "react";
 import { Image, Pressable, View, StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { AnimatedStyle } from "react-native-reanimated";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AppText from "./AppText";
 import { Colors } from "../constants/colors";
+import { Song } from "types/song";
+import { PlaybackState } from "react-native-track-player";
+import { ViewStyle } from "react-native";
+
+interface PlayerMiniProps {
+  meta: any;
+  playerState: PlaybackState;
+  onTogglePlay: () => void;
+  onOpen: () => void;
+  animatedStyle?: AnimatedStyle<ViewStyle>;
+}
 
 const PlayerMini = ({
   meta,
@@ -11,7 +22,7 @@ const PlayerMini = ({
   onTogglePlay,
   onOpen,
   animatedStyle,
-}) => {
+}: PlayerMiniProps) => {
   return (
     <Animated.View style={[styles.miniPlayerContainer, animatedStyle]}>
       <Pressable style={styles.row} onPress={onOpen}>
