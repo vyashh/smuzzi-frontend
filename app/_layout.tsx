@@ -69,11 +69,8 @@ const RootLayout = () => {
             <Stack.Protected guard={isLoggedIn}>
               <Stack.Screen name="(tabs)" />
             </Stack.Protected>
-            <Stack.Protected guard={!serverSelected}>
-              <Stack.Screen name="auth/server-select" />
-            </Stack.Protected>
-            <Stack.Protected guard={serverSelected && !isLoggedIn}>
-              <Stack.Screen name="auth/auth" />
+            <Stack.Protected guard={!serverSelected && !isLoggedIn}>
+              <Stack.Screen name="auth" />
             </Stack.Protected>
           </Stack>
         </BottomSheetModalProvider>

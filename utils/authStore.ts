@@ -84,6 +84,7 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
 
         logIn: async () => {
           const { serverUrl, username, password } = get();
+          set({ isFetching: true, error: null });
 
           try {
             const { data } = await axios.post(`${serverUrl}/api/login`, {
@@ -103,8 +104,13 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
                 : e instanceof Error
                 ? e.message
                 : "Login failed";
-            set({ isLoggedIn: false, error: `loginError: ${message}` });
+            set({
+              isLoggedIn: false,
+              isFetching: false,
+              error: `loginError: ${message}`,
+            });
             console.log(`loginError: ${message}`);
+            throw new Error(message);
           }
         },
 

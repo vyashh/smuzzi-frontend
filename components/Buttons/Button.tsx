@@ -1,12 +1,15 @@
 import { Pressable, StyleSheet } from "react-native";
 import AppText from "../AppText";
 import { Colors } from "constants/colors";
+import LoaderKitView from "react-native-loader-kit";
+import Loader from "@components/Loader";
 
 interface ButtonProps {
   style?: object;
   title: string;
   disabled?: boolean;
   pressHandler: () => void;
+  isLoading?: boolean;
 }
 
 const Button = ({
@@ -14,6 +17,7 @@ const Button = ({
   title,
   pressHandler,
   disabled = false,
+  isLoading,
 }: ButtonProps) => {
   return (
     <Pressable
@@ -31,7 +35,7 @@ const Button = ({
         style,
       ]}
     >
-      <AppText style={styles.text}>{title}</AppText>
+      {isLoading ? <Loader /> : <AppText style={styles.text}>{title}</AppText>}
     </Pressable>
   );
 };
