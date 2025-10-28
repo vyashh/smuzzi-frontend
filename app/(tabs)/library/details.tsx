@@ -40,7 +40,7 @@ const playlist = () => {
 
   const optionsRef = useRef<OptionsSheetTrackRef>(null);
 
-  const { songs, isFetching } = useSongsStore();
+  const { songs, isFetching, hasMore, fetchMoreSongs, total } = useSongsStore();
   const fetchSongs = useSongsStore((s) => s.fetchSongs);
   const isSongsFetching = useSongsStore((s) => s.isFetching);
 
@@ -102,6 +102,7 @@ const playlist = () => {
     if (viewType === "playlist" && pid != null && !playlistTracks) {
       fetchPlaylistTracks(pid);
     }
+    console.log(total);
   }, [
     fetchSongs,
     fetchLikes,
@@ -117,9 +118,7 @@ const playlist = () => {
         <HeaderTitle>{title}</HeaderTitle>
         <View style={styles.trackDetails}>
           <AppText style={styles.tracks}>
-            {displayedSongs?.length
-              ? displayedSongs.length
-              : "No tracks in playlist"}
+            {total ? total : "No tracks in playlist"}
           </AppText>
           <AppText> Tracks</AppText>
         </View>
@@ -129,6 +128,8 @@ const playlist = () => {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           keyExtractor={(item: Song) => String(item.id)}
+          onEndReachedThreshold={0.4}
+          onEndReached={() => hasMore && fetchMoreSongs()}
           renderItem={({ item, index }) => (
             <View style={{ paddingVertical: 12 }}>
               <Pressable

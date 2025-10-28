@@ -39,6 +39,8 @@ interface SongsState {
   clear: () => void;
   setStartPlay: (payload: PlayStart) => Promise<number>;
   setEndPlay: (payload?: PlayEndPayload) => Promise<void>;
+
+  fetchMoreSongs: () => Promise<void>;
 }
 
 export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
@@ -74,7 +76,12 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
           try {
             const { pageSize, lastQuery, sort } = get();
             const { data } = await axios.get(`${serverUrl}/api/songs`, {
-              params: { limit: pageSize, q: lastQuery || undefined, sort },
+              params: {
+                limit: pageSize,
+                q: lastQuery || undefined,
+                sort,
+                include_total: true,
+              },
               headers: { Authorization: `Bearer ${accessToken}` },
             });
             const { items, nextCursor, total } = extractItemsAndCursor(data);
@@ -83,6 +90,37 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
               nextCursor,
               total,
               hasMore: Boolean(nextCursor),
+            });
+            console.log(nextCursor);
+          } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        fetchMoreSongs: async () => {
+          const { isFetching, hasMore, nextCursor, pageSize, lastQuery, sort } =
+            get();
+          if (isFetching || !hasMore) return;
+
+          set({ isFetching: true, error: null });
+          const { serverUrl, accessToken } = useAuthStore.getState();
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: {
+                limit: pageSize,
+                cursor: nextCursor,
+                q: lastQuery || undefined,
+                sort,
+              },
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            const { items, nextCursor: nc } = extractItemsAndCursor(data);
+            set({
+              songs: [...get().songs, ...toSongs(items)],
+              nextCursor: nc,
+              hasMore: Boolean(nc),
             });
           } catch (err: unknown) {
             const message = err instanceof Error ? err.message : String(err);
@@ -150,6 +188,7 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
           if (state.pageSize === undefined) state.pageSize = 100;
           if (state.lastQuery === undefined) state.lastQuery = "";
           if (state.sort === undefined) state.sort = "created_desc";
+          if (state.total === undefined) state.total = null;
         },
       }
     )
