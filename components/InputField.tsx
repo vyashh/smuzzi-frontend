@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Colors } from "constants/colors";
+import { useEffect, useState } from "react";
 import { Pressable, StyleProp, TextStyle } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -27,9 +28,17 @@ const InputField = ({
     ? BottomSheetTextInput
     : TextInput;
 
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const clearSearchValue = () => {
     onChangeText && onChangeText("");
   };
+
+  useEffect(() => {});
 
   return (
     <View style={[styles.container, style]}>
@@ -40,18 +49,29 @@ const InputField = ({
         value={value}
         onChangeText={onChangeText}
         spellCheck={false}
-        secureTextEntry={isPassword}
+        autoCorrect={false}
+        secureTextEntry={isPassword && !showPassword}
         textContentType={isPassword ? "password" : "none"}
         autoCapitalize={"none"}
       />
-      {value && value?.length >= 0 && (
-        <Pressable onPress={clearSearchValue}>
-          <Ionicons name="close-outline" size={16} color={Colors.neutral} />
+      {isPassword ? (
+        <Pressable onPress={handleShowPassword}>
+          <Ionicons
+            name={showPassword ? "eye-off-outline" : "eye-outline"}
+            size={16}
+            color={Colors.neutral}
+          />
         </Pressable>
+      ) : (
+        value &&
+        value.length >= 0 && (
+          <Pressable onPress={clearSearchValue}>
+            <Ionicons name="close-outline" size={16} color={Colors.neutral} />
+          </Pressable>
+        )
       )}
-
-      {showSearchIcon && !value?.length && (
-        <Pressable onPress={() => console.log("clear searchValue")}>
+      {showSearchIcon && value?.length === 0 && (
+        <Pressable onPress={clearSearchValue}>
           <Ionicons name="search-outline" size={16} color={Colors.neutral} />
         </Pressable>
       )}

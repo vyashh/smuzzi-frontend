@@ -49,19 +49,14 @@ const AuthPage = () => {
       if (!userName.trim() || !password) {
         return setAlert("Username and password are required.");
       }
-      if (password === repeatPassword) {
-        return setAlert("Passwords are not the same.");
-      }
       try {
         console.log("trying to login");
         setServerUrl(url.trim());
-        useAuthStore.setState({
-          username: userName.trim(),
-          password,
-        });
+        useAuthStore.setState({ username: userName.trim(), password });
+
         await logIn();
-      } catch {
-        setAlert(error || "Failed to sign in. Please try again.");
+      } catch (e: unknown) {
+        setAlert("Username or password is incorrect.");
       }
     }
 
@@ -109,6 +104,7 @@ const AuthPage = () => {
             title="Continue"
             pressHandler={handleServerSelect}
             style={styles.button}
+            isLoading={isFetching}
           />
           {!!alert && <AppText style={styles.alert}>{alert}</AppText>}
         </View>
@@ -170,18 +166,8 @@ const AuthPage = () => {
             title={mode === "signin" ? "Sign in" : "Create account"}
             pressHandler={handleSubmit}
             style={styles.button}
+            isLoading={isFetching}
           />
-
-          {/* <Pressable
-            onPress={() => setMode(mode === "signin" ? "signup" : "signin")}
-            style={styles.switchLink}
-          >
-            <AppText>
-              {mode === "signin"
-                ? "No account? Create one"
-                : "Have an account? Sign in"}
-            </AppText>
-          </Pressable> */}
           <View>
             {!!alert && <AppText style={styles.alert}>{alert}</AppText>}
           </View>
