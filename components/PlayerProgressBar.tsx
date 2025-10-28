@@ -1,18 +1,19 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
 import TrackPlayer, { useProgress } from "react-native-track-player";
 import { formatSecondsToMinutes } from "../helpers/misc";
 import AppText from "./AppText";
 
-export default function PlayerProgressBar() {
+const PlayerProgressBar = () => {
   const { duration = 0, position = 0 } = useProgress(250);
   const value = duration > 0 ? position / duration : 0;
 
   const trackElapsedTime = formatSecondsToMinutes(position);
   const trackRemainingTime = formatSecondsToMinutes(duration - position);
 
-  const onSlidingComplete = async (vals) => {
+  type SlideValue = number | number[];
+
+  const onSlidingComplete = async (vals: SlideValue) => {
     const v = Array.isArray(vals) ? vals[0] : vals; // component can return array
     if (duration > 0) await TrackPlayer.seekTo(v * duration);
   };
@@ -35,7 +36,10 @@ export default function PlayerProgressBar() {
       </View>
     </View>
   );
-}
+};
+
+export default PlayerProgressBar;
+
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
