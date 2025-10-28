@@ -112,6 +112,11 @@ export const useAuthStore: UseBoundStore<StoreApi<AuthStoreState>> =
             console.log(`loginError: ${message}`);
             throw new Error(message);
           }
+          set({
+            isLoggedIn: true,
+            isFetching: false,
+            error: ``,
+          });
         },
 
         logOut: () =>
