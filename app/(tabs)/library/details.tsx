@@ -29,6 +29,7 @@ import OptionsSheetPlaylist, {
 import PlaylistActionButtons from "@components/Buttons/PlaylistActionButtons";
 import OptionSheetTrack from "@components/Options/OptionsSheetTrack";
 import Search from "@components/SearchBar";
+import Loader from "@components/Loader";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{
@@ -130,6 +131,9 @@ const playlist = () => {
           keyExtractor={(item: Song) => String(item.id)}
           onEndReachedThreshold={0.4}
           onEndReached={() => hasMore && fetchMoreSongs()}
+          ListFooterComponent={
+            isFetching && songs.length > 0 ? <Loader /> : null
+          }
           renderItem={({ item, index }) => (
             <View style={{ paddingVertical: 12 }}>
               <Pressable
