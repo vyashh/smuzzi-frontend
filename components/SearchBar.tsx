@@ -6,6 +6,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import SubTitle from "./SubTitle";
@@ -24,7 +25,7 @@ interface SearchProps {
   resultsSongs?: Song[] | null;
   resultsPlaylists?: Playlist[] | null;
   isLoading?: boolean;
-  onQueryChange: (q: string) => void;
+  onQueryChange?: (q: string) => void | undefined;
   searchSongs?: Song[] | null;
   searchPlaylist?: Playlist[] | null;
   setOnFocus: Dispatch<SetStateAction<boolean>>;
@@ -70,8 +71,22 @@ const Search = ({
   const onChange = (text: string) => {
     setSearchValue(text);
     setOnFocus(text.trim().length > 0);
-    console.log(text.length);
-    onQueryChange(text);
+    onQueryChange?.(text);
+  };
+
+  const filterPlaylist = (value: string) => {
+    const query = value.trim();
+    if (!query.trim() || !searchPlaylist?.length) return [];
+    const res = searchPlaylist.filter((p) => {
+      const fields = [p.name ?? "", p.description ?? ""];
+      return fields.some((f) => f.toLowerCase().includes(query));
+    });
+    console.log("[SearchBar] playlists filter:", {
+      query: query,
+      before: searchPlaylist.length,
+      after: res.length,
+    });
+    return res;
   };
 
   useEffect(() => {}, []);
@@ -87,7 +102,12 @@ const Search = ({
         <InputField
           placeholder={placeholder}
           value={searchValue}
-          onChangeText={onChange}
+          onChangeText={(value) => {
+            if (searchPlaylist) {
+              setSearchResultsPlaylists(filterPlaylist(value));
+            }
+            onChange(value);
+          }}
           showSearchIcon={showSearchIcon}
         />
         {resultsText && (
