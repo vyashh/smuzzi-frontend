@@ -69,7 +69,7 @@ const Search = ({
       }));
 
     setSongId(item.id);
-    songIndex && addSearch(songIndex);
+    addSearch(item.id);
   };
 
   const onChange = (text: string) => {

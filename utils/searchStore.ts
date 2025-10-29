@@ -83,6 +83,8 @@ export const useSearchStore: UseBoundStore<StoreApi<SearchState>> =
                 err?.message ??
                 "Failed to add recent search",
             });
+          } finally {
+            await get().fetchSearches();
           }
         },
 

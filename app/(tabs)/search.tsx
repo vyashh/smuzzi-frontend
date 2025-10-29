@@ -41,6 +41,10 @@ const SearchPage = () => {
     }, [searchSongsFn])
   );
 
+  useEffect(() => {
+    fetchSearches();
+  }, [fetchSearches]);
+
   return (
     <View style={globalStyles.container}>
       <SearchBar
@@ -56,7 +60,11 @@ const SearchPage = () => {
         <FlatList
           data={searches}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <AppText>{item.songId}</AppText>}
+          renderItem={({ item }) => {
+            const song = item.song;
+
+            return <AppText>{song?.title}</AppText>;
+          }}
         />
       )}
     </View>
