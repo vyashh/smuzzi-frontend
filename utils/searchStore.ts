@@ -106,6 +106,7 @@ export const useSearchStore: UseBoundStore<StoreApi<SearchState>> =
                 err?.message ??
                 "Failed to delete recent search",
             });
+            throw err;
           }
         },
       }),

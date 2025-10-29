@@ -37,13 +37,8 @@ const SearchPage = () => {
 
   const handleDelete = async (searchId: number) => {
     try {
-      const { error } = useSearchStore.getState();
-
-      if (error) {
-        errorToast("Failed to remove item from recent searches.");
-      }
-      successToast("Removed item from recent searches.");
       await removeSearch(searchId);
+      successToast("Removed item from recent searches.");
     } catch (error) {
       errorToast("Failed to remove search item.");
     }
