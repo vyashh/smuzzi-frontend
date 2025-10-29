@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
@@ -9,12 +9,14 @@ import { useSearchStore } from "utils/searchStore";
 import AppText from "@components/AppText";
 import PlaylistView from "@components/PlaylistView";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppToast } from "utils/toast";
 
 const SearchPage = () => {
   const { songs } = useSongsStore();
   const { searches, fetchSearches, removeSearch, addSearch } = useSearchStore();
   const refreshSongs = useSongsStore((s: any) => s.refreshSongs ?? null);
   const searchSongsFn = useSongsStore((s: any) => s.searchSongs ?? null);
+  const { errorToast, successToast } = useAppToast();
 
   const runSearch = (q: string) => {
     const query = q.trim();
@@ -32,6 +34,20 @@ const SearchPage = () => {
     (fn as any).cancel = () => t && clearTimeout(t);
     return fn;
   }, [runSearch]);
+
+  const handleDelete = async (searchId: number) => {
+    try {
+      const { error } = useSearchStore.getState();
+
+      if (error) {
+        errorToast("Failed to remove item from recent searches.");
+      }
+      successToast("Removed item from recent searches.");
+      await removeSearch(searchId);
+    } catch (error) {
+      errorToast("Failed to remove search item.");
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -73,12 +89,14 @@ const SearchPage = () => {
                     title={song.title}
                     cover={song.coverUrl}
                   />
-                  <Ionicons
-                    // style={styles.icon}
-                    name={"close-outline"}
-                    size={20}
-                    color={Colors.primary}
-                  />
+                  <Pressable onPress={() => handleDelete(item.id)}>
+                    <Ionicons
+                      // style={styles.icon}
+                      name={"close-outline"}
+                      size={20}
+                      color={Colors.primary}
+                    />
+                  </Pressable>
                 </View>
               )
             );
