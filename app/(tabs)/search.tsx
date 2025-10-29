@@ -8,6 +8,7 @@ import { useFocusEffect } from "expo-router";
 import { useSearchStore } from "utils/searchStore";
 import AppText from "@components/AppText";
 import PlaylistView from "@components/PlaylistView";
+import { Ionicons } from "@expo/vector-icons";
 
 const SearchPage = () => {
   const { songs } = useSongsStore();
@@ -66,11 +67,19 @@ const SearchPage = () => {
             console.log(song);
             return (
               song && (
-                <PlaylistView
-                  artist={song.artist}
-                  title={song.title}
-                  cover={song.coverUrl}
-                />
+                <View style={styles.recentSearches}>
+                  <PlaylistView
+                    artist={song.artist}
+                    title={song.title}
+                    cover={song.coverUrl}
+                  />
+                  <Ionicons
+                    // style={styles.icon}
+                    name={"close-outline"}
+                    size={20}
+                    color={Colors.primary}
+                  />
+                </View>
               )
             );
           }}
@@ -89,5 +98,10 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.text,
     fontSize: 42,
+  },
+  recentSearches: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
   },
 });
