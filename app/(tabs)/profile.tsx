@@ -19,7 +19,7 @@ import { useAppToast } from "utils/toast";
 
 function ProfilePage() {
   const { logOut, user, getUserData } = useAuthStore();
-  const { songs, fetchSongs } = useSongsStore();
+  const { songs, fetchSongs, total } = useSongsStore();
   const { isFetching } = useLibraryStore();
   const fetchLibrary = useLibraryStore((store) => store.fetchLibrary);
 
@@ -64,7 +64,8 @@ function ProfilePage() {
 
   useEffect(() => {
     getUserData();
-  }, [getUserData]);
+    fetchSongs();
+  }, [getUserData, fetchSongs]);
 
   useEffect(() => {
     if (user) {
@@ -78,7 +79,7 @@ function ProfilePage() {
         <HeaderTitle>Profile</HeaderTitle>
         <ProfileCard
           displayName={user?.displayName || "No Name"}
-          tracksCount={songs.length}
+          tracksCount={total || 0}
           username={user?.username}
         />
         <View style={styles.categories}>

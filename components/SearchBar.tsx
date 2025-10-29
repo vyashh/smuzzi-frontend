@@ -6,6 +6,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import SubTitle from "./SubTitle";
@@ -17,11 +18,17 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useActiveTrack } from "react-native-track-player";
 import { Playlist } from "types/playlist";
 import LibraryPlaylistView from "./LibraryPlaylistView";
-import { globalStyles } from "constants/global";
 import AppText from "./AppText";
+import { PlaylistType } from "constants/global";
+import { router } from "expo-router";
+import { useSearchStore } from "utils/searchStore";
 
 interface SearchProps {
   resultsText?: string;
+  resultsSongs?: Song[] | null;
+  resultsPlaylists?: Playlist[] | null;
+  isLoading?: boolean;
+  onQueryChange?: (q: string) => void | undefined;
   searchSongs?: Song[] | null;
   searchPlaylist?: Playlist[] | null;
   setOnFocus: Dispatch<SetStateAction<boolean>>;
@@ -31,14 +38,16 @@ interface SearchProps {
 
 const Search = ({
   resultsText,
+  resultsSongs,
   searchSongs,
   searchPlaylist,
   setOnFocus,
   placeholder,
   showSearchIcon = false,
+  onQueryChange,
 }: SearchProps) => {
+  const { addSearch, removeSearch } = useSearchStore();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchResultsSongs, setSearchResultsSongs] = useState<Song[]>([]);
   const [searchResultsPlaylists, setSearchResultsPlaylists] = useState<
     Playlist[]
   >([]);
@@ -60,50 +69,43 @@ const Search = ({
       }));
 
     setSongId(item.id);
+    addSearch(item.id);
   };
 
   const onChange = (text: string) => {
     setSearchValue(text);
     setOnFocus(text.trim().length > 0);
-    console.log(text.length);
+    onQueryChange?.(text);
   };
 
-  const handleSearch = useCallback(() => {
-    const q = searchValue.trim().toLowerCase();
-    if (!q) {
-      setSearchResultsSongs([]);
-      return;
-    }
+  const filterPlaylist = (value: string) => {
+    const query = value.trim();
+    if (!query.trim() || !searchPlaylist?.length) return [];
+    const res = searchPlaylist.filter((p) => {
+      const fields = [p.name ?? "", p.description ?? ""];
+      return fields.some((f) => f.toLowerCase().includes(query));
+    });
+    console.log("[SearchBar] playlists filter:", {
+      query: query,
+      before: searchPlaylist.length,
+      after: res.length,
+    });
+    return res;
+  };
 
-    if (searchSongs) {
-      const res = searchSongs
-        ? searchSongs?.filter((song: Song) => {
-            const fields = [
-              song.title ?? "",
-              song.artist ?? "",
-              song.filename ?? "",
-            ];
-            return fields.some((fields) => fields.toLowerCase().includes(q));
-          })
-        : [];
-      setSearchResultsSongs(res);
-    } else setSearchResultsSongs([]);
+  const handleOnpressShowPlaylist = (
+    viewType: PlaylistType,
+    title: string,
+    playlistId?: number
+  ) => {
+    console.log("handleOnPressShowPlaylist()");
+    router.push({
+      pathname: "/(tabs)/library/details",
+      params: { viewType, title, playlistId },
+    });
+  };
 
-    if (searchPlaylist) {
-      const res = searchPlaylist
-        ? searchPlaylist?.filter((playlist: Playlist) => {
-            const fields = [playlist.name ?? "", playlist.description ?? ""];
-            return fields.some((fields) => fields.toLowerCase().includes(q));
-          })
-        : [];
-      setSearchResultsPlaylists(res);
-      console.log(res);
-    } else setSearchResultsPlaylists([]);
-  }, [searchValue, searchSongs, searchPlaylist]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
+  useEffect(() => {}, []);
 
   return (
     <BottomSheetModalProvider>
@@ -116,7 +118,12 @@ const Search = ({
         <InputField
           placeholder={placeholder}
           value={searchValue}
-          onChangeText={onChange}
+          onChangeText={(value) => {
+            if (searchPlaylist) {
+              setSearchResultsPlaylists(filterPlaylist(value));
+            }
+            onChange(value);
+          }}
           showSearchIcon={showSearchIcon}
         />
         {resultsText && (
@@ -139,6 +146,17 @@ const Search = ({
                     <LibraryPlaylistView
                       title={item.name || "Playlist"}
                       viewType="playlist"
+                      options={false}
+                      playlistId={item.id}
+                      handleOnPressPlaylist={() => {
+                        handleOnpressShowPlaylist(
+                          "playlist",
+                          item.name || "Playlist",
+                          item.id
+                        );
+                        setSearchValue("");
+                        setOnFocus(false);
+                      }}
                     />
                   </Pressable>
                 )}
@@ -156,7 +174,7 @@ const Search = ({
                 }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                data={searchResultsSongs ?? []}
+                data={resultsSongs ?? []}
                 keyExtractor={(item) => String(item.id)}
                 ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
                 renderItem={({ item }) => (
@@ -173,22 +191,21 @@ const Search = ({
             )}
           </View>
         )}
-        {searchResultsPlaylists.length === 0 &&
-          searchResultsSongs.length === 0 && (
-            <View
+        {searchResultsPlaylists.length === 0 && resultsSongs?.length === 0 && (
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            <AppText
               style={{
-                flex: 1,
+                textAlign: "center",
               }}
             >
-              <AppText
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                Nothing matched your search.
-              </AppText>
-            </View>
-          )}
+              Nothing matched your search.
+            </AppText>
+          </View>
+        )}
       </View>
 
       {activeTrack && <Player />}

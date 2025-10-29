@@ -4,9 +4,9 @@ import { Colors } from "../constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface PlaylistViewProps {
-  title: string;
-  artist: string;
-  cover: string;
+  title: string | undefined;
+  artist: string | undefined;
+  cover: string | undefined;
   onOpenOptions?: () => void;
   active?: boolean;
 }

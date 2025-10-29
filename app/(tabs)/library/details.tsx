@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import AppText from "@components/AppText";
 import { globalStyles, PlaylistType } from "constants/global";
 import HeaderTitle from "@components/HeaderTitle";
@@ -13,9 +7,8 @@ import { Colors } from "constants/colors";
 import { loadPlay } from "utils/trackPlayer";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import Player from "@components/Player";
-import { Ionicons } from "@expo/vector-icons";
 import { useSongsStore } from "utils/songsStore";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Song } from "types/song";
 import PlaylistView from "@components/PlaylistView";
@@ -23,12 +16,10 @@ import { useLikeStore } from "utils/likesStore";
 import TopBar from "@components/TopBar";
 import { usePlaylistsStore } from "utils/playlistsStore";
 import { useActiveTrack } from "react-native-track-player";
-import OptionsSheetPlaylist, {
-  OptionsSheetTrackRef,
-} from "@components/Options/OptionsSheetTrack";
+import { OptionsSheetTrackRef } from "@components/Options/OptionsSheetTrack";
 import PlaylistActionButtons from "@components/Buttons/PlaylistActionButtons";
 import OptionSheetTrack from "@components/Options/OptionsSheetTrack";
-import Search from "@components/SearchBar";
+import Loader from "@components/Loader";
 
 const playlist = () => {
   const { viewType, title, playlistId } = useLocalSearchParams<{
@@ -40,7 +31,7 @@ const playlist = () => {
 
   const optionsRef = useRef<OptionsSheetTrackRef>(null);
 
-  const { songs, isFetching } = useSongsStore();
+  const { songs, isFetching, hasMore, fetchMoreSongs, total } = useSongsStore();
   const fetchSongs = useSongsStore((s) => s.fetchSongs);
   const isSongsFetching = useSongsStore((s) => s.isFetching);
 
@@ -96,20 +87,30 @@ const playlist = () => {
     });
   };
 
+  const listData = useMemo(() => {
+    const seen = new Set<number>();
+    return (displayedSongs ?? []).filter(
+      (s) => !seen.has(s.id) && (seen.add(s.id), true) // check of oude id's nog in de lijst zijn.
+    );
+  }, [displayedSongs]);
+
   useEffect(() => {
-    fetchSongs();
-    if (viewType === "likes") fetchLikes();
-    if (viewType === "playlist" && pid != null && !playlistTracks) {
+    if (viewType === "allTracks") {
+      fetchSongs();
+    }
+  }, [viewType, fetchSongs]);
+
+  useEffect(() => {
+    if (viewType === "likes") {
+      fetchLikes();
+    }
+  }, [viewType, fetchLikes]);
+
+  useEffect(() => {
+    if (viewType === "playlist" && pid != null) {
       fetchPlaylistTracks(pid);
     }
-  }, [
-    fetchSongs,
-    fetchLikes,
-    fetchPlaylistTracks,
-    viewType,
-    pid,
-    playlistTracks,
-  ]);
+  }, [viewType, pid, fetchPlaylistTracks]);
   return (
     <BottomSheetModalProvider>
       <View style={[globalStyles.container]}>
@@ -117,18 +118,22 @@ const playlist = () => {
         <HeaderTitle>{title}</HeaderTitle>
         <View style={styles.trackDetails}>
           <AppText style={styles.tracks}>
-            {displayedSongs?.length
-              ? displayedSongs.length
-              : "No tracks in playlist"}
+            {viewType !== "playlist" ? total : displayedSongs?.length}
           </AppText>
           <AppText> Tracks</AppText>
         </View>
         <PlaylistActionButtons displayedSongs={displayedSongs} />
+
         <FlatList<Song>
-          data={displayedSongs}
+          data={listData}
           refreshing={refreshing}
           onRefresh={handleRefresh}
           keyExtractor={(item: Song) => String(item.id)}
+          onEndReachedThreshold={0.4}
+          onEndReached={() => hasMore && fetchMoreSongs()}
+          ListFooterComponent={
+            isFetching && songs.length > 0 ? <Loader /> : null
+          }
           renderItem={({ item, index }) => (
             <View style={{ paddingVertical: 12 }}>
               <Pressable

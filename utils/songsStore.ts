@@ -5,6 +5,9 @@ import axios from "axios";
 import { useAuthStore } from "./authStore";
 import { Song, toSongs } from "types/song";
 import { ContextType } from "types/playback";
+import { extractItemsAndCursor } from "helpers/misc";
+
+let activeCtrl: AbortController | null = null;
 
 export interface PlayStart {
   track_id: number;
@@ -25,11 +28,21 @@ interface SongsState {
   error: string | null;
   songs: Array<Song>;
   currentPlayEventId: number | null;
+
+  nextCursor: number | null;
+  hasMore: boolean;
+  pageSize: number;
+  lastQuery: string;
+  sort: "created_desc" | "created_asc" | "title_asc";
+  total: number | null;
+
   fetchSongs: () => Promise<void>;
-  setSongs: (s: Array<Song>) => void;
+  searchSongs: (q: string) => Promise<void>;
   clear: () => void;
   setStartPlay: (payload: PlayStart) => Promise<number>;
   setEndPlay: (payload?: PlayEndPayload) => Promise<void>;
+
+  fetchMoreSongs: () => Promise<void>;
 }
 
 export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
@@ -40,17 +53,127 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         error: null,
         songs: [] as Array<Song>,
         currentPlayEventId: null,
-        setSongs: (s) => set({ songs: s }),
-        clear: () => set({ songs: [], error: null, currentPlayEventId: null }),
+        nextCursor: null,
+        hasMore: true,
+        pageSize: 100,
+        lastQuery: "",
+        sort: "created_desc",
+        total: null,
+        clear: () =>
+          set({
+            songs: [],
+            error: null,
+            currentPlayEventId: null,
+            nextCursor: null,
+            hasMore: true,
+            lastQuery: "",
+            sort: "created_desc",
+          }),
         fetchSongs: async () => {
           if (get().isFetching) return;
+          set({ isFetching: true, error: null });
+
+          const { serverUrl, accessToken } = useAuthStore.getState();
+          try {
+            const { pageSize, lastQuery, sort } = get();
+            const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: {
+                limit: pageSize,
+                q: lastQuery || undefined,
+                sort,
+                include_total: true,
+              },
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            const { items, nextCursor, total } = extractItemsAndCursor(data);
+            set({
+              songs: toSongs(items),
+              nextCursor,
+              total,
+              hasMore: Boolean(nextCursor),
+            });
+            console.log(nextCursor);
+          } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message });
+          } finally {
+            set({ isFetching: false });
+          }
+        },
+        searchSongs: async (raw: string) => {
+          const q = raw.trim();
+          const { pageSize, sort } = get();
+
+          // cancel previous in-flight
+          if (activeCtrl) activeCtrl.abort();
+          const ctrl = new AbortController();
+          activeCtrl = ctrl;
+
+          set({
+            isFetching: true,
+            error: null,
+            lastQuery: q,
+            nextCursor: null,
+            hasMore: true,
+          });
+
+          const { serverUrl, accessToken } = useAuthStore.getState();
+          try {
+            const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: {
+                limit: pageSize,
+                cursor: null,
+                q: q || undefined,
+                sort,
+              },
+              headers: { Authorization: `Bearer ${accessToken}` },
+              signal: activeCtrl.signal as any,
+            });
+            if (activeCtrl !== ctrl) return;
+
+            const { items, nextCursor } = extractItemsAndCursor(data);
+            set({
+              songs: toSongs(items),
+              nextCursor,
+              hasMore: Boolean(nextCursor),
+            });
+          } catch (err: any) {
+            if (err?.name === "CanceledError") return;
+            if (activeCtrl === ctrl) {
+              const message = err instanceof Error ? err.message : String(err);
+              set({ error: message });
+            }
+          } finally {
+            if (activeCtrl === ctrl) {
+              set({ isFetching: false });
+              activeCtrl = null;
+            }
+            set({ isFetching: false });
+          }
+        },
+        fetchMoreSongs: async () => {
+          const { isFetching, hasMore, nextCursor, pageSize, lastQuery, sort } =
+            get();
+          if (isFetching || !hasMore) return;
+
           set({ isFetching: true, error: null });
           const { serverUrl, accessToken } = useAuthStore.getState();
           try {
             const { data } = await axios.get(`${serverUrl}/api/songs`, {
+              params: {
+                limit: pageSize,
+                cursor: nextCursor,
+                q: lastQuery || undefined,
+                sort,
+              },
               headers: { Authorization: `Bearer ${accessToken}` },
             });
-            set({ songs: toSongs(data) });
+            const { items, nextCursor: nc } = extractItemsAndCursor(data);
+            set({
+              songs: [...get().songs, ...toSongs(items)],
+              nextCursor: nc,
+              hasMore: Boolean(nc),
+            });
           } catch (err: unknown) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message });
@@ -96,14 +219,28 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
         },
       }),
       {
-        name: "songs-store-v2",
+        name: "songs-store-v3",
         storage: createJSONStorage(() => AsyncStorage),
-        partialize: (s) => ({ songs: s.songs } as unknown as SongsState),
+        partialize: (s) =>
+          ({
+            songs: s.songs.slice(0, 200),
+            pageSize: s.pageSize,
+            sort: s.sort,
+            lastQuery: s.lastQuery,
+          } as unknown as SongsState),
+
         onRehydrateStorage: () => (state) => {
           if (!state) return;
-          state.isFetching = false;
-          state.error = null;
-          state.currentPlayEventId = null;
+          if (state.isFetching === undefined) state.isFetching = false;
+          if (state.error === undefined) state.error = null;
+          if (state.currentPlayEventId === undefined)
+            state.currentPlayEventId = null;
+          if (state.nextCursor === undefined) state.nextCursor = null;
+          if (state.hasMore === undefined) state.hasMore = true;
+          if (state.pageSize === undefined) state.pageSize = 100;
+          if (state.lastQuery === undefined) state.lastQuery = "";
+          if (state.sort === undefined) state.sort = "created_desc";
+          if (state.total === undefined) state.total = null;
         },
       }
     )

@@ -3,7 +3,7 @@ import { Image, StyleProp, StyleSheet, View } from "react-native";
 import { Song } from "types/song";
 
 interface PlaylistCoverProps {
-  tracks: Array<Song>;
+  tracks: Song[];
   style?: StyleProp<ViewStyle>;
 }
 

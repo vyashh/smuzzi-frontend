@@ -9,7 +9,7 @@ interface InputFieldProps {
   style?: StyleProp<TextStyle>;
   placeholder?: string;
   value?: string;
-  onChangeText?: (text: string) => void;
+  onChangeText: (text: string) => void;
   useBottomSheetInput?: boolean;
   showSearchIcon?: boolean;
   isPassword?: boolean;

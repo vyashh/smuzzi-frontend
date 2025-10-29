@@ -21,9 +21,9 @@ const AuthPage = () => {
     signUp,
   } = useAuthStore();
   const [mode, setMode] = useState<Mode>(serverSelected ? "signin" : "server");
-  const [url, setUrl] = useState<string>(serverUrl || "");
-  const [userName, setUserName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [url, setUrl] = useState<string>(serverUrl || "http://localhost:3000");
+  const [userName, setUserName] = useState<string>("vyash");
+  const [password, setPassword] = useState<string>("HsLeiden2025!");
   const [repeatPassword, setRepeatPassword] = useState<string>("");
   const [alert, setAlert] = useState<string | null>("");
 
