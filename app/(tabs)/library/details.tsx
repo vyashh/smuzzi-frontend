@@ -95,20 +95,22 @@ const playlist = () => {
   }, [displayedSongs]);
 
   useEffect(() => {
-    fetchSongs();
-    if (viewType === "likes") fetchLikes();
-    if (viewType === "playlist" && pid != null && !playlistTracks) {
+    if (viewType === "allTracks") {
+      fetchSongs();
+    }
+  }, [viewType, fetchSongs]);
+
+  useEffect(() => {
+    if (viewType === "likes") {
+      fetchLikes();
+    }
+  }, [viewType, fetchLikes]);
+
+  useEffect(() => {
+    if (viewType === "playlist" && pid != null) {
       fetchPlaylistTracks(pid);
     }
-    console.log(total);
-  }, [
-    fetchSongs,
-    fetchLikes,
-    fetchPlaylistTracks,
-    viewType,
-    pid,
-    playlistTracks,
-  ]);
+  }, [viewType, pid, fetchPlaylistTracks]);
   return (
     <BottomSheetModalProvider>
       <View style={[globalStyles.container]}>
