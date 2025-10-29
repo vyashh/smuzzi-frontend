@@ -17,11 +17,14 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useActiveTrack } from "react-native-track-player";
 import { Playlist } from "types/playlist";
 import LibraryPlaylistView from "./LibraryPlaylistView";
-import { globalStyles } from "constants/global";
 import AppText from "./AppText";
 
 interface SearchProps {
   resultsText?: string;
+  resultsSongs?: Song[] | null;
+  resultsPlaylists?: Playlist[] | null;
+  isLoading?: boolean;
+  onQueryChange: (q: string) => void;
   searchSongs?: Song[] | null;
   searchPlaylist?: Playlist[] | null;
   setOnFocus: Dispatch<SetStateAction<boolean>>;
@@ -31,11 +34,13 @@ interface SearchProps {
 
 const Search = ({
   resultsText,
+  resultsSongs,
   searchSongs,
   searchPlaylist,
   setOnFocus,
   placeholder,
   showSearchIcon = false,
+  onQueryChange,
 }: SearchProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchResultsSongs, setSearchResultsSongs] = useState<Song[]>([]);
@@ -66,44 +71,10 @@ const Search = ({
     setSearchValue(text);
     setOnFocus(text.trim().length > 0);
     console.log(text.length);
+    onQueryChange(text);
   };
 
-  const handleSearch = useCallback(() => {
-    const q = searchValue.trim().toLowerCase();
-    if (!q) {
-      setSearchResultsSongs([]);
-      return;
-    }
-
-    if (searchSongs) {
-      const res = searchSongs
-        ? searchSongs?.filter((song: Song) => {
-            const fields = [
-              song.title ?? "",
-              song.artist ?? "",
-              song.filename ?? "",
-            ];
-            return fields.some((fields) => fields.toLowerCase().includes(q));
-          })
-        : [];
-      setSearchResultsSongs(res);
-    } else setSearchResultsSongs([]);
-
-    if (searchPlaylist) {
-      const res = searchPlaylist
-        ? searchPlaylist?.filter((playlist: Playlist) => {
-            const fields = [playlist.name ?? "", playlist.description ?? ""];
-            return fields.some((fields) => fields.toLowerCase().includes(q));
-          })
-        : [];
-      setSearchResultsPlaylists(res);
-      console.log(res);
-    } else setSearchResultsPlaylists([]);
-  }, [searchValue, searchSongs, searchPlaylist]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
+  useEffect(() => {}, []);
 
   return (
     <BottomSheetModalProvider>
@@ -156,7 +127,7 @@ const Search = ({
                 }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                data={searchResultsSongs ?? []}
+                data={resultsSongs ?? []}
                 keyExtractor={(item) => String(item.id)}
                 ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
                 renderItem={({ item }) => (
@@ -173,22 +144,21 @@ const Search = ({
             )}
           </View>
         )}
-        {searchResultsPlaylists.length === 0 &&
-          searchResultsSongs.length === 0 && (
-            <View
+        {searchResultsPlaylists.length === 0 && resultsSongs?.length === 0 && (
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            <AppText
               style={{
-                flex: 1,
+                textAlign: "center",
               }}
             >
-              <AppText
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                Nothing matched your search.
-              </AppText>
-            </View>
-          )}
+              Nothing matched your search.
+            </AppText>
+          </View>
+        )}
       </View>
 
       {activeTrack && <Player />}

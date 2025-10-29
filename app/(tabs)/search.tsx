@@ -3,17 +3,26 @@ import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
-import { useState } from "react";
 
 const SearchPage = () => {
-  const { songs } = useSongsStore();
-  const [query, setQuery] = useState("");
+  const { songs, isFetching } = useSongsStore();
+  const refreshSongs = useSongsStore((s: any) => s.refreshSongs ?? null);
+  const searchSongsFn = useSongsStore((s: any) => s.searchSongs ?? null);
+
+  const runSearch = (q: string) => {
+    const query = q.trim();
+    if (searchSongsFn) return searchSongsFn(query);
+    if (refreshSongs) return refreshSongs({ q: query });
+    return useSongsStore.getState().fetchSongs();
+  };
 
   return (
     <View style={globalStyles.container}>
       <SearchBar
         setOnFocus={() => null}
         searchSongs={songs}
+        onQueryChange={runSearch}
+        resultsSongs={songs}
         resultsText="Recent searches"
         placeholder="What do you want to listen to?"
         showSearchIcon
