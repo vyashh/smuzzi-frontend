@@ -117,7 +117,7 @@ const Search = ({
           <View style={{ flex: 1, width: "100%" }}>
             {searchPlaylist && (
               <FlatList
-                style={{ flex: 1 }}
+                style={{ flex: }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 data={searchResultsPlaylists ?? []}
@@ -130,6 +130,8 @@ const Search = ({
                     <LibraryPlaylistView
                       title={item.name || "Playlist"}
                       viewType="playlist"
+                      options={false}
+                      playlistId={item.id}
                     />
                   </Pressable>
                 )}
