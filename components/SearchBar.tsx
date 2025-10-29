@@ -19,6 +19,8 @@ import { useActiveTrack } from "react-native-track-player";
 import { Playlist } from "types/playlist";
 import LibraryPlaylistView from "./LibraryPlaylistView";
 import AppText from "./AppText";
+import { PlaylistType } from "constants/global";
+import { router } from "expo-router";
 
 interface SearchProps {
   resultsText?: string;
@@ -89,6 +91,18 @@ const Search = ({
     return res;
   };
 
+  const handleOnpressShowPlaylist = (
+    viewType: PlaylistType,
+    title: string,
+    playlistId?: number
+  ) => {
+    console.log("handleOnPressShowPlaylist()");
+    router.push({
+      pathname: "/(tabs)/library/details",
+      params: { viewType, title, playlistId },
+    });
+  };
+
   useEffect(() => {}, []);
 
   return (
@@ -117,7 +131,7 @@ const Search = ({
           <View style={{ flex: 1, width: "100%" }}>
             {searchPlaylist && (
               <FlatList
-                style={{ flex: }}
+                style={{ flex: 1 }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 data={searchResultsPlaylists ?? []}
@@ -132,6 +146,15 @@ const Search = ({
                       viewType="playlist"
                       options={false}
                       playlistId={item.id}
+                      handleOnPressPlaylist={() => {
+                        handleOnpressShowPlaylist(
+                          "playlist",
+                          item.name || "Playlist",
+                          item.id
+                        );
+                        setSearchValue("");
+                        setOnFocus(false);
+                      }}
                     />
                   </Pressable>
                 )}
