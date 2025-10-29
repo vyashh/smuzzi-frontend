@@ -106,7 +106,8 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
 
           // cancel previous in-flight
           if (activeCtrl) activeCtrl.abort();
-          activeCtrl = new AbortController();
+          const ctrl = new AbortController();
+          activeCtrl = ctrl;
 
           set({
             isFetching: true,
@@ -128,6 +129,8 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
               headers: { Authorization: `Bearer ${accessToken}` },
               signal: activeCtrl.signal as any,
             });
+            if (activeCtrl !== ctrl) return;
+
             const { items, nextCursor } = extractItemsAndCursor(data);
             set({
               songs: toSongs(items),
@@ -136,9 +139,15 @@ export const useSongsStore: UseBoundStore<StoreApi<SongsState>> =
             });
           } catch (err: any) {
             if (err?.name === "CanceledError") return;
-            const message = err instanceof Error ? err.message : String(err);
-            set({ error: message });
+            if (activeCtrl === ctrl) {
+              const message = err instanceof Error ? err.message : String(err);
+              set({ error: message });
+            }
           } finally {
+            if (activeCtrl === ctrl) {
+              set({ isFetching: false });
+              activeCtrl = null;
+            }
             set({ isFetching: false });
           }
         },

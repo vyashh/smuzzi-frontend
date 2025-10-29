@@ -3,6 +3,7 @@ import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
+import { useEffect, useMemo } from "react";
 
 const SearchPage = () => {
   const { songs, isFetching } = useSongsStore();
@@ -16,12 +17,26 @@ const SearchPage = () => {
     return useSongsStore.getState().fetchSongs();
   };
 
+  const debouncedRunSearch = useMemo(() => {
+    let t: ReturnType<typeof setTimeout> | null = null;
+    const fn = (q: string) => {
+      if (t) clearTimeout(t);
+      t = setTimeout(() => runSearch(q), 300);
+    };
+    (fn as any).cancel = () => t && clearTimeout(t);
+    return fn;
+  }, [runSearch]);
+
+  useEffect(() => {
+    return () => (debouncedRunSearch as any).cancel?.();
+  }, [debouncedRunSearch]);
+
   return (
     <View style={globalStyles.container}>
       <SearchBar
         setOnFocus={() => null}
         searchSongs={songs}
-        onQueryChange={runSearch}
+        onQueryChange={debouncedRunSearch}
         resultsSongs={songs}
         resultsText="Recent searches"
         placeholder="What do you want to listen to?"
