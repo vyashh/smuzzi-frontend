@@ -21,6 +21,7 @@ import LibraryPlaylistView from "./LibraryPlaylistView";
 import AppText from "./AppText";
 import { PlaylistType } from "constants/global";
 import { router } from "expo-router";
+import { useSearchStore } from "utils/searchStore";
 
 interface SearchProps {
   resultsText?: string;
@@ -45,8 +46,8 @@ const Search = ({
   showSearchIcon = false,
   onQueryChange,
 }: SearchProps) => {
+  const { addSearch, removeSearch } = useSearchStore();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [searchResultsSongs, setSearchResultsSongs] = useState<Song[]>([]);
   const [searchResultsPlaylists, setSearchResultsPlaylists] = useState<
     Playlist[]
   >([]);
@@ -68,6 +69,7 @@ const Search = ({
       }));
 
     setSongId(item.id);
+    songIndex && addSearch(songIndex);
   };
 
   const onChange = (text: string) => {

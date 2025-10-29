@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Song } from "types/song";
+import { useCallback, useEffect, useMemo } from "react";
 import { useFocusEffect } from "expo-router";
+import { useSearchStore } from "utils/searchStore";
+import AppText from "@components/AppText";
 
 const SearchPage = () => {
-  const { songs, isFetching } = useSongsStore();
+  const { songs } = useSongsStore();
+  const { searches, fetchSearches, removeSearch, addSearch } = useSearchStore();
   const refreshSongs = useSongsStore((s: any) => s.refreshSongs ?? null);
   const searchSongsFn = useSongsStore((s: any) => s.searchSongs ?? null);
 
@@ -50,6 +52,13 @@ const SearchPage = () => {
         placeholder="What do you want to listen to?"
         showSearchIcon
       />
+      {searches && (
+        <FlatList
+          data={searches}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <AppText>{item.songId}</AppText>}
+        />
+      )}
     </View>
   );
 };
