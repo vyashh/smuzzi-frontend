@@ -64,7 +64,8 @@ function ProfilePage() {
 
   useEffect(() => {
     getUserData();
-  }, [getUserData]);
+    fetchSongs();
+  }, [getUserData, fetchSongs]);
 
   useEffect(() => {
     if (user) {
