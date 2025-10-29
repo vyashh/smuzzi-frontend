@@ -116,7 +116,7 @@ const playlist = () => {
         <HeaderTitle>{title}</HeaderTitle>
         <View style={styles.trackDetails}>
           <AppText style={styles.tracks}>
-            {total ? total : "No tracks in playlist"}
+            {viewType !== "playlist" ? total : displayedSongs?.length}
           </AppText>
           <AppText> Tracks</AppText>
         </View>
