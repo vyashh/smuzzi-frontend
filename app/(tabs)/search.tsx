@@ -3,7 +3,9 @@ import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Song } from "types/song";
+import { useFocusEffect } from "expo-router";
 
 const SearchPage = () => {
   const { songs, isFetching } = useSongsStore();
@@ -27,9 +29,15 @@ const SearchPage = () => {
     return fn;
   }, [runSearch]);
 
-  useEffect(() => {
-    return () => (debouncedRunSearch as any).cancel?.();
-  }, [debouncedRunSearch]);
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (searchSongsFn) {
+          searchSongsFn("");
+        }
+      };
+    }, [searchSongsFn])
+  );
 
   return (
     <View style={globalStyles.container}>
