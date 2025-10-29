@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useFocusEffect } from "expo-router";
 import { useSearchStore } from "utils/searchStore";
 import AppText from "@components/AppText";
+import PlaylistView from "@components/PlaylistView";
 
 const SearchPage = () => {
   const { songs } = useSongsStore();
@@ -62,8 +63,16 @@ const SearchPage = () => {
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => {
             const song = item.song;
-
-            return <AppText>{song?.title}</AppText>;
+            console.log(song);
+            return (
+              song && (
+                <PlaylistView
+                  artist={song.artist}
+                  title={song.title}
+                  cover={song.coverUrl}
+                />
+              )
+            );
           }}
         />
       )}

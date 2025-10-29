@@ -1,11 +1,11 @@
-import { Song } from "./song";
+import { ApiSong, Song, toSong } from "./song";
 
 // mirror of db response
 export interface ApiSearch {
   id: number;
   song_id: number;
   searched_at: string;
-  song: Song;
+  song: ApiSong;
 }
 
 // domain model
@@ -22,7 +22,7 @@ export const toSearch = (dto: ApiSearch): Search => {
     id: dto.id,
     songId: dto.song_id,
     searchedAt: dto.searched_at,
-    song: dto.song,
+    song: toSong(dto.song),
   };
 };
 
