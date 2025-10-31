@@ -10,12 +10,12 @@ interface PlaylistsStore {
   isFetching: boolean;
   error: string | null;
   playlists: Playlist[];
-  playlistTracks: ReadonlyArray<Song> | null;
+  playlistTracks: Song[] | null;
   fetchPlaylists: () => Promise<void>;
   fetchPlaylistTracks: (playlistId: number) => Promise<void>;
   playlistTracksById: Record<number, ReadonlyArray<Song>>;
   isFetchingById?: Record<number, boolean>;
-  postPlaylist: (playlistName: string) => Promise<Playlist>;
+  postPlaylist: (playlistName: string) => Promise<void>;
   patchPlaylist: (
     playlistId: number,
     payload: { name?: string; description?: string | null }
@@ -25,7 +25,7 @@ interface PlaylistsStore {
     indexOfPlaylists: Array<number>
   ) => Promise<void>;
   deletePlaylist: (playlistId: number) => Promise<void>;
-  setPlaylists: (p: ReadonlyArray<Playlist>) => void;
+  setPlaylists: (p: Playlist[]) => void;
 }
 
 export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
@@ -35,7 +35,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
         isFetching: false,
         isFetchingById: {},
         error: null,
-        playlists: [] as ReadonlyArray<Playlist>,
+        playlists: [],
         playlistTracks: null,
         playlistTracksById: {},
         setPlaylists: (p) => set({ playlists: p }),
@@ -159,6 +159,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
                 { headers: { Authorization: `Bearer ${accessToken}` } }
               );
             });
+            console.log("Post Song to Playlist:", songId, indexOfPlaylists);
             set({ isFetching: false });
             await get().fetchPlaylists();
           } catch (error: any) {
@@ -192,6 +193,9 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
           }
         },
       }),
-      { name: "likes-store-v2", storage: createJSONStorage(() => AsyncStorage) }
+      {
+        name: "playlist-store-v2",
+        storage: createJSONStorage(() => AsyncStorage),
+      }
     )
   );

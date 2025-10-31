@@ -73,6 +73,7 @@ const playlist = () => {
       case "likes":
         return likedSongs;
       case "playlist":
+        console.log(playlistTracks);
         return playlistTracks;
       case "allTracks":
       default:

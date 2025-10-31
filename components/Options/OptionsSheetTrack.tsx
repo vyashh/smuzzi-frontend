@@ -23,6 +23,7 @@ import { Song } from "types/song";
 import SingleOption from "./SingleOption";
 import PlaylistView from "@components/PlaylistView";
 import BottomSheetTopActionButtons from "@components/Buttons/BottomSheetTopActionButton";
+import { useAppToast } from "utils/toast";
 
 export type OptionsSheetTrackRef = {
   present: (props: OptionsSheetTrackProps) => void;
@@ -38,6 +39,8 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
     null
   );
   const { playlists } = usePlaylistsStore();
+
+  const { errorToast, successToast } = useAppToast();
 
   // playlists setup
   const [showPlaylists, setShowPlaylists] = useState<boolean>(false);
@@ -64,10 +67,12 @@ const OptionsSheetTrack = forwardRef<OptionsSheetTrackRef>((_, ref) => {
 
   const handleAddToPlaylist = () => {
     if (sheetProps?.selectedOptionsTrack && addToPlaylists) {
-      postSongToPlaylist(
-        sheetProps.selectedOptionsTrack.id,
-        addToPlaylists
-      ).then(() => modalRef.current?.dismiss());
+      postSongToPlaylist(sheetProps.selectedOptionsTrack.id, addToPlaylists)
+        .then(() => {
+          successToast("Song added to playlist");
+          modalRef.current?.dismiss();
+        })
+        .catch(() => errorToast("Failed to add song to playlist."));
     }
   };
 
