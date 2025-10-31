@@ -32,6 +32,7 @@ const playlist = () => {
   const optionsRef = useRef<OptionsSheetTrackRef>(null);
 
   const { songs, isFetching, hasMore, fetchMoreSongs, total } = useSongsStore();
+  const { fetchPlaylists } = usePlaylistsStore();
   const fetchSongs = useSongsStore((s) => s.fetchSongs);
   const isSongsFetching = useSongsStore((s) => s.isFetching);
 
@@ -61,6 +62,7 @@ const playlist = () => {
         break;
       case "playlist":
         console.log("details.tsx playlist refresh");
+        if (pid != null) fetchPlaylistTracks(pid);
         break;
 
       default:
@@ -73,7 +75,6 @@ const playlist = () => {
       case "likes":
         return likedSongs;
       case "playlist":
-        console.log(playlistTracks);
         return playlistTracks;
       case "allTracks":
       default:

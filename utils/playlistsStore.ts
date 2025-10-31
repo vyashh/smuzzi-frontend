@@ -87,7 +87,6 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
         fetchPlaylistTracks: async (playlistId) => {
           const { isFetchingById = {}, playlistTracksById = {} } = get();
           if (isFetchingById[playlistId]) return;
-          if (playlistTracksById[playlistId]) return;
           set({
             error: null,
             isFetchingById: { ...isFetchingById, [playlistId]: true },
@@ -113,7 +112,7 @@ export const usePlaylistsStore: UseBoundStore<StoreApi<PlaylistsStore>> =
             set({ error: error, isFetching: false });
           } finally {
             set((s) => ({
-              isFetching: false, // optional global spinner
+              isFetching: false,
               isFetchingById: {
                 ...(s.isFetchingById || {}),
                 [playlistId]: false,
