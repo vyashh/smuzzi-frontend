@@ -89,7 +89,9 @@ const SearchPage = () => {
       {searches && !searchFocus && (
         <FlatList
           data={searches}
-          keyExtractor={(item) => String(item.songId)}
+          keyExtractor={(item, index) =>
+            String(item.id ?? item.songId ?? item.song?.id ?? index)
+          }
           renderItem={({ item }) => {
             const song = item.song;
 
