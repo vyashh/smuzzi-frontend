@@ -3,20 +3,27 @@ import { Colors } from "../../constants/colors";
 import { globalStyles } from "../../constants/global";
 import SearchBar from "@components/SearchBar";
 import { useSongsStore } from "utils/songsStore";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { useSearchStore } from "utils/searchStore";
 import AppText from "@components/AppText";
 import PlaylistView from "@components/PlaylistView";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppToast } from "utils/toast";
+import { useActiveTrack } from "react-native-track-player";
+import { Song } from "types/song";
+import LoaderKitView from "react-native-loader-kit";
+import { loadPlay } from "utils/trackPlayer";
 
 const SearchPage = () => {
+  const { searches, fetchSearches, removeSearch, addSearch, isFetching } =
+    useSearchStore();
   const { songs } = useSongsStore();
-  const { searches, fetchSearches, removeSearch, addSearch } = useSearchStore();
   const refreshSongs = useSongsStore((s: any) => s.refreshSongs ?? null);
   const searchSongsFn = useSongsStore((s: any) => s.searchSongs ?? null);
   const { errorToast, successToast } = useAppToast();
+  const activeTrack = useActiveTrack();
+  const [searchFocus, setSearchFocus] = useState<boolean>(false);
 
   const runSearch = (q: string) => {
     const query = q.trim();
@@ -34,6 +41,15 @@ const SearchPage = () => {
     (fn as any).cancel = () => t && clearTimeout(t);
     return fn;
   }, [runSearch]);
+
+  const handleTrackSelection = async (songIndex: number) => {
+    await loadPlay({
+      songIndex,
+      list: songs,
+      context_id: "search",
+      context_type: "unknown",
+    });
+  };
 
   const handleDelete = async (searchId: number) => {
     try {
@@ -61,7 +77,7 @@ const SearchPage = () => {
   return (
     <View style={globalStyles.container}>
       <SearchBar
-        setOnFocus={() => null}
+        setOnFocus={setSearchFocus}
         searchSongs={songs}
         onQueryChange={debouncedRunSearch}
         resultsSongs={songs}
@@ -69,13 +85,12 @@ const SearchPage = () => {
         placeholder="What do you want to listen to?"
         showSearchIcon
       />
-      {searches && (
+      {searches && !searchFocus && (
         <FlatList
           data={searches}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => {
             const song = item.song;
-            console.log(song);
             return (
               song && (
                 <View style={styles.recentSearches}>
@@ -83,14 +98,23 @@ const SearchPage = () => {
                     artist={song.artist}
                     title={song.title}
                     cover={song.coverUrl}
+                    active={parseInt(activeTrack?.id) === song.id}
                   />
                   <Pressable onPress={() => handleDelete(item.id)}>
-                    <Ionicons
-                      // style={styles.icon}
-                      name={"close-outline"}
-                      size={20}
-                      color={Colors.primary}
-                    />
+                    {isFetching ? (
+                      <LoaderKitView
+                        style={{ width: 30, height: 30 }}
+                        name={"BallScale"}
+                        animationSpeedMultiplier={1}
+                        color={Colors.primary}
+                      />
+                    ) : (
+                      <Ionicons
+                        name={"close-outline"}
+                        size={20}
+                        color={Colors.text}
+                      />
+                    )}
                   </Pressable>
                 </View>
               )
