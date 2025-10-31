@@ -43,6 +43,7 @@ const SearchPage = () => {
   }, [runSearch]);
 
   const handleTrackSelection = async (songIndex: number) => {
+    console.log("handleTrackSelection", songIndex);
     await loadPlay({
       songIndex,
       list: songs,
@@ -88,12 +89,27 @@ const SearchPage = () => {
       {searches && !searchFocus && (
         <FlatList
           data={searches}
-          keyExtractor={(item) => String(item.id)}
+          keyExtractor={(item) => String(item.songId)}
           renderItem={({ item }) => {
             const song = item.song;
+
             return (
               song && (
-                <View style={styles.recentSearches}>
+                <Pressable
+                  style={styles.recentSearches}
+                  onPress={() => {
+                    const idx = songs.findIndex(
+                      (s: Song) => String(s.id) === String(song.id)
+                    );
+                    if (idx !== -1) return handleTrackSelection(idx);
+                    loadPlay({
+                      songIndex: 0,
+                      list: [song],
+                      context_id: "search",
+                      context_type: "unknown",
+                    }).catch(() => errorToast("Could not play that track."));
+                  }}
+                >
                   <PlaylistView
                     artist={song.artist}
                     title={song.title}
@@ -116,7 +132,7 @@ const SearchPage = () => {
                       />
                     )}
                   </Pressable>
-                </View>
+                </Pressable>
               )
             );
           }}
